@@ -8,15 +8,15 @@
   ],
   "routes": [
     {
-      "src": "/css/(.*)",
+      "src": "/frontend/css/(.*)",
       "dest": "/frontend/css/$1"
     },
     {
-      "src": "/js/(.*)",
+      "src": "/frontend/js/(.*)",
       "dest": "/frontend/js/$1"
     },
     {
-      "src": "/images/(.*)",
+      "src": "/frontend/images/(.*)",
       "dest": "/frontend/images/$1"
     },
     {
