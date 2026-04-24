@@ -56,7 +56,7 @@ Future Map is a full-stack web application that helps students discover their id
 |-------|-----------|
 | **Frontend** | HTML5, CSS3, Vanilla JavaScript |
 | **Backend** | Python, Flask 2.3 |
-| **Databases** | MongoDB Atlas (primary), SQLite (auth/users) |
+| **Databases** | MongoDB Atlas |
 | **AI** | Google Gemini API (interview generation) |
 | **Deployment** | Vercel (serverless Python) |
 | **Security** | Werkzeug password hashing, CSRF protection, XSS escaping, rate limiting |
@@ -69,7 +69,7 @@ Future Map is a full-stack web application that helps students discover their id
 Future Map/
 ├── main.py                  # Flask app entry point
 ├── config.py                # Environment variables & app config
-├── database.py              # SQLite + MongoDB connections
+├── database.py              # MongoDB Atlas connection
 ├── extensions.py            # Flask extensions (rate limiter)
 ├── errors.py                # Global error handlers
 ├── utils.py                 # Utility functions & decorators
@@ -179,7 +179,7 @@ Add the required environment variables in the Vercel Dashboard under **Settings 
 ### 4. Deploy
 Vercel will automatically build and deploy your application.
 
-> **Note:** SQLite data (user accounts) is ephemeral on Vercel serverless — it resets between cold starts. MongoDB is used for persistent data (careers, courses, roadmaps, projects).
+> **Note:** All application data, including user accounts, profiles, roadmaps, and projects, is stored in MongoDB Atlas for persistence across serverless cold starts.
 
 
 ---
