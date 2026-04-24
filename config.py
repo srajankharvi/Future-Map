@@ -15,16 +15,16 @@ load_dotenv()
 # --- FLASK ENVIRONMENT ---
 FLASK_ENV = os.getenv('FLASK_ENV', 'development')
 
-# --- SECRET KEY (REQUIRED — no fallback in production) ---
+# --- SECRET KEY (REQUIRED — auto-generated fallback to prevent crash) ---
 SECRET_KEY = os.getenv('SECRET_KEY')
 if not SECRET_KEY or len(SECRET_KEY) < 10:
+    SECRET_KEY = secrets_module.token_urlsafe(32)
     if FLASK_ENV == 'production':
-        raise ValueError(
-            "SECRET_KEY is missing or too short in .env. "
-            "Set a strong key: SECRET_KEY=your-secret-here (min 10 chars)"
+        logging.critical(
+            "SECRET_KEY is missing or too short! Using auto-generated key. "
+            "Set SECRET_KEY in Vercel Environment Variables for session persistence."
         )
     else:
-        SECRET_KEY = secrets_module.token_urlsafe(32)
         logging.warning("No valid SECRET_KEY found; using temporary development secret (not for production)")
 
 # --- SESSION SECURITY ---

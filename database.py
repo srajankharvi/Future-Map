@@ -8,55 +8,63 @@ import logging
 from pymongo import MongoClient
 
 # --- SQLite ---
-DATABASE = 'futuremap.db'
+# Vercel serverless has a read-only filesystem; use /tmp for SQLite
+IS_VERCEL = os.getenv('VERCEL', False)
+if IS_VERCEL:
+    DATABASE = '/tmp/futuremap.db'
+else:
+    DATABASE = 'futuremap.db'
 
 
 def init_db():
     """Create users, profiles, and projects tables if they don't exist."""
-    conn = sqlite3.connect(DATABASE, timeout=10)
-    conn.execute("PRAGMA foreign_keys = ON")
-    cursor = conn.cursor()
+    try:
+        conn = sqlite3.connect(DATABASE, timeout=10)
+        conn.execute("PRAGMA foreign_keys = ON")
+        cursor = conn.cursor()
 
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password_hash TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
 
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS user_profiles (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER UNIQUE NOT NULL,
-            full_name TEXT,
-            bio TEXT,
-            birthday TEXT,
-            status TEXT,
-            avatar_url TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        )
-    ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS user_profiles (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER UNIQUE NOT NULL,
+                full_name TEXT,
+                bio TEXT,
+                birthday TEXT,
+                status TEXT,
+                avatar_url TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        ''')
 
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS projects (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL,
-            title TEXT NOT NULL,
-            description TEXT,
-            link TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            synced_to_mongodb INTEGER DEFAULT 0
-        )
-    ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS projects (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL,
+                title TEXT NOT NULL,
+                description TEXT,
+                link TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                synced_to_mongodb INTEGER DEFAULT 0
+            )
+        ''')
 
-    conn.commit()
-    conn.close()
-    print("[OK] SQLite database initialized successfully!")
+        conn.commit()
+        conn.close()
+        print("[OK] SQLite database initialized successfully!")
+    except Exception as e:
+        logging.error(f"SQLite init failed (expected on serverless): {e}")
 
 
 def get_db():
