@@ -1,29 +1,32 @@
 """
-Authentication routes — register, login, logout, profile management.
+Authentication routes — register, login, logout, profile management using MongoDB.
 """
 
-import sqlite3
 import logging
+from datetime import datetime, timezone
 from flask import Blueprint, jsonify, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
+from bson import ObjectId
 
 from config import USERNAME_REGEX, EMAIL_REGEX, PASSWORD_MIN, PASSWORD_MAX
-from database import get_db
+from database import mongo_db
 from utils import login_required
 from extensions import limiter
 
 auth_bp = Blueprint('auth', __name__)
 
-
 @auth_bp.route('/api/auth/register', methods=['POST'])
 @limiter.limit("10 per minute")
 def register():
-    """Register a new user"""
+    """Register a new user in MongoDB"""
     try:
         data = request.get_json()
 
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
+
+        if mongo_db is None:
+            return jsonify({'success': False, 'error': 'Database not available'}), 503
 
         username = data.get('username', '').strip()
         email = data.get('email', '').strip()
@@ -46,44 +49,48 @@ def register():
         if len(password) > PASSWORD_MAX:
             return jsonify({'success': False, 'error': f'Password must be at most {PASSWORD_MAX} characters'}), 400
 
+        # Check if user already exists
+        if mongo_db.users.find_one({'$or': [{'username': username}, {'email': email}]}):
+            existing_user = mongo_db.users.find_one({'username': username})
+            if existing_user:
+                return jsonify({'success': False, 'error': 'Username already exists'}), 409
+            return jsonify({'success': False, 'error': 'Email already exists'}), 409
+
         # Hash password
         password_hash = generate_password_hash(password)
 
-        conn = get_db()
-        cursor = conn.cursor()
+        # Create user
+        user_doc = {
+            'username': username,
+            'email': email,
+            'password_hash': password_hash,
+            'created_at': datetime.now(timezone.utc).isoformat(),
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }
+        
+        result = mongo_db.users.insert_one(user_doc)
+        user_id = str(result.inserted_id)
 
-        try:
-            cursor.execute(
-                'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
-                (username, email, password_hash)
-            )
-            user_id = cursor.lastrowid
+        # Create profile
+        mongo_db.user_profiles.insert_one({
+            'user_id': user_id,
+            'username': username,
+            'full_name': full_name,
+            'bio': '',
+            'birthday': '',
+            'status': 'Online',
+            'avatar_url': '',
+            'created_at': datetime.now(timezone.utc).isoformat()
+        })
 
-            cursor.execute(
-                'INSERT INTO user_profiles (user_id, full_name) VALUES (?, ?)',
-                (user_id, full_name)
-            )
-
-            conn.commit()
-
-            return jsonify({
-                'success': True,
-                'message': 'User registered successfully',
-                'user': {
-                    'id': user_id,
-                    'username': username
-                }
-            }), 201
-
-        except sqlite3.IntegrityError as e:
-            conn.rollback()
-            error_msg = str(e).lower()
-            if 'username' in error_msg:
-                return jsonify({'success': False, 'error': 'Username already exists'}), 409
-            else:
-                return jsonify({'success': False, 'error': 'Email already exists'}), 409
-        finally:
-            conn.close()
+        return jsonify({
+            'success': True,
+            'message': 'User registered successfully',
+            'user': {
+                'id': user_id,
+                'username': username
+            }
+        }), 201
 
     except Exception as e:
         logging.exception("Registration error")
@@ -93,12 +100,15 @@ def register():
 @auth_bp.route('/api/auth/login', methods=['POST'])
 @limiter.limit("5 per minute")
 def login():
-    """Login user — rate limited to 5 requests/minute"""
+    """Login user with MongoDB Atlas"""
     try:
         data = request.get_json()
 
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
+
+        if mongo_db is None:
+            return jsonify({'success': False, 'error': 'Database not available'}), 503
 
         username = data.get('username', '').strip()
         password = data.get('password', '').strip()
@@ -106,18 +116,14 @@ def login():
         if not username or not password:
             return jsonify({'success': False, 'error': 'Username and password required'}), 400
 
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute('SELECT id, username, email, password_hash FROM users WHERE username = ?', (username,))
-        user = cursor.fetchone()
-        conn.close()
+        user = mongo_db.users.find_one({'username': username})
 
         if not user or not check_password_hash(user['password_hash'], password):
             return jsonify({'success': False, 'error': 'Invalid username or password'}), 401
 
         # Create session
         session.permanent = True
-        session['user_id'] = user['id']
+        session['user_id'] = str(user['_id'])
         session['username'] = user['username']
         session['email'] = user['email']
 
@@ -125,7 +131,7 @@ def login():
             'success': True,
             'message': 'Login successful',
             'user': {
-                'id': user['id'],
+                'id': str(user['_id']),
                 'username': user['username'],
                 'email': user['email']
             }
@@ -141,8 +147,7 @@ def logout():
     """Logout user — destroy session completely"""
     try:
         session.clear()
-        resp = jsonify({'success': True, 'message': 'Logout successful'})
-        return resp, 200
+        return jsonify({'success': True, 'message': 'Logout successful'}), 200
     except Exception as e:
         logging.exception("Logout error")
         return jsonify({'success': False, 'error': 'Logout failed'}), 500
@@ -151,39 +156,39 @@ def logout():
 @auth_bp.route('/api/auth/me', methods=['GET'])
 @login_required
 def get_current_user():
-    """Get current logged-in user"""
+    """Get current logged-in user details from MongoDB"""
     try:
         user_id = session.get('user_id')
+        username = session.get('username')
 
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute('''
-            SELECT u.id, u.username, u.email, u.created_at,
-                   p.full_name, p.bio, p.avatar_url, p.birthday, p.status
-            FROM users u
-            LEFT JOIN user_profiles p ON u.id = p.user_id
-            WHERE u.id = ?
-        ''', (user_id,))
+        if mongo_db is None:
+            return jsonify({'success': False, 'error': 'Database not available'}), 503
 
-        user = cursor.fetchone()
-        conn.close()
+        user = mongo_db.users.find_one({'_id': ObjectId(user_id)}, {'password_hash': 0})
+        profile = mongo_db.user_profiles.find_one({'username': username})
 
         if not user:
             return jsonify({'success': False, 'error': 'User not found'}), 404
 
+        user_data = {
+            'id': str(user['_id']),
+            'username': user['username'],
+            'email': user['email'],
+            'created_at': user.get('created_at', '')
+        }
+
+        if profile:
+            user_data.update({
+                'full_name': profile.get('full_name', ''),
+                'bio': profile.get('bio', ''),
+                'avatar_url': profile.get('avatar_url', ''),
+                'birthday': profile.get('birthday', ''),
+                'status': profile.get('status', '')
+            })
+
         return jsonify({
             'success': True,
-            'user': {
-                'id': user['id'],
-                'username': user['username'],
-                'email': user['email'],
-                'full_name': user['full_name'],
-                'bio': user['bio'],
-                'avatar_url': user['avatar_url'],
-                'birthday': user['birthday'],
-                'status': user['status'],
-                'created_at': user['created_at']
-            }
+            'user': user_data
         }), 200
 
     except Exception as e:
@@ -194,37 +199,28 @@ def get_current_user():
 @auth_bp.route('/api/auth/update-profile', methods=['PUT'])
 @login_required
 def update_profile():
-    """Update user profile"""
+    """Update user profile in MongoDB"""
     try:
         data = request.get_json()
 
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
 
-        user_id = session.get('user_id')
+        if mongo_db is None:
+            return jsonify({'success': False, 'error': 'Database not available'}), 503
+
+        username = session.get('username')
 
         # Whitelist allowed fields
         allowed_fields = ['full_name', 'bio', 'avatar_url', 'birthday', 'status']
+        update_data = {field: data[field] for field in allowed_fields if field in data}
 
-        conn = get_db()
-        cursor = conn.cursor()
-
-        updates = []
-        values = []
-        for field in allowed_fields:
-            if field in data:
-                updates.append(f'{field} = ?')
-                values.append(data[field])
-
-        if updates:
-            values.append(user_id)
-            cursor.execute(
-                f'UPDATE user_profiles SET {", ".join(updates)} WHERE user_id = ?',
-                values
+        if update_data:
+            mongo_db.user_profiles.update_one(
+                {'username': username},
+                {'$set': update_data},
+                upsert=True
             )
-            conn.commit()
-
-        conn.close()
 
         return jsonify({
             'success': True,

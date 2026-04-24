@@ -14,7 +14,7 @@ from config import (
     PERMANENT_SESSION_LIFETIME,
 )
 from extensions import limiter
-from database import init_db, DATABASE, DB_NAME
+from database import init_db, DB_NAME
 from routes import register_blueprints
 from errors import register_error_handlers
 
@@ -50,9 +50,8 @@ def create_app():
 app = create_app()
 
 if __name__ == '__main__':
-    print("Starting Future Map Web Application...")
-    print(f"SQLite Database: {DATABASE}")
-    print(f"MongoDB: {DB_NAME}")
+    print("Starting Future Map Web Application (MongoDB Atlas Edition)...")
+    print(f"MongoDB Database: {DB_NAME}")
     print("Open http://127.0.0.1:5000")
 
     app.run(debug=True, use_reloader=False)
