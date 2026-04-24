@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account - Upload Project | Future Map</title>
+    <meta name="description" content="Upload your projects to share with the Future Map community.">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+            <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span>Future Map</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="recommendation.html">Recommendation</a></li>
+                <li><a href="careers.html">Careers</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="yourpath.html">Your Path</a></li>
+                <li><a href="interview.html">Interview</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="account.html" class="active">Account</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <!-- Profile Section -->
+    <section class="account-section">
+        <div class="container">
+            <div class="profile-card card">
+                <h2>User Profile</h2>
+                <div id="profileView" class="profile-details">
+                    <p><strong>Username:</strong> <span id="displayUsername">Loading...</span></p>
+                    <p><strong>Email:</strong> <span id="displayEmail">Loading...</span></p>
+                    <p><strong>Birthday:</strong> <span id="displayBirthday">Not set</span></p>
+                    <p><strong>Status:</strong> <span id="displayStatus">Not set</span></p>
+                    <p><strong>Description:</strong></p>
+                    <p id="displayBio" class="bio-text">No description provided.</p>
+                    <div class="form-actions">
+                        <button id="editProfileBtn" class="btn btn-secondary">Edit Profile</button>
+                        <button id="logoutBtnAccount" class="logout-btn">Logout</button>
+                    </div>
+                </div>
+
+                <form id="profileForm" class="hidden">
+                    <div class="form-group">
+                        <label>Birthday</label>
+                        <input type="date" id="inputBirthday" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Current Status</label>
+                        <input type="text" id="inputStatus" placeholder="e.g. Studying BCA / Software Intern" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="inputBio" rows="3" class="form-input" placeholder="Tell us about yourself..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Profile</button>
+                        <button type="button" id="cancelEditBtn" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="my-projects-section">
+                <h2>My Uploaded Projects</h2>
+                <div id="userProjectsGrid" class="projects-mini-grid">
+                    <p class="loading-text">Loading your projects...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Form -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Upload Your Project</h1>
+            <p>Share your work with the Future Map community and showcase your skills</p>
+        </div>
+    </section>
+
+    <section class="account-section">
+        <div class="container">
+            <div class="account-form-wrapper card">
+                <div class="account-form-header">
+                    <div class="account-form-icon"></div>
+                    <h2>Project Details</h2>
+                    <p>Fill in the details below to upload your project</p>
+                </div>
+
+                <div id="uploadSuccessMsg" class="upload-msg upload-success hidden"></div>
+                <div id="uploadErrorMsg" class="upload-msg upload-error hidden"></div>
+
+                <form id="uploadProjectForm" class="account-form">
+                    <div class="form-group">
+                        <label for="projectUsername">Username <small>(auto-filled)</small></label>
+                        <input type="text" id="projectUsername" placeholder="Loading..." readonly class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="projectTitle">Project Title <span class="required">*</span></label>
+                        <input type="text" id="projectTitle" placeholder="Enter your project title" required class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="projectLink">Project Link <span class="required">*</span></label>
+                        <input type="url" id="projectLink" placeholder="https://github.com/your-project" required class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="projectDescription">Project Description <span class="required">*</span></label>
+                        <textarea id="projectDescription" rows="5" placeholder="Describe your project — what it does, technologies used, etc." required class="form-input"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="uploadBtn" class="btn btn-primary btn-large">Upload Project</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Future Map. All rights reserved. | Your pathway to success</p>
+            <p class="footer-credit">Designed by I BCA - AI & ML</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js" defer></script>
+    <script src="js/account.js" defer></script>
+    <script src="js/projects.js" defer></script>
+</body>
+</html>

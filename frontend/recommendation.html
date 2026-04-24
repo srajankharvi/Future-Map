@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career & Course Recommendation - Future Map</title>
+    <meta name="description" content="Get personalized career and course recommendations based on your skills and academic performance.">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+            <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span>Future Map</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="recommendation.html" class="active">Recommendation</a></li>
+                <li><a href="careers.html">Careers</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="yourpath.html">Your Path</a></li>
+                <li><a href="interview.html">Interview</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="account.html">Account</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <!-- Page Header -->
+    <section class="page-header yourpath-header">
+        <div class="container">
+            <h1>Career & Course Recommendation</h1>
+            <p>Discover your perfect career and educational path based on your skills and academic performance</p>
+        </div>
+        <div class="header-particles">
+            <div class="particle particle-1"></div>
+            <div class="particle particle-2"></div>
+            <div class="particle particle-3"></div>
+            <div class="particle particle-4"></div>
+            <div class="particle particle-5"></div>
+        </div>
+    </section>
+
+    <!-- Recommendation Section -->
+    <section class="recommendation recommendation-full">
+        <div class="container">
+            <div class="recommendation-intro">
+                <div class="intro-card">
+                    <div class="intro-icon"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div>
+                    <h3>Smart Matching System</h3>
+                    <p>Our algorithm analyzes your skills and marks to provide personalized recommendations.</p>
+                </div>
+                <div class="intro-card">
+                    <div class="intro-icon"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+                    <h3>Career Focused</h3>
+                    <p>Get recommendations for career paths that match your interests and abilities.</p>
+                </div>
+                <div class="intro-card">
+                    <div class="intro-icon"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+                    <h3>Course Guidelines</h3>
+                    <p>Find educational programs that lead to your desired career outcomes.</p>
+                </div>
+            </div>
+
+            <div class="recommendation-box recommendation-box-full">
+                <div class="form-section form-section-full">
+                    <h2>Your Profile Assessment</h2>
+                    <p class="form-description">Fill in your details to get personalized career and course recommendations</p>
+
+                    <div class="form-group">
+                        <label>Select Your Education Level <span class="required-asterisk">*</span></label>
+                        <select id="educationLevel" class="form-input">
+                            <option value="SSLC">SSLC</option>
+                            <option value="PUC">PUC</option>
+                            <option value="Diploma">Diploma</option>
+                            <option value="Degree">Degree</option>
+                            <option value="Masters">Masters</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label id="marksLabel">SSLC Academic Marks (0-100) <span class="required-asterisk">*</span></label>
+                        <div class="marks-input-wrapper">
+                            <input type="number" id="marks" min="0" max="100" placeholder="Enter your marks" value="75" class="form-input">
+                            <div class="marks-display">
+                                <span id="marksPercentage">75%</span>
+                            </div>
+                        </div>
+                        <small class="mark-description">Enter your overall or average academic percentage</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select Your Skills <span class="required-asterisk">*</span></label>
+                        <p class="skills-description">Choose the skills you're best at (select at least 1)</p>
+                        <div class="skills-grid skills-grid-large">
+                            <label class="skill-checkbox">
+                                <input type="checkbox" value="analytical" class="skill-input">
+                                <span class="skill-name" style="display:flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg> Analytical</span>
+                                <small>Data analysis & reasoning</small>
+                            </label>
+                            <label class="skill-checkbox">
+                                <input type="checkbox" value="creative" class="skill-input">
+                                <span class="skill-name" style="display:flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg> Creative</span>
+                                <small>Design & innovation</small>
+                            </label>
+                            <label class="skill-checkbox">
+                                <input type="checkbox" value="technical" class="skill-input">
+                                <span class="skill-name" style="display:flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg> Technical</span>
+                                <small>Technology & coding</small>
+                            </label>
+                            <label class="skill-checkbox">
+                                <input type="checkbox" value="communication" class="skill-input">
+                                <span class="skill-name" style="display:flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Communication</span>
+                                <small>Speaking & writing</small>
+                            </label>
+                            <label class="skill-checkbox">
+                                <input type="checkbox" value="leadership" class="skill-input">
+                                <span class="skill-name" style="display:flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Leadership</span>
+                                <small>Team management</small>
+                            </label>
+                            <label class="skill-checkbox">
+                                <input type="checkbox" value="problem-solving" class="skill-input">
+                                <span class="skill-name" style="display:flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 1-.837.276c-.47-.07-.802-.48-.968-.925a2.501 2.501 0 1 0-3.214 3.214c.446.166.855.497.925.968a.979.979 0 0 1-.276.837l-1.61 1.61a2.404 2.404 0 0 1-1.705.707 2.402 2.402 0 0 1-1.704-.706l-1.568-1.568a1.026 1.026 0 0 0-.877-.29c-.493.074-.84.504-1.02.968a2.5 2.5 0 1 1-3.237-3.237c.464-.18.894-.527.967-1.02a1.026 1.026 0 0 0-.289-.877l-1.568-1.568A2.402 2.402 0 0 1 1.998 12c0-.617.236-1.234.706-1.704L4.315 8.685a.98.98 0 0 1 .837-.276c.47.07.802.48.968.925a2.501 2.501 0 1 0 3.214-3.214c-.446-.166-.855-.497-.925-.968a.979.979 0 0 1 .276-.837l1.61-1.61a2.404 2.404 0 0 1 1.705-.707c.617 0 1.234.236 1.704.706l1.568 1.568c.23.23.556.338.877.29.493-.074.84-.504 1.02-.968a2.5 2.5 0 1 1 3.237 3.237c-.464.18-.894.527-.967 1.02z"/></svg> Problem-Solving</span>
+                                <small>Critical thinking</small>
+                            </label>
+                            <label class="skill-checkbox">
+                                <input type="checkbox" value="teamwork" class="skill-input">
+                                <span class="skill-name" style="display:flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17a4 4 0 0 0 8 0"/><path d="m15.5 6.5 1 1"/><path d="m11.5 10.5 1 1"/><path d="M18.259 3.505 16 5.765"/><path d="m5.765 16-2.26 2.259"/><path d="m18 13-1 1"/><path d="m2 2 20 20"/></svg> Teamwork</span>
+                                <small>Collaboration</small>
+                            </label>
+                            <label class="skill-checkbox">
+                                <input type="checkbox" value="design" class="skill-input">
+                                <span class="skill-name" style="display:flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg> Design</span>
+                                <small>Visual creation</small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn btn-primary btn-large" data-action="generate-recommendations">Get My Recommendations</button>
+                        <button class="btn btn-secondary" data-action="reset-form">Clear Form</button>
+                    </div>
+                </div>
+
+                <div class="results-section recommendation-results hidden" id="resultsSection">
+                    <div class="results-header">
+                        <h2>Your Personalized Recommendations</h2>
+                        <p class="results-subtitle">Based on your profile</p>
+                        <button class="btn btn-secondary btn-sm" data-action="modify-profile">Modify Profile</button>
+                    </div>
+
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" data-tab="careers-results">Matching Careers (Top 5)</button>
+                        <button class="tab-btn" data-tab="courses-results">Matching Courses (Top 5)</button>
+                    </div>
+
+                    <div id="careers-results" class="tab-content active">
+                        <div class="results-list" id="careerResults"></div>
+                    </div>
+
+                    <div id="courses-results" class="tab-content">
+                        <div class="results-list" id="courseResults"></div>
+                    </div>
+
+                    <div class="recommendation-footer">
+                        <p>Tip: Click on any career or course to learn more details, requirements, and career prospects.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Career Modal -->
+    <div id="careerModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="careerDetails"></div>
+        </div>
+    </div>
+
+    <!-- Course Modal -->
+    <div id="courseModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="courseDetails"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Future Map. All rights reserved. | Your pathway to success</p>
+            <p class="footer-credit">Designed by I BCA - AI & ML</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js" defer></script>
+    <script src="js/recommendation.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Preparation - Future Map</title>
+    <meta name="description" content="AI-powered interview question generator. Practice with realistic questions across 12 career categories.">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+            <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span>Future Map</span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="recommendation.html">Recommendation</a></li>
+                <li><a href="careers.html">Careers</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="yourpath.html">Your Path</a></li>
+                <li><a href="interview.html" class="active">Interview</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="account.html">Account</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <section class="page-header yourpath-header">
+        <div class="container">
+            <h1>Interview Preparation</h1>
+            <p>AI-powered interview questions tailored to your career path and skill level</p>
+        </div>
+        <div class="header-particles">
+            <div class="particle particle-1"></div>
+            <div class="particle particle-2"></div>
+            <div class="particle particle-3"></div>
+            <div class="particle particle-4"></div>
+            <div class="particle particle-5"></div>
+        </div>
+    </section>
+
+    <!-- ==================== AI GENERATOR SECTION ==================== -->
+    <section id="aiGenerator" class="ai-generator">
+        <div class="container">
+            <div class="ai-generator-header">
+                <div class="ai-badge">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+                    AI Question Generator
+                </div>
+                <h2>Generate Custom Interview Questions</h2>
+                <p class="section-subtitle">Select your category, difficulty level, and get AI-generated questions instantly</p>
+            </div>
+
+            <div class="ai-generator-panel">
+                <!-- Category Selection -->
+                <div class="ai-field-group">
+                    <label class="ai-field-label" for="aiCategory">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                        Career Category
+                    </label>
+                    <select id="aiCategory" class="ai-select">
+                        <option value="">-- Select a Category --</option>
+                        <option value="Aerospace & Aviation">Aerospace & Aviation</option>
+                        <option value="Agriculture">Agriculture</option>
+                        <option value="Automobile">Automobile</option>
+                        <option value="Banking/Finance">Banking / Finance</option>
+                        <option value="Beauty & Wellness">Beauty & Wellness</option>
+                        <option value="Computer">Computer & IT</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Architecture">Architecture</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Arts">Arts & Design</option>
+                        <option value="Business">Business & Management</option>
+                        <option value="Education">Education</option>
+                    </select>
+                </div>
+
+                <!-- Difficulty Level -->
+                <div class="ai-field-group">
+                    <label class="ai-field-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+                        Difficulty Level
+                    </label>
+                    <div class="difficulty-pills" id="difficultyPills">
+                        <button class="diff-pill active" data-level="beginner">
+                            <span class="pill-dot beginner-dot"></span>
+                            Beginner
+                        </button>
+                        <button class="diff-pill" data-level="intermediate">
+                            <span class="pill-dot intermediate-dot"></span>
+                            Intermediate
+                        </button>
+                        <button class="diff-pill" data-level="advanced">
+                            <span class="pill-dot advanced-dot"></span>
+                            Advanced
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Question Count -->
+                <div class="ai-field-group">
+                    <label class="ai-field-label" for="aiCount">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                        Number of Questions
+                        <span class="count-display" id="countDisplay">5</span>
+                    </label>
+                    <div class="count-slider-wrapper">
+                        <input type="range" id="aiCount" class="count-slider" min="1" max="50" value="5">
+                        <div class="slider-labels">
+                            <span>1</span>
+                            <span>25</span>
+                            <span>50</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generate Button -->
+                <button class="ai-generate-btn" id="generateBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                    Generate Questions
+                </button>
+            </div>
+
+            <!-- Error Message -->
+            <div class="ai-error hidden" id="aiError"></div>
+
+            <!-- Loading State -->
+            <div class="ai-loading hidden" id="aiLoading">
+                <div class="ai-loading-animation">
+                    <div class="ai-spinner"></div>
+                    <div class="ai-loading-text">
+                        <p class="ai-loading-title">Generating your questions...</p>
+                        <p class="ai-loading-subtitle">AI is crafting personalized interview questions</p>
+                    </div>
+                </div>
+                <div class="skeleton-cards">
+                    <div class="skeleton-card"><div class="skeleton-line long"></div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div>
+                    <div class="skeleton-card"><div class="skeleton-line long"></div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div>
+                    <div class="skeleton-card"><div class="skeleton-line long"></div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div>
+                </div>
+            </div>
+
+            <!-- Generated Results -->
+            <div class="ai-results hidden" id="aiResults">
+                <div class="ai-results-header">
+                    <div class="ai-results-info">
+                        <h3 id="aiResultsTitle">Generated Questions</h3>
+                        <span class="ai-results-meta" id="aiResultsMeta"></span>
+                    </div>
+                    <div class="ai-results-actions">
+                        <button class="ai-action-btn" id="expandAllBtn" title="Expand All Answers">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
+                            Expand All
+                        </button>
+                    </div>
+                </div>
+                <div class="ai-questions-list" id="aiQuestionsList"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Practice interview questions removed per request -->
+
+    <section class="interview-tips">
+        <div class="container">
+            <h2>Interview Tips & Best Practices</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon"></div>
+                    <h3>Before the Interview</h3>
+                    <ul>
+                        <li>Research the organization thoroughly</li>
+                        <li>Review job description carefully</li>
+                        <li>Practice common questions</li>
+                        <li>Prepare examples (STAR method)</li>
+                        <li>Plan your route and timing</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon"></div>
+                    <h3>During the Interview</h3>
+                    <ul>
+                        <li>Arrive 10-15 minutes early</li>
+                        <li>Maintain eye contact and smile</li>
+                        <li>Listen carefully before answering</li>
+                        <li>Give concise, relevant answers</li>
+                        <li>Ask thoughtful questions</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon"></div>
+                    <h3>After the Interview</h3>
+                    <ul>
+                        <li>Send a thank you email</li>
+                        <li>Reiterate interest in the role</li>
+                        <li>Mention key discussion points</li>
+                        <li>Keep them informed of availability</li>
+                        <li>Follow up if no response in 1-2 weeks</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Future Map. All rights reserved. | Your pathway to success</p>
+            <p class="footer-credit">Designed by I BCA - AI & ML</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js" defer></script>
+    <script src="js/interview.js" defer></script>
+</body>
+</html>
