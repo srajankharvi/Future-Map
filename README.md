@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Future Map - Career & Course Guidance System
 
 ## Overview
@@ -195,3 +196,6 @@ This indicates the project was created by the AI stream of I BCA program.
 - Industry trends and salary data
 - Mentor connection feature
 - Job postings integration
+=======
+# Future-Map
+>>>>>>> 23c71d1bab114f4719fb6eaca8df6dbfe1db4391
