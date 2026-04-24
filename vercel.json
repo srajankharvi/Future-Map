@@ -16,8 +16,11 @@
       "dest": "/frontend/js/$1"
     },
     {
-      "src": "/(index.html|login.html|recommendation.html|careers.html|courses.html|yourpath.html|interview.html|projects.html|account.html)",
-      "dest": "/frontend/$1"
+      "src": "/images/(.*)",
+      "dest": "/frontend/images/$1"
+    },
+    {
+      "handle": "filesystem"
     },
     {
       "src": "/api/(.*)",
