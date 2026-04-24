@@ -15,22 +15,20 @@ load_dotenv()
 # --- FLASK ENVIRONMENT ---
 FLASK_ENV = os.getenv('FLASK_ENV', 'development')
 
-# --- SECRET KEY (REQUIRED — auto-generated fallback to prevent crash) ---
+# --- SECRET KEY (REQUIRED) ---
+# NOTE: For Vercel/Serverless, you MUST set SECRET_KEY in environment variables.
+# If missing, we use a stable fallback to prevent the "Login Loop" issue.
 SECRET_KEY = os.getenv('SECRET_KEY')
-if not SECRET_KEY or len(SECRET_KEY) < 10:
-    SECRET_KEY = secrets_module.token_urlsafe(32)
+if not SECRET_KEY:
+    # Stable fallback to prevent login loops on Vercel restarts
+    SECRET_KEY = "futuremap-stable-fallback-secret-2026"
     if FLASK_ENV == 'production':
-        logging.critical(
-            "SECRET_KEY is missing or too short! Using auto-generated key. "
-            "Set SECRET_KEY in Vercel Environment Variables for session persistence."
-        )
-    else:
-        logging.warning("No valid SECRET_KEY found; using temporary development secret (not for production)")
+        logging.critical("!!! SECURITY WARNING: SECRET_KEY is not set in production. Using fallback. !!!")
 
 # --- SESSION SECURITY ---
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SECURE = FLASK_ENV == 'production'
-SESSION_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SECURE = (FLASK_ENV == 'production')
+SESSION_COOKIE_SAMESITE = 'Lax'  # More compatible than 'Strict' for some browser/redirect scenarios
 PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
 
 # --- INPUT VALIDATION ---
@@ -50,6 +48,6 @@ GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
 
 # --- LOGGING ---
 logging.basicConfig(
-    level=logging.ERROR,
+    level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s'
 )

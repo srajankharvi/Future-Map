@@ -8,12 +8,20 @@
   ],
   "routes": [
     {
-      "src": "/frontend/css/(.*)",
+      "src": "/css/(.*)",
       "dest": "/frontend/css/$1"
     },
     {
-      "src": "/frontend/js/(.*)",
+      "src": "/js/(.*)",
       "dest": "/frontend/js/$1"
+    },
+    {
+      "src": "/(index.html|login.html|recommendation.html|careers.html|courses.html|yourpath.html|interview.html|projects.html|account.html)",
+      "dest": "/frontend/$1"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "main.py"
     },
     {
       "src": "/(.*)",
