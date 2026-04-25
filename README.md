@@ -30,12 +30,11 @@ Future Map is a full-stack web application that helps students discover their id
 - Access curated resources, projects, and skill development guides
 - Save and manage multiple roadmaps
 
-### 🎤 AI Mock Interview
-- AI-powered interview question generator using Google Gemini
+### 🎤 AI Generated Interview Questions
+- AI-powered interview question generator using Google Gemini and Groq
 - Select a specific career category for targeted questions
 - Choose difficulty level — Easy, Medium, or Hard
-- Get detailed feedback and evaluation on your answers
-- Full interview session management with chat history
+- Get detailed Question and Answer
 
 ### 👤 User Authentication
 - Secure registration and login system

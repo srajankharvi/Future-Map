@@ -3283,9 +3283,23 @@ h2 {
     }
 
     .logo {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
+        position: static;
+        transform: none;
+        left: auto;
+    }
+
+    .user-section {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        order: 2;
+    }
+
+    .hamburger {
+        display: flex;
+        order: 3;
+        margin-left: 15px;
     }
 
     .nav-links {
@@ -3314,15 +3328,7 @@ h2 {
         border-radius: 10px;
     }
 
-    .hamburger {
-        display: flex;
-    }
 
-    .user-section {
-        order: -1;
-        flex-direction: row;
-        gap: 10px;
-    }
 
     .user-details {
         display: none;
@@ -3546,15 +3552,6 @@ h2 {
     .timeline-dot { left: -36px; width: 26px; height: 26px; font-size: 11px; }
 }
 
-/* NAVBAR */
-.navbar {
-    background: rgba(20, 30, 50, 0.8);
-    backdrop-filter: blur(10px);
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
 
 /* DROPDOWN BUTTON */
 .dropdown {
