@@ -314,7 +314,7 @@ function generatePath() {
                                 <span class="project-difficulty ${project.difficulty.toLowerCase()}">${project.difficulty}</span>
                             </div>
                             <h4>${project.title}</h4>
-                            <p>${project.description}</p>
+                            <p class="project-desc">${project.description}</p>
                             <div class="project-skills">
                                 ${project.skills.map(s => `<span class="project-skill-tag">${s}</span>`).join('')}
                             </div>

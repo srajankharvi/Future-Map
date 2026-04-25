@@ -89,9 +89,9 @@ async function loadUserProjects() {
         if (result.success && result.data && result.data.length > 0) {
             grid.innerHTML = result.data.map(project => `
                 <div class="project-display-card mini">
-                    <h4>${escapeHTML(project.title)}</h4>
-                    <p>${escapeHTML(project.description)}</p>
-                    <a href="${escapeHTML(project.link)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                    <h4 class="project-display-title">${escapeHTML(project.title)}</h4>
+                    <p class="project-display-desc">${escapeHTML(project.description)}</p>
+                    <a href="${escapeHTML(project.link)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm project-display-link">
                         View Project
                     </a>
                 </div>
