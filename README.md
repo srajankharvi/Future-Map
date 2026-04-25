@@ -160,7 +160,7 @@ Create a `.env` file in the project root and add the required configuration vari
 ```bash
 python main.py
 ```
-Open your browser and go to **http://127.0.0.1:5000**
+Open your browser and go to **https://future-map-xi.vercel.app**
 
 ---
 
