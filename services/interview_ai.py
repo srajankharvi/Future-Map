@@ -147,6 +147,7 @@ def conduct_mock_interview(category, level, message, history):
     try:
         logging.info(f"[Mock Interview] Attempting Gemini chat for {category}...")
         reply = gemini_client.chat(category, ai_level, message, history)
+        logging.info(f"[Mock Interview] Gemini chat returned a reply for {category}")
         if reply:
             return reply
     except Exception as e:
@@ -156,6 +157,7 @@ def conduct_mock_interview(category, level, message, history):
     try:
         logging.info(f"[Mock Interview] Trying Groq chat fallback...")
         reply = groq_client.chat(category, ai_level, message, history)
+        logging.info(f"[Mock Interview] Groq chat returned a reply for {category}")
         if reply:
             return reply
     except Exception as e:
