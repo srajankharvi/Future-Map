@@ -155,3 +155,50 @@ def generate(role, level, topic, count=5):
         logging.warning(f"[Gemini] API call failed: {type(e).__name__}: {e}")
 
     return None, None
+
+
+def chat(category, level, message, history):
+    """
+    Handle an interactive chat turn with Gemini.
+    """
+    gemini_key = os.getenv('GEMINI_API_KEY', '').strip()
+    if not GEMINI_AVAILABLE or not gemini_key or gemini_key == 'your-gemini-api-key-here':
+        return None
+
+    try:
+        # Construct a system-like prompt for the interview context
+        system_prompt = f"""You are a professional technical interviewer for a {category} role.
+Experience level of the candidate: {level}.
+Your goal is to conduct a realistic mock interview.
+- Be professional but encouraging.
+- Ask one question at a time.
+- Provide brief feedback if the candidate answers well or correct them if they are wrong.
+- After feedback, move to the next logical question.
+- Keep responses concise (2-4 sentences).
+- After 10 questions, wrap up the interview and provide a brief summary of their performance.
+- If the candidate says they are ready, start with the first technical question.
+"""
+        
+        genai.configure(api_key=gemini_key)
+        # Use system_instruction if available in this model version
+        model = genai.GenerativeModel(
+            'gemini-2.5-flash',
+            system_instruction=system_prompt
+        )
+
+        # Convert history format
+        contents = []
+        for h in history:
+            role = 'user' if h['role'] == 'user' else 'model'
+            contents.append({'role': role, 'parts': [h['content']]})
+        
+        # Start chat with existing history
+        chat_session = model.start_chat(history=contents)
+        
+        # Send current message
+        response = chat_session.send_message(message)
+        return response.text.strip()
+
+    except Exception as e:
+        logging.warning(f"[Gemini Chat] Error: {e}")
+        return None

@@ -173,3 +173,56 @@ def generate(role, level, topic, count=5):
         logging.warning(f"[Groq] API call failed: {type(e).__name__}: {e}")
 
     return None, None
+
+
+def chat(category, level, message, history):
+    """
+    Handle an interactive chat turn with Groq.
+    """
+    groq_key = os.getenv('GROQ_API_KEY', '').strip()
+    if not groq_key or groq_key == 'your-groq-api-key-here':
+        return None
+
+    try:
+        system_prompt = f"""You are a professional technical interviewer for a {category} role.
+Experience level of the candidate: {level}.
+Your goal is to conduct a realistic mock interview.
+- Be professional but encouraging.
+- Ask one question at a time.
+- Provide brief feedback and move to the next question.
+- Keep responses concise (2-4 sentences).
+- After 10 questions, wrap up the interview and provide a brief summary of their performance.
+"""
+        
+        # Construct messages for OpenAI-style API
+        messages = [{"role": "system", "content": system_prompt}]
+        for h in history:
+            role = "assistant" if h['role'] == 'ai' else "user"
+            messages.append({"role": role, "content": h['content']})
+        
+        messages.append({"role": "user", "content": message})
+
+        payload = {
+            "model": GROQ_MODEL,
+            "messages": messages,
+            "temperature": 0.7,
+            "max_tokens": 1024,
+            "stream": False
+        }
+
+        headers = {
+            "Authorization": f"Bearer {groq_key}",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.post(GROQ_API_URL, headers=headers, json=payload, timeout=GROQ_TIMEOUT)
+        
+        if response.status_code == 200:
+            data = response.json()
+            return data['choices'][0]['message']['content'].strip()
+        
+        return None
+
+    except Exception as e:
+        logging.warning(f"[Groq Chat] Error: {e}")
+        return None

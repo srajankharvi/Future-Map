@@ -106,3 +106,36 @@ def generate_questions(category, level, count, role=None, topic=None):
     logging.info(f"[Interview AI] Both APIs unavailable, using curated question bank")
     questions = _get_fallback_questions(category, level, count)
     return questions, 'bank'
+
+
+def conduct_mock_interview(category, level, message, history):
+    """
+    Conduct a chat-based mock interview.
+    
+    Fallback order:
+      1. Gemini Chat
+      2. Groq Chat
+      3. Basic fallback reply
+    """
+    # Map level names for AI prompts
+    level_map = {
+        'beginner': 'Fresher',
+        'intermediate': 'Mid-level (2-5 years)',
+        'advanced': 'Senior (5+ years)'
+    }
+    ai_level = level_map.get(level, level.title())
+
+    # ── Step 1: Try Gemini ──────────────────────────────
+    logging.info(f"[Mock Interview] Attempting Gemini chat for {category}...")
+    reply = gemini_client.chat(category, ai_level, message, history)
+    if reply:
+        return reply
+
+    # ── Step 2: Try Groq ────────────────────────────────
+    logging.info(f"[Mock Interview] Gemini unavailable, trying Groq chat...")
+    reply = groq_client.chat(category, ai_level, message, history)
+    if reply:
+        return reply
+
+    # ── Step 3: Basic Fallback ──────────────────────────
+    return "I apologize, but I'm having trouble connecting to my brain right now. Can you try saying that again?"
