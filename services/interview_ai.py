@@ -126,18 +126,22 @@ def conduct_mock_interview(category, level, message, history):
     ai_level = level_map.get(level, level.title())
 
     # ── Step 1: Try Gemini ──────────────────────────────
+    logging.info(f"[Mock Interview] Attempting Gemini chat for {category}...")
     reply = gemini_client.chat(category, ai_level, message, history)
     logging.info(f"[Mock Interview] Gemini chat reply for {category}: {reply}")
+
     if reply:
         return reply
 
     # ── Step 2: Try Groq ────────────────────────────────
-    
+    logging.info(f"[Mock Interview] Gemini unavailable, trying Groq chat...")
     reply = groq_client.chat(category, ai_level, message, history)
     logging.info(f"[Mock Interview] Groq chat reply for {category}: {reply}")
+
     if reply:
         return reply
 
     # ── Step 3: Basic Fallback ──────────────────────────
+    logging.info(f"[Mock Interview] Both APIs unavailable, using basic fallback for {category}")
+    
     return "I apologize, but I'm having trouble connecting to my brain right now. Can you try saying that again?"
-

@@ -226,4 +226,7 @@ Your goal is to conduct a realistic mock interview.
     except Exception as e:
         logging.warning(f"[Groq Chat] Error: {e}")
         return None
+<<<<<<< HEAD
 
+=======
+>>>>>>> d9c8710423119ad5e66ce537c9c9dfe7b356e955

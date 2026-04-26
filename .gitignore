@@ -1,30 +1,23 @@
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 .venv/
 venv/
 *.egg-info/
 dist/
 build/
 
-# Environment Variables (NEVER commit real credentials)
+# Environment Variables
 .env
 .env.local
 .env.*.local
-
-# Database Files
-*.db
-*.sqlite
-*.sqlite3
+.flaskenv
 
 # IDE & Editor
 .vscode/
 .idea/
-*.swp
-*.swo
 *~
-
-# OS
 .DS_Store
 Thumbs.db
 
@@ -35,7 +28,12 @@ logs/
 # Node.js
 node_modules/
 
-# Secrets (never commit)
+# Archives
+*.zip
+*.tar.gz
+
+# Secrets & Config
 secrets.json
 credentials.json
 config/secrets*.json
+instance/
