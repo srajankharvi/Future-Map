@@ -61,32 +61,33 @@ def generate_interview_questions():
         if mongo_db is not None:
             user_id = session.get('user_id')
             user = mongo_db.users.find_one({'_id': ObjectId(user_id)})
-            count = user.get('interview_gen_count', 0)
-            last_date_str = user.get('last_interview_gen_at')
-            current_date_str = datetime.now(timezone.utc).date().isoformat()
-            
-            # Reset if new day
-            if last_date_str != current_date_str:
-                count = 0
+            if user:
+                gen_count = user.get('interview_gen_count', 0)
+                last_date_str = user.get('last_interview_gen_at')
+                current_date_str = datetime.now(timezone.utc).date().isoformat()
+                
+                # Reset if new day
+                if last_date_str != current_date_str:
+                    gen_count = 0
+                    mongo_db.users.update_one(
+                        {'_id': ObjectId(user_id)},
+                        {'$set': {'interview_gen_count': 0, 'last_interview_gen_at': current_date_str}}
+                    )
+
+                if gen_count >= 5:
+                    return jsonify({
+                        'success': False, 
+                        'error': 'Daily question generation limit reached (5 per day). Please come back tomorrow!'
+                    }), 403
+                
+                # Increment
                 mongo_db.users.update_one(
                     {'_id': ObjectId(user_id)},
-                    {'$set': {'interview_gen_count': 0, 'last_interview_gen_at': current_date_str}}
+                    {
+                        '$inc': {'interview_gen_count': 1},
+                        '$set': {'last_interview_gen_at': current_date_str}
+                    }
                 )
-
-            if count >= 5:
-                return jsonify({
-                    'success': False, 
-                    'error': 'Daily question generation limit reached (5 per day). Please come back tomorrow!'
-                }), 403
-            
-            # Increment
-            mongo_db.users.update_one(
-                {'_id': ObjectId(user_id)},
-                {
-                    '$inc': {'interview_gen_count': 1},
-                    '$set': {'last_interview_gen_at': current_date_str}
-                }
-            )
 
         # Enhanced parameters (optional — used for more targeted AI prompts)
         role = data.get('role', '').strip() or None
@@ -157,39 +158,40 @@ def mock_interview_chat():
         # --- Check Daily Usage Limit ---
         if mongo_db is not None:
             user = mongo_db.users.find_one({'_id': ObjectId(user_id)})
-            count = user.get('mock_interview_count', 0)
-            last_date_str = user.get('last_mock_interview_at')
-            
-            # Get current date in ISO format (YYYY-MM-DD)
-            current_date_str = datetime.now(timezone.utc).date().isoformat()
-            
-            # Reset count if it's a new day
-            if last_date_str != current_date_str:
-                count = 0
-                mongo_db.users.update_one(
-                    {'_id': ObjectId(user_id)},
-                    {'$set': {'mock_interview_count': 0, 'last_mock_interview_at': current_date_str}}
-                )
-
-            # If starting a NEW interview (history only contains the AI greeting)
-            if len(history) <= 1:
-                if count >= 5:
-                    return jsonify({
-                        'success': False, 
-                        'error': 'Daily limit reached (5 per day). Please come back tomorrow!'
-                    }), 403
+            if user:
+                mock_count = user.get('mock_interview_count', 0)
+                last_date_str = user.get('last_mock_interview_at')
                 
-                # Increment count and update timestamp
-                mongo_db.users.update_one(
-                    {'_id': ObjectId(user_id)},
-                    {
-                        '$inc': {'mock_interview_count': 1},
-                        '$set': {'last_mock_interview_at': current_date_str}
-                    }
-                )
-            # For ongoing interviews, just check if they are already over the limit 
-            elif count > 5:
-                 return jsonify({'success': False, 'error': 'Daily limit reached.'}), 403
+                # Get current date in ISO format (YYYY-MM-DD)
+                current_date_str = datetime.now(timezone.utc).date().isoformat()
+                
+                # Reset count if it's a new day
+                if last_date_str != current_date_str:
+                    mock_count = 0
+                    mongo_db.users.update_one(
+                        {'_id': ObjectId(user_id)},
+                        {'$set': {'mock_interview_count': 0, 'last_mock_interview_at': current_date_str}}
+                    )
+
+                # If starting a NEW interview (history only contains the AI greeting)
+                if len(history) <= 1:
+                    if mock_count >= 5:
+                        return jsonify({
+                            'success': False, 
+                            'error': 'Daily limit reached (5 per day). Please come back tomorrow!'
+                        }), 403
+                    
+                    # Increment count and update timestamp
+                    mongo_db.users.update_one(
+                        {'_id': ObjectId(user_id)},
+                        {
+                            '$inc': {'mock_interview_count': 1},
+                            '$set': {'last_mock_interview_at': current_date_str}
+                        }
+                    )
+                # For ongoing interviews, just check if they are already over the limit 
+                elif mock_count > 5:
+                     return jsonify({'success': False, 'error': 'Daily limit reached.'}), 403
 
 
         from services.interview_ai import conduct_mock_interview
