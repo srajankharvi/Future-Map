@@ -172,9 +172,6 @@ async function sendMockMessage() {
             })
         });
 
-        
-        hideElement(document.getElementById('chatLoading'));
-        
         if (response.success) {
             addChatMessage('ai', response.reply);
             if (response.isQuestion) {
@@ -187,12 +184,15 @@ async function sendMockMessage() {
                 addChatMessage('ai', "That concludes our mock interview session! You've successfully practiced " + MAX_MOCK_QUESTIONS + " questions. You can reset to try a different category.");
             }
         } else {
-            addChatMessage('ai', "I'm sorry, I encountered an error. Please try again or reset the interview.");
+            addChatMessage('ai', "I'm sorry, " + (response.error || "I encountered an error. Please try again."));
         }
     } catch (err) {
-        hideElement(document.getElementById('chatLoading'));
         addChatMessage('ai', "Network error. Please check your connection.");
         console.error('Mock interview error:', err);
+    } finally {
+        hideElement(document.getElementById('chatLoading'));
+        document.getElementById('sendMessageBtn').disabled = false;
+        input.focus();
     }
 }
 
