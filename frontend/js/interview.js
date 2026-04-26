@@ -12,7 +12,212 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Always initialize the AI generator UI
     setupAIGenerator();
+    setupMockInterview();
+    updateResetTimer();
+    setInterval(updateResetTimer, 60000); // Update every minute
 });
+
+// Prevent accidental refresh during interview
+window.addEventListener('beforeunload', (e) => {
+    if (typeof isMockActive !== 'undefined' && isMockActive) {
+        e.preventDefault();
+        e.returnValue = 'Interview in progress. Are you sure you want to leave?';
+    }
+});
+
+function updateResetTimer() {
+    const timerEls = [document.getElementById('resetTimer'), document.getElementById('resetTimerGen')];
+    
+    const now = new Date();
+    const nextReset = new Date();
+    nextReset.setUTCHours(24, 0, 0, 0); // Next UTC midnight
+    
+    const diff = nextReset - now;
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    timerEls.forEach(el => {
+        if (el) el.textContent = `(Resets in ${hours}h ${minutes}m)`;
+    });
+}
+
+
+
+
+
+// ==================== MOCK INTERVIEW ====================
+
+let mockMessages = [];
+let mockQuestionCount = 0;
+const MAX_MOCK_QUESTIONS = 10;
+let isMockActive = false;
+
+function setupMockInterview() {
+    const startBtn = document.getElementById('startMockBtn');
+    const resetBtn = document.getElementById('resetMockBtn');
+    const sendBtn = document.getElementById('sendMessageBtn');
+    const chatInput = document.getElementById('chatInput');
+    const mockDifficultyPills = document.querySelectorAll('#mockDifficultyPills .diff-pill');
+
+    // Difficulty selection
+    mockDifficultyPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            mockDifficultyPills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+        });
+    });
+
+    if (startBtn) {
+        startBtn.addEventListener('click', startMockInterview);
+    }
+
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetMockInterview);
+    }
+
+    if (sendBtn) {
+        sendBtn.addEventListener('click', sendMockMessage);
+    }
+
+    if (chatInput) {
+        chatInput.addEventListener('input', () => {
+            sendBtn.disabled = !chatInput.value.trim() || !isMockActive;
+            
+            // Auto-resize textarea
+            chatInput.style.height = 'auto';
+            chatInput.style.height = (chatInput.scrollHeight) + 'px';
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey && !sendBtn.disabled) {
+                e.preventDefault();
+                sendMockMessage();
+            }
+        });
+    }
+}
+
+async function startMockInterview() {
+    const category = document.getElementById('mockCategory').value;
+    const level = document.querySelector('#mockDifficultyPills .diff-pill.active').getAttribute('data-level');
+    
+    if (!category) {
+        alert('Please select a category first');
+        return;
+    }
+
+    // UI transitions
+    document.getElementById('mockSetup').classList.add('hidden');
+    document.getElementById('mockChatbox').classList.remove('hidden');
+    document.querySelector('.mock-interview-container').classList.add('chat-active');
+    
+    document.getElementById('chatTitle').textContent = `Interview: ${category}`;
+    document.getElementById('chatQCount').textContent = `Starting...`;
+    
+    isMockActive = true;
+    mockQuestionCount = 0;
+    mockMessages = [];
+    
+    // Initial AI greeting
+    addChatMessage('ai', "Hi! I'm your AI interviewer today. We'll be conducting a mock interview for a " + category + " position at a " + level + " level. Are you ready to begin?");
+    updateChatQCount();
+}
+
+function resetMockInterview() {
+    if (confirm('Are you sure you want to reset the interview? Progress will be lost.')) {
+        hideElement(document.getElementById('mockChatbox'));
+        showElement(document.getElementById('mockSetup'));
+        document.querySelector('.mock-interview-container').classList.remove('chat-active');
+        
+        document.getElementById('chatMessages').innerHTML = '';
+
+        document.getElementById('chatInput').value = '';
+        isMockActive = false;
+        mockMessages = [];
+        mockQuestionCount = 0;
+    }
+}
+
+async function sendMockMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    
+    if (!text || !isMockActive) return;
+    
+    // Capture current history BEFORE adding new message
+    const currentHistory = [...mockMessages];
+    
+    // Add user message to UI and history
+    addChatMessage('user', text);
+    
+    input.value = '';
+    input.style.height = 'auto';
+    document.getElementById('sendMessageBtn').disabled = true;
+    
+    // Show loading
+    showElement(document.getElementById('chatLoading'));
+    
+    try {
+        const category = document.getElementById('mockCategory').value;
+        const level = document.querySelector('#mockDifficultyPills .diff-pill.active').getAttribute('data-level');
+        
+        const response = await apiFetch(`${API_BASE}/mock-interview`, {
+            method: 'POST',
+            body: JSON.stringify({
+                category,
+                level,
+                message: text,
+                history: currentHistory,
+                question_count: mockQuestionCount
+            })
+        });
+
+        
+        hideElement(document.getElementById('chatLoading'));
+        
+        if (response.success) {
+            addChatMessage('ai', response.reply);
+            if (response.isQuestion) {
+                mockQuestionCount++;
+                updateChatQCount();
+            }
+            
+            if (mockQuestionCount >= MAX_MOCK_QUESTIONS) {
+                isMockActive = false;
+                addChatMessage('ai', "That concludes our mock interview session! You've successfully practiced " + MAX_MOCK_QUESTIONS + " questions. You can reset to try a different category.");
+            }
+        } else {
+            addChatMessage('ai', "I'm sorry, I encountered an error. Please try again or reset the interview.");
+        }
+    } catch (err) {
+        hideElement(document.getElementById('chatLoading'));
+        addChatMessage('ai', "Network error. Please check your connection.");
+        console.error('Mock interview error:', err);
+    }
+}
+
+function addChatMessage(role, text) {
+    const container = document.getElementById('chatMessages');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message message-${role}`;
+    msgDiv.textContent = text;
+    
+    container.appendChild(msgDiv);
+    
+    // Add to history for API
+    mockMessages.push({ role, content: text });
+    
+    // Scroll to bottom
+    container.scrollTop = container.scrollHeight;
+}
+
+function updateChatQCount() {
+    const countEl = document.getElementById('chatQCount');
+    if (countEl) {
+        countEl.textContent = `Question ${mockQuestionCount}/${MAX_MOCK_QUESTIONS}`;
+    }
+}
+
 
 // Display interview categories when global data is loaded
 document.addEventListener('app:data-loaded', () => {
