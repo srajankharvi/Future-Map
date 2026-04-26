@@ -166,16 +166,6 @@ def generate(role, level, topic, count=5):
         logging.exception("Gemini total failure")
         return None, None
 
-    except json.JSONDecodeError as e:
-        logging.warning(f"[Gemini] JSON parse error: {e}")
-    except Exception as e:
-        if google_exceptions and isinstance(e, google_exceptions.ResourceExhausted):
-            logging.warning(f"[Gemini] Quota exceeded or rate limited (ResourceExhausted). Falling back...")
-        else:
-            logging.warning(f"[Gemini] API call failed: {type(e).__name__}: {e}")
-
-    return None, None
-
 
 def chat(category, level, message, history):
     """
@@ -199,39 +189,15 @@ Your goal is to conduct a realistic mock interview.
 - If the candidate says they are ready, start with the first technical question.
 """
         
-<<<<<<< HEAD
-        genai.configure(api_key=gemini_key)
-        # Use system_instruction if available in this model version
-        model = genai.GenerativeModel(
-            'gemini-2.5-flash',
-            system_instruction=system_prompt
-        )
-
-=======
         # List of models to try in order of preference
         models_to_try = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash']
         
->>>>>>> d9c8710423119ad5e66ce537c9c9dfe7b356e955
         # Convert history format
         contents = []
         for h in history:
             role = 'user' if h['role'] == 'user' else 'model'
             contents.append({'role': role, 'parts': [h['content']]})
         
-<<<<<<< HEAD
-        # Start chat with existing history
-        chat_session = model.start_chat(history=contents)
-        
-        # Send current message
-        response = chat_session.send_message(message)
-        return response.text.strip()
-
-    except Exception as e:
-        logging.warning(f"[Gemini Chat] Error: {e}")
-        return None
-
-
-=======
         # Gemini requires history to start with a 'user' message.
         while contents and contents[0]['role'] == 'model':
             contents.pop(0)
@@ -268,4 +234,3 @@ Your goal is to conduct a realistic mock interview.
     except Exception as e:
         logging.exception("Gemini chat total failure")
         return None
->>>>>>> d9c8710423119ad5e66ce537c9c9dfe7b356e955

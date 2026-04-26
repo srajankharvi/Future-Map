@@ -42,15 +42,13 @@ function updateResetTimer() {
 }
 
 
-
-
-
 // ==================== MOCK INTERVIEW ====================
 
 let mockMessages = [];
 let mockQuestionCount = 0;
 const MAX_MOCK_QUESTIONS = 10;
 let isMockActive = false;
+let mockSelectedLevel = 'beginner';
 
 function setupMockInterview() {
     const startBtn = document.getElementById('startMockBtn');
@@ -59,11 +57,12 @@ function setupMockInterview() {
     const chatInput = document.getElementById('chatInput');
     const mockDifficultyPills = document.querySelectorAll('#mockDifficultyPills .diff-pill');
 
-    // Difficulty selection
+    // Difficulty selection — only affects mock interview's own level
     mockDifficultyPills.forEach(pill => {
         pill.addEventListener('click', () => {
             mockDifficultyPills.forEach(p => p.classList.remove('active'));
             pill.classList.add('active');
+            mockSelectedLevel = pill.getAttribute('data-level');
         });
     });
 
@@ -99,7 +98,7 @@ function setupMockInterview() {
 
 async function startMockInterview() {
     const category = document.getElementById('mockCategory').value;
-    const level = document.querySelector('#mockDifficultyPills .diff-pill.active').getAttribute('data-level');
+    const level = mockSelectedLevel;
     
     if (!category) {
         alert('Please select a category first');
@@ -118,6 +117,14 @@ async function startMockInterview() {
     mockQuestionCount = 0;
     mockMessages = [];
     
+    // Enable input area
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendMessageBtn');
+    if (chatInput) {
+        chatInput.disabled = false;
+        chatInput.focus();
+    }
+    
     // Initial AI greeting
     addChatMessage('ai', "Hi! I'm your AI interviewer today. We'll be conducting a mock interview for a " + category + " position at a " + level + " level. Are you ready to begin?");
     updateChatQCount();
@@ -131,7 +138,15 @@ function resetMockInterview() {
         
         document.getElementById('chatMessages').innerHTML = '';
 
-        document.getElementById('chatInput').value = '';
+        const chatInput = document.getElementById('chatInput');
+        if (chatInput) {
+            chatInput.value = '';
+            chatInput.disabled = false;
+        }
+        
+        const sendBtn = document.getElementById('sendMessageBtn');
+        if (sendBtn) sendBtn.disabled = false;
+        
         isMockActive = false;
         mockMessages = [];
         mockQuestionCount = 0;
@@ -140,6 +155,7 @@ function resetMockInterview() {
 
 async function sendMockMessage() {
     const input = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendMessageBtn');
     const text = input.value.trim();
     
     if (!text || !isMockActive) return;
@@ -152,14 +168,15 @@ async function sendMockMessage() {
     
     input.value = '';
     input.style.height = 'auto';
-    document.getElementById('sendMessageBtn').disabled = true;
+    sendBtn.disabled = true;
+    input.disabled = true;
     
     // Show loading
     showElement(document.getElementById('chatLoading'));
     
     try {
         const category = document.getElementById('mockCategory').value;
-        const level = document.querySelector('#mockDifficultyPills .diff-pill.active').getAttribute('data-level');
+        const level = mockSelectedLevel;
         
         const response = await apiFetch(`${API_BASE}/mock-interview`, {
             method: 'POST',
@@ -172,12 +189,6 @@ async function sendMockMessage() {
             })
         });
 
-<<<<<<< HEAD
-        
-        hideElement(document.getElementById('chatLoading'));
-        
-=======
->>>>>>> d9c8710423119ad5e66ce537c9c9dfe7b356e955
         if (response.success) {
             addChatMessage('ai', response.reply);
             if (response.isQuestion) {
@@ -188,16 +199,12 @@ async function sendMockMessage() {
             if (mockQuestionCount >= MAX_MOCK_QUESTIONS) {
                 isMockActive = false;
                 addChatMessage('ai', "That concludes our mock interview session! You've successfully practiced " + MAX_MOCK_QUESTIONS + " questions. You can reset to try a different category.");
+                // Keep input disabled after interview ends
+                input.disabled = true;
+                sendBtn.disabled = true;
+                return;
             }
         } else {
-<<<<<<< HEAD
-            addChatMessage('ai', "I'm sorry, I encountered an error. Please try again or reset the interview.");
-        }
-    } catch (err) {
-        hideElement(document.getElementById('chatLoading'));
-        addChatMessage('ai', "Network error. Please check your connection.");
-        console.error('Mock interview error:', err);
-=======
             addChatMessage('ai', "I'm sorry, " + (response.error || "I encountered an error. Please try again."));
         }
     } catch (err) {
@@ -205,9 +212,13 @@ async function sendMockMessage() {
         console.error('Mock interview error:', err);
     } finally {
         hideElement(document.getElementById('chatLoading'));
-        document.getElementById('sendMessageBtn').disabled = false;
-        input.focus();
->>>>>>> d9c8710423119ad5e66ce537c9c9dfe7b356e955
+        
+        // Re-enable inputs only if interview is still active
+        if (isMockActive) {
+            input.disabled = false;
+            sendBtn.disabled = false;
+            input.focus();
+        }
     }
 }
 
@@ -249,15 +260,18 @@ let generatedQuestions = [];
 let allExpanded = false;
 
 function setupAIGenerator() {
-    // Difficulty pills
-    const pills = document.querySelectorAll('.diff-pill');
-    pills.forEach(pill => {
-        pill.addEventListener('click', () => {
-            pills.forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-            selectedLevel = pill.getAttribute('data-level');
+    // Difficulty pills — only target the AI Generator section's pills
+    const genPillsContainer = document.getElementById('difficultyPills');
+    if (genPillsContainer) {
+        const pills = genPillsContainer.querySelectorAll('.diff-pill');
+        pills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                pills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                selectedLevel = pill.getAttribute('data-level');
+            });
         });
-    });
+    }
 
     // Count slider
     const slider = document.getElementById('aiCount');
@@ -279,8 +293,6 @@ function setupAIGenerator() {
     if (generateBtn) {
         generateBtn.addEventListener('click', generateAIQuestions);
     }
-
-
 
     // Expand All button
     const expandBtn = document.getElementById('expandAllBtn');
@@ -453,9 +465,6 @@ function showAIError(message) {
         }, 5000);
     }
 }
-
-
-
 
 
 function toggleExpandAll() {

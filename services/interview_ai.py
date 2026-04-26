@@ -91,20 +91,38 @@ def generate_questions(category, level, count, role=None, topic=None):
     ai_level = level_map.get(level, level.title())
 
     # ── Step 1: Try Gemini (primary) ──────────────────────────────
-    logging.info(f"[Interview AI] Attempting Gemini for {count} questions...")
-    questions, source = gemini_client.generate(ai_role, ai_level, ai_topic, count)
-    if questions:
-        return questions, source
+    try:
+        logging.info(f"[Interview AI] Attempting Gemini for {count} questions...")
+        questions, source = gemini_client.generate(ai_role, ai_level, ai_topic, count)
+        logging.info(f"[Interview AI] Gemini returned {len(questions) if questions else 0} questions")
+        if questions:
+            return questions, source
+    except Exception as e:
+        logging.warning(f"[Interview AI] Gemini client crashed: {type(e).__name__}: {e}")
 
     # ── Step 2: Try Groq (secondary fallback) ─────────────────────
-    logging.info(f"[Interview AI] Gemini unavailable, trying Groq...")
-    questions, source = groq_client.generate(ai_role, ai_level, ai_topic, count)
-    if questions:
-        return questions, source
+    try:
+        logging.info(f"[Interview AI] Trying Groq fallback...")
+        questions, source = groq_client.generate(ai_role, ai_level, ai_topic, count)
+        logging.info(f"[Interview AI] Groq returned {len(questions) if questions else 0} questions")
+        if questions:
+            return questions, source
+    except Exception as e:
+        logging.warning(f"[Interview AI] Groq client crashed: {type(e).__name__}: {e}")
 
     # ── Step 3: Static question bank (final fallback) ─────────────
     logging.info(f"[Interview AI] Both APIs unavailable, using curated question bank")
     questions = _get_fallback_questions(category, level, count)
+
+    # If even the bank returned nothing, provide a minimal fallback
+    if not questions:
+        logging.warning(f"[Interview AI] Fallback bank empty for category={category}, level={level}")
+        questions = [{
+            'question': f'Tell me about your experience with {category}.',
+            'answer': 'This is a general question to assess overall familiarity with the field. A good answer covers relevant experience, key skills, and notable projects or achievements.',
+            'type': 'conceptual'
+        }]
+
     return questions, 'bank'
 
 
@@ -126,20 +144,23 @@ def conduct_mock_interview(category, level, message, history):
     ai_level = level_map.get(level, level.title())
 
     # ── Step 1: Try Gemini ──────────────────────────────
-    reply = gemini_client.chat(category, ai_level, message, history)
-    logging.info(f"[Mock Interview] Gemini chat reply for {category}: {reply}")
-
-    if reply:
-        return reply
+    try:
+        logging.info(f"[Mock Interview] Attempting Gemini chat for {category}...")
+        reply = gemini_client.chat(category, ai_level, message, history)
+        if reply:
+            return reply
+    except Exception as e:
+        logging.warning(f"[Mock Interview] Gemini chat crashed: {type(e).__name__}: {e}")
 
     # ── Step 2: Try Groq ────────────────────────────────
-    reply = groq_client.chat(category, ai_level, message, history)
-    logging.info(f"[Mock Interview] Groq chat reply for {category}: {reply}")
-
-    if reply:
-        return reply
+    try:
+        logging.info(f"[Mock Interview] Trying Groq chat fallback...")
+        reply = groq_client.chat(category, ai_level, message, history)
+        if reply:
+            return reply
+    except Exception as e:
+        logging.warning(f"[Mock Interview] Groq chat crashed: {type(e).__name__}: {e}")
 
     # ── Step 3: Basic Fallback ──────────────────────────
-    logging.info(f"[Mock Interview] Both APIs unavailable, using basic fallback for {category}")
-    
-    return "I apologize, but I'm having trouble connecting to my brain right now. Can you try saying that again?"
+    logging.warning("[Mock Interview] All AI providers failed, using static fallback")
+    return "I apologize, but I'm having trouble connecting right now. Please try again in a moment, or reset the interview to start fresh."
