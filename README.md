@@ -30,11 +30,13 @@ Future Map is a full-stack web application that helps students discover their id
 - Access curated resources, projects, and skill development guides
 - Save and manage multiple roadmaps
 
-### 🎤 AI Generated Interview Questions
-- AI-powered interview question generator using Google Gemini and Groq
-- Select a specific career category for targeted questions
-- Choose difficulty level — Easy, Medium, or Hard
-- Get detailed Question and Answer
+### 🎤 AI Mock Interview Chat
+- Interactive real-time interview experience with a persistent AI interviewer
+- Support for 100+ career categories and 3 experience levels (Fresher, Mid, Senior)
+- **Primary AI (Gemini 1.5 Flash)**: High-quality, context-aware technical interviewing
+- **Fallback AI (Groq LLaMA 3.3)**: Ultra-fast secondary fallback if Gemini limits are reached
+- Adaptive feedback based on candidate responses and 10-question structured flow
+- Static fallback question bank for offline/emergency use
 
 ### 👤 User Authentication
 - Secure registration and login system
@@ -56,7 +58,7 @@ Future Map is a full-stack web application that helps students discover their id
 | **Frontend** | HTML5, CSS3, Vanilla JavaScript |
 | **Backend** | Python, Flask 2.3 |
 | **Databases** | MongoDB Atlas |
-| **AI** | Google Gemini API (interview generation) |
+| **AI** | Google Gemini (Primary) & Groq LLaMA (Fallback) |
 | **Deployment** | Vercel (serverless Python) |
 | **Security** | Werkzeug password hashing, CSRF protection, XSS escaping, rate limiting |
 

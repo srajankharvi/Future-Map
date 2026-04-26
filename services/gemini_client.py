@@ -17,6 +17,11 @@ except ImportError:
     GEMINI_AVAILABLE = False
     logging.warning("google-generativeai not installed — Gemini client disabled")
 
+try:
+    from google.api_core import exceptions as google_exceptions
+except ImportError:
+    google_exceptions = None
+
 
 def _build_prompt(role, level, topic, count):
     """
@@ -152,7 +157,10 @@ def generate(role, level, topic, count=5):
     except json.JSONDecodeError as e:
         logging.warning(f"[Gemini] JSON parse error: {e}")
     except Exception as e:
-        logging.warning(f"[Gemini] API call failed: {type(e).__name__}: {e}")
+        if google_exceptions and isinstance(e, google_exceptions.ResourceExhausted):
+            logging.warning(f"[Gemini] Quota exceeded or rate limited (ResourceExhausted). Falling back...")
+        else:
+            logging.warning(f"[Gemini] API call failed: {type(e).__name__}: {e}")
 
     return None, None
 
@@ -192,6 +200,12 @@ Your goal is to conduct a realistic mock interview.
             role = 'user' if h['role'] == 'user' else 'model'
             contents.append({'role': role, 'parts': [h['content']]})
         
+        # Gemini requires history to start with a 'user' message.
+        # If the first message is from the model (like our initial greeting),
+        # we drop leading model messages to comply with the API.
+        while contents and contents[0]['role'] == 'model':
+            contents.pop(0)
+        
         # Start chat with existing history
         chat_session = model.start_chat(history=contents)
         
@@ -200,5 +214,8 @@ Your goal is to conduct a realistic mock interview.
         return response.text.strip()
 
     except Exception as e:
-        logging.warning(f"[Gemini Chat] Error: {e}")
+        if google_exceptions and isinstance(e, google_exceptions.ResourceExhausted):
+            logging.warning(f"[Gemini Chat] Quota exceeded or rate limited. Falling back to secondary AI...")
+        else:
+            logging.warning(f"[Gemini Chat] Error: {e}")
         return None

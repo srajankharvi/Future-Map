@@ -356,8 +356,9 @@ function renderGeneratedQuestions(questions, category, source) {
     const levelLabel = selectedLevel.charAt(0).toUpperCase() + selectedLevel.slice(1);
     if (titleEl) titleEl.textContent = `${escapeHTML(category)} Questions`;
     if (metaEl) {
-        const sourceLabel = source === 'ai' ? 'AI Generated' : 'Question Bank';
-        const sourceIcon = source === 'ai'
+        const isAI = source === 'gemini' || source === 'groq' || source === 'ai';
+        const sourceLabel = isAI ? 'AI Generated' : 'Question Bank';
+        const sourceIcon = isAI
             ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>'
             : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
         metaEl.innerHTML = `${sourceIcon} ${sourceLabel} &middot; ${levelLabel} &middot; ${questions.length} questions`;
