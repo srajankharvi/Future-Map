@@ -3883,7 +3883,6 @@ body.auth-ready {
     padding: 80px 0;
     background: #ffffff;
 }
-<<<<<<< HEAD
 
 .mock-interview-container {
     max-width: 900px;
@@ -4109,10 +4108,6 @@ body.auth-ready {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
-
-=======
->>>>>>> d9c8710423119ad5e66ce537c9c9dfe7b356e955
 
 .mock-interview-container {
     max-width: 900px;
