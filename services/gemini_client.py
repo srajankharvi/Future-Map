@@ -122,36 +122,48 @@ def generate(role, level, topic, count=5):
         logging.info("Gemini API key not configured, skipping")
         return None, None
 
+    # List of models to try in order of preference
+    models_to_try = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash']
+    
     try:
-        # Configure API key and create model
         genai.configure(api_key=gemini_key)
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        
+        last_error = None
+        for model_name in models_to_try:
+            try:
+                logging.info(f"[Gemini] Attempting generation with {model_name}...")
+                model = genai.GenerativeModel(model_name)
+                prompt = _build_prompt(role, level, topic, count)
+                
+                response = model.generate_content(
+                    prompt,
+                    generation_config=genai.types.GenerationConfig(
+                        temperature=0.7,
+                        max_output_tokens=4096
+                    )
+                )
+                
+                if not response or not response.text:
+                    continue
 
-        # Build optimized prompt
-        prompt = _build_prompt(role, level, topic, count)
-
-        logging.info(f"[Gemini] Generating {count} questions: role={role}, level={level}, topic={topic}")
-
-        # Call the API with timeout settings
-        response = model.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(
-                temperature=0.7,       # Balanced creativity vs consistency
-                max_output_tokens=4096  # Enough for ~50 questions
-            )
-        )
-
-        # Parse and clean response
-        raw_text = _clean_response(response.text)
-        questions = json.loads(raw_text)
-
-        # Validate structure
-        validated = _validate_questions(questions, count)
-        if validated:
-            logging.info(f"[Gemini] Successfully generated {len(validated)} questions")
-            return validated, 'gemini'
-
-        logging.warning("[Gemini] Response parsed but validation failed — no valid questions found")
+                raw_text = _clean_response(response.text)
+                questions = json.loads(raw_text)
+                
+                validated = _validate_questions(questions, count)
+                if validated:
+                    logging.info(f"[Gemini] Successfully generated with {model_name}")
+                    return validated, 'gemini'
+            
+            except Exception as e:
+                last_error = e
+                logging.warning(f"[Gemini] Model {model_name} failed: {e}")
+                continue
+        
+        if last_error:
+            logging.error(f"[Gemini] All models failed. Last error: {last_error}")
+        return None, None
+    except Exception as e:
+        logging.exception("Gemini total failure")
         return None, None
 
     except json.JSONDecodeError as e:
@@ -187,13 +199,9 @@ Your goal is to conduct a realistic mock interview.
 - If the candidate says they are ready, start with the first technical question.
 """
         
-        genai.configure(api_key=gemini_key)
-        # Use system_instruction if available in this model version
-        model = genai.GenerativeModel(
-            'gemini-2.5-flash',
-            system_instruction=system_prompt
-        )
-
+        # List of models to try in order of preference
+        models_to_try = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash']
+        
         # Convert history format
         contents = []
         for h in history:
@@ -201,21 +209,38 @@ Your goal is to conduct a realistic mock interview.
             contents.append({'role': role, 'parts': [h['content']]})
         
         # Gemini requires history to start with a 'user' message.
-        # If the first message is from the model (like our initial greeting),
-        # we drop leading model messages to comply with the API.
         while contents and contents[0]['role'] == 'model':
             contents.pop(0)
+
+        genai.configure(api_key=gemini_key)
         
-        # Start chat with existing history
-        chat_session = model.start_chat(history=contents)
+        last_error = None
+        for model_name in models_to_try:
+            try:
+                logging.info(f"[Gemini Chat] Attempting with {model_name}...")
+                model = genai.GenerativeModel(
+                    model_name,
+                    system_instruction=system_prompt
+                )
+                
+                chat_session = model.start_chat(history=contents)
+                response = chat_session.send_message(message)
+                
+                if response and response.text:
+                    return response.text.strip()
+            
+            except Exception as e:
+                last_error = e
+                logging.warning(f"[Gemini Chat] Model {model_name} failed: {e}")
+                continue
         
-        # Send current message
-        response = chat_session.send_message(message)
-        return response.text.strip()
+        if last_error:
+            if google_exceptions and isinstance(last_error, google_exceptions.ResourceExhausted):
+                logging.warning(f"[Gemini Chat] Quota exceeded. Falling back to Groq...")
+            else:
+                logging.error(f"[Gemini Chat] All models failed. Last error: {last_error}")
+        return None
 
     except Exception as e:
-        if google_exceptions and isinstance(e, google_exceptions.ResourceExhausted):
-            logging.warning(f"[Gemini Chat] Quota exceeded or rate limited. Falling back to secondary AI...")
-        else:
-            logging.warning(f"[Gemini Chat] Error: {e}")
+        logging.exception("Gemini chat total failure")
         return None
