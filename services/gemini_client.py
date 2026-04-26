@@ -120,7 +120,7 @@ def generate(role, level, topic, count=5):
     try:
         # Configure API key and create model
         genai.configure(api_key=gemini_key)
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash')
 
         # Build optimized prompt
         prompt = _build_prompt(role, level, topic, count)
@@ -182,7 +182,7 @@ Your goal is to conduct a realistic mock interview.
         genai.configure(api_key=gemini_key)
         # Use system_instruction if available in this model version
         model = genai.GenerativeModel(
-            'gemini-2.5-flash',
+            'gemini-1.5-flash',
             system_instruction=system_prompt
         )
 
