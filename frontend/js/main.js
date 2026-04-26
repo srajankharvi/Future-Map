@@ -333,10 +333,102 @@ function closeCourseModal() {
     if (modal) hideElement(modal);
 }
 
+// ==================== CUSTOM SELECT DROPDOWN ====================
+function setupCustomSelects() {
+    const selects = document.querySelectorAll('select.category-select, select.custom-select, select.ai-select, select#educationLevel');
+    
+    selects.forEach(select => {
+        // If already initialized, remove old wrapper to rebuild with new options
+        if (select.nextElementSibling && select.nextElementSibling.classList.contains('custom-select-wrapper')) {
+            select.nextElementSibling.remove();
+        }
+
+        select.style.display = 'none';
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'custom-select-wrapper';
+        
+        const trigger = document.createElement('div');
+        trigger.className = 'custom-select-trigger';
+        
+        const triggerText = document.createElement('span');
+        triggerText.className = 'custom-select-trigger-text';
+        triggerText.textContent = select.options[select.selectedIndex]?.text || 'Select an option';
+        
+        const chevron = document.createElement('div');
+        chevron.className = 'custom-select-chevron';
+        chevron.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+        
+        trigger.appendChild(triggerText);
+        trigger.appendChild(chevron);
+        wrapper.appendChild(trigger);
+
+        const dropdown = document.createElement('div');
+        dropdown.className = 'custom-select-dropdown';
+        
+        Array.from(select.options).forEach(option => {
+            const item = document.createElement('div');
+            item.className = 'custom-select-item';
+            if (option.selected) {
+                item.classList.add('selected');
+            }
+            if (option.value === '' && option.text.toLowerCase().includes('all')) {
+                item.classList.add('all-categories');
+            }
+
+            const itemText = document.createElement('span');
+            itemText.textContent = option.text;
+            item.appendChild(itemText);
+            
+            const checkmark = document.createElement('div');
+            checkmark.className = 'custom-select-checkmark';
+            checkmark.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            item.appendChild(checkmark);
+            
+            item.addEventListener('click', () => {
+                select.value = option.value;
+                select.dispatchEvent(new Event('change'));
+                
+                triggerText.textContent = option.text;
+                dropdown.querySelectorAll('.custom-select-item').forEach(el => el.classList.remove('selected'));
+                item.classList.add('selected');
+                wrapper.classList.remove('open');
+            });
+            
+            dropdown.appendChild(item);
+        });
+        
+        wrapper.appendChild(dropdown);
+        
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('.custom-select-wrapper.open').forEach(el => {
+                if (el !== wrapper) el.classList.remove('open');
+            });
+            wrapper.classList.toggle('open');
+        });
+        
+        select.parentNode.insertBefore(wrapper, select.nextSibling);
+    });
+    
+    // Clear previously bound document click listener to avoid duplicates
+    // We attach a single listener on document instead of per call
+    if (!document.hasCustomSelectListener) {
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.custom-select-wrapper.open').forEach(el => el.classList.remove('open'));
+        });
+        document.hasCustomSelectListener = true;
+    }
+}
+
+
 // ==================== PAGE INITIALIZATION ====================
 document.addEventListener('DOMContentLoaded', async () => {
     // Setup hamburger menu
     setupHamburgerMenu();
+    
+    // Setup custom select dropdowns
+    setupCustomSelects();
 
     // Determine current page
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';

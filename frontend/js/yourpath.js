@@ -56,6 +56,11 @@ function populateCareerDropdown(filteredCareers = null) {
         option.textContent = `${career.name} — ${career.category}`;
         select.appendChild(option);
     });
+    
+    // Re-initialize custom dropdown
+    if (typeof setupCustomSelects === 'function') {
+        setupCustomSelects();
+    }
 }
 
 // Populate course dropdown
@@ -72,6 +77,11 @@ function populateCourseDropdown(filteredCourses = null) {
         option.textContent = `${course.name} — ${course.type} (${course.duration})`;
         select.appendChild(option);
     });
+    
+    // Re-initialize custom dropdown
+    if (typeof setupCustomSelects === 'function') {
+        setupCustomSelects();
+    }
 }
 
 // Filter career dropdown by category
@@ -516,10 +526,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Load yourpath reference data from API first
         await loadYourPathData();
 
-        populateCareerDropdown();
-        populateCourseDropdown();
-        // Load saved roadmaps if container exists
-        loadSavedRoadmaps();
+        const initDropdowns = () => {
+            populateCareerDropdown();
+            populateCourseDropdown();
+            // Load saved roadmaps if container exists
+            loadSavedRoadmaps();
+        };
+
+        if (careerData && careerData.length > 0) {
+            initDropdowns();
+        } else {
+            document.addEventListener('app:data-loaded', initDropdowns, { once: true });
+        }
     }
 
     // Setup select change listeners
