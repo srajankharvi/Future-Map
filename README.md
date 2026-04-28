@@ -32,8 +32,8 @@ Future Map is a full-stack web application that helps students discover their id
 
 ### 🎤 AI Mock Interview Chat
 - Interactive real-time interview experience with a persistent AI interviewer
-- Support for 100+ career categories and 3 experience levels (Fresher, Mid, Senior)
-- **Primary AI (Gemini 1.5 Flash)**: High-quality, context-aware technical interviewing
+- Support for career categories and 3 experience levels (Fresher, Mid, Senior)
+- **Primary AI (Gemini 2.5 Flash)**: High-quality, context-aware technical interviewing
 - **Fallback AI (Groq LLaMA 3.3)**: Ultra-fast secondary fallback if Gemini limits are reached
 - Adaptive feedback based on candidate responses and 10-question structured flow
 - Static fallback question bank for offline/emergency use

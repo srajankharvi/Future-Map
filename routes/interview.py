@@ -133,6 +133,87 @@ def generate_interview_questions():
         return jsonify({'success': False, 'error': 'Could not generate interview questions'}), 500
 
 
+@interview_bp.route('/api/interview/limits', methods=['GET'])
+@login_required
+def get_interview_limits():
+    """Get all interview-related daily usage limits and current counts"""
+    try:
+        limits = {
+            'mock': {'limit': 5, 'count': 0},
+            'gen': {'limit': 5, 'count': 0}
+        }
+        
+        if mongo_db is not None:
+            user_id = session.get('user_id')
+            user = mongo_db.users.find_one({'_id': ObjectId(user_id)})
+            if user:
+                current_date_str = datetime.now(timezone.utc).date().isoformat()
+                
+                # Mock Interviews
+                mock_count = user.get('mock_interview_count', 0)
+                mock_date = user.get('last_mock_interview_at')
+                if mock_date != current_date_str:
+                    mock_count = 0
+                limits['mock']['count'] = mock_count
+                
+                # Question Generations
+                gen_count = user.get('interview_gen_count', 0)
+                gen_date = user.get('last_interview_gen_at')
+                if gen_date != current_date_str:
+                    gen_count = 0
+                limits['gen']['count'] = gen_count
+            
+        return jsonify({
+            'success': True,
+            'limits': limits
+        }), 200
+    except Exception as e:
+        logging.exception("Interview limits check error")
+        return jsonify({'success': False, 'error': 'Could not check limits'}), 500
+
+
+@interview_bp.route('/api/mock-interview/start', methods=['POST'])
+@login_required
+def start_mock_interview():
+    """Explicitly start a mock interview and increment the daily count"""
+    try:
+        if mongo_db is None:
+            return jsonify({'success': True}), 200
+
+        user_id = session.get('user_id')
+        user = mongo_db.users.find_one({'_id': ObjectId(user_id)})
+        count = user.get('mock_interview_count', 0)
+        last_date_str = user.get('last_mock_interview_at')
+        current_date_str = datetime.now(timezone.utc).date().isoformat()
+
+        if last_date_str != current_date_str:
+            count = 0
+            mongo_db.users.update_one(
+                {'_id': ObjectId(user_id)},
+                {'$set': {'mock_interview_count': 0, 'last_mock_interview_at': current_date_str}}
+            )
+
+        if count >= 5:
+            return jsonify({
+                'success': False, 
+                'error': 'Daily limit reached (5 per day). Please come back tomorrow!'
+            }), 403
+
+        # Increment count
+        mongo_db.users.update_one(
+            {'_id': ObjectId(user_id)},
+            {
+                '$inc': {'mock_interview_count': 1},
+                '$set': {'last_mock_interview_at': current_date_str}
+            }
+        )
+
+        return jsonify({'success': True, 'new_count': count + 1}), 200
+    except Exception as e:
+        logging.exception("Start mock interview error")
+        return jsonify({'success': False, 'error': 'Could not start interview'}), 500
+
+
 @interview_bp.route('/api/mock-interview', methods=['POST'])
 @login_required
 @limiter.limit("20 per minute")
@@ -159,36 +240,14 @@ def mock_interview_chat():
             user = mongo_db.users.find_one({'_id': ObjectId(user_id)})
             count = user.get('mock_interview_count', 0)
             last_date_str = user.get('last_mock_interview_at')
-            
-            # Get current date in ISO format (YYYY-MM-DD)
             current_date_str = datetime.now(timezone.utc).date().isoformat()
             
-            # Reset count if it's a new day
             if last_date_str != current_date_str:
+                # If date changed, count should be reset, but we don't increment here anymore
+                # The start endpoint handles incrementing.
                 count = 0
-                mongo_db.users.update_one(
-                    {'_id': ObjectId(user_id)},
-                    {'$set': {'mock_interview_count': 0, 'last_mock_interview_at': current_date_str}}
-                )
 
-            # If starting a NEW interview (history only contains the AI greeting)
-            if len(history) <= 1:
-                if count >= 10:
-                    return jsonify({
-                        'success': False, 
-                        'error': 'Daily limit reached (5 per day). Please come back tomorrow!'
-                    }), 403
-                
-                # Increment count and update timestamp
-                mongo_db.users.update_one(
-                    {'_id': ObjectId(user_id)},
-                    {
-                        '$inc': {'mock_interview_count': 1},
-                        '$set': {'last_mock_interview_at': current_date_str}
-                    }
-                )
-            # For ongoing interviews, just check if they are already over the limit 
-            elif count > 5:
+            if count > 5:
                  return jsonify({'success': False, 'error': 'Daily limit reached.'}), 403
 
 

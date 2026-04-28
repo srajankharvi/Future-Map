@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Always initialize the AI generator UI
     setupAIGenerator();
     setupMockInterview();
+    checkAndDisplayLimits(); // New: check limits on load
     updateResetTimer();
     setInterval(updateResetTimer, 60000); // Update every minute
 });
@@ -27,18 +28,67 @@ window.addEventListener('beforeunload', (e) => {
 
 function updateResetTimer() {
     const timerEls = [document.getElementById('resetTimer'), document.getElementById('resetTimerGen')];
-    
+
     const now = new Date();
     const nextReset = new Date();
     nextReset.setUTCHours(24, 0, 0, 0); // Next UTC midnight
-    
+
     const diff = nextReset - now;
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    
+
     timerEls.forEach(el => {
         if (el) el.textContent = `(Resets in ${hours}h ${minutes}m)`;
     });
+}
+
+/**
+ * Fetch current usage counts and update the UI
+ */
+async function checkAndDisplayLimits() {
+    try {
+        const response = await apiFetch(`${API_BASE}/interview/limits`);
+        if (response.success) {
+            const { mock, gen } = response.limits;
+            
+            // Update Mock Interview UI
+            const mockLimitEl = document.getElementById('resetTimer');
+            if (mockLimitEl) {
+                const parent = mockLimitEl.parentElement;
+                if (parent) {
+                    parent.innerHTML = `Used today: ${mock.count}/${mock.limit} interviews <span id="resetTimer"></span>`;
+                    updateResetTimer(); // Refresh the timer span content
+                }
+            }
+            
+            const startBtn = document.getElementById('startMockBtn');
+            if (startBtn && mock.count >= mock.limit) {
+                // If they have an active session in this tab, don't disable yet
+                if (sessionStorage.getItem('mockSessionActive') !== 'true') {
+                    startBtn.disabled = true;
+                    startBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Daily Limit Reached`;
+                }
+            }
+
+            // Update AI Generator UI
+            const genLimitEl = document.getElementById('resetTimerGen');
+            if (genLimitEl) {
+                const parent = genLimitEl.parentElement;
+                if (parent) {
+                    parent.innerHTML = `Used today: ${gen.count}/${gen.limit} generations <span id="resetTimerGen"></span>`;
+                    updateResetTimer(); // Refresh the timer span content
+                }
+            }
+
+            const generateBtn = document.getElementById('generateBtn');
+            if (generateBtn && gen.count >= gen.limit) {
+                generateBtn.disabled = true;
+                generateBtn.title = "Daily limit reached. Come back tomorrow!";
+            }
+        }
+    } catch (err) {
+        console.error('Failed to fetch limits:', err);
+    }
 }
 
 
@@ -81,7 +131,7 @@ function setupMockInterview() {
     if (chatInput) {
         chatInput.addEventListener('input', () => {
             sendBtn.disabled = !chatInput.value.trim() || !isMockActive;
-            
+
             // Auto-resize textarea
             chatInput.style.height = 'auto';
             chatInput.style.height = (chatInput.scrollHeight) + 'px';
@@ -99,10 +149,39 @@ function setupMockInterview() {
 async function startMockInterview() {
     const category = document.getElementById('mockCategory').value;
     const level = mockSelectedLevel;
-    
+
     if (!category) {
         alert('Please select a category first');
         return;
+    }
+
+    const startBtn = document.getElementById('startMockBtn');
+    if (startBtn) {
+        const originalText = startBtn.textContent;
+        startBtn.textContent = 'Preparing...';
+        startBtn.disabled = true;
+        
+        try {
+            // Only call start API if this is a fresh start (not a resume after refresh)
+            const isResuming = sessionStorage.getItem('mockSessionActive') === 'true';
+            
+            if (!isResuming) {
+                const response = await apiFetch(`${API_BASE}/mock-interview/start`, { method: 'POST' });
+                if (!response.success) {
+                    alert(response.error || 'Daily mock interview limit reached. Please come back tomorrow!');
+                    startBtn.textContent = originalText;
+                    startBtn.disabled = false;
+                    return;
+                }
+                // Mark session as active in this tab
+                sessionStorage.setItem('mockSessionActive', 'true');
+            }
+        } catch (e) {
+            console.error('Start interview error:', e);
+        }
+        
+        startBtn.textContent = originalText;
+        startBtn.disabled = false;
     }
 
     // UI transitions
@@ -119,7 +198,6 @@ async function startMockInterview() {
     
     // Enable input area
     const chatInput = document.getElementById('chatInput');
-    const sendBtn = document.getElementById('sendMessageBtn');
     if (chatInput) {
         chatInput.disabled = false;
         chatInput.focus();
@@ -132,6 +210,9 @@ async function startMockInterview() {
 
 function resetMockInterview() {
     if (confirm('Are you sure you want to reset the interview? Progress will be lost.')) {
+        // Clear session state
+        sessionStorage.removeItem('mockSessionActive');
+        
         hideElement(document.getElementById('mockChatbox'));
         showElement(document.getElementById('mockSetup'));
         document.querySelector('.mock-interview-container').classList.remove('chat-active');
@@ -150,6 +231,9 @@ function resetMockInterview() {
         isMockActive = false;
         mockMessages = [];
         mockQuestionCount = 0;
+        
+        // Refresh limits display
+        checkAndDisplayLimits();
     }
 }
 
@@ -157,27 +241,27 @@ async function sendMockMessage() {
     const input = document.getElementById('chatInput');
     const sendBtn = document.getElementById('sendMessageBtn');
     const text = input.value.trim();
-    
+
     if (!text || !isMockActive) return;
-    
+
     // Capture current history BEFORE adding new message
     const currentHistory = [...mockMessages];
-    
+
     // Add user message to UI and history
     addChatMessage('user', text);
-    
+
     input.value = '';
     input.style.height = 'auto';
     sendBtn.disabled = true;
     input.disabled = true;
-    
+
     // Show loading
     showElement(document.getElementById('chatLoading'));
-    
+
     try {
         const category = document.getElementById('mockCategory').value;
         const level = mockSelectedLevel;
-        
+
         const response = await apiFetch(`${API_BASE}/mock-interview`, {
             method: 'POST',
             body: JSON.stringify({
@@ -195,7 +279,7 @@ async function sendMockMessage() {
                 mockQuestionCount++;
                 updateChatQCount();
             }
-            
+
             if (mockQuestionCount >= MAX_MOCK_QUESTIONS) {
                 isMockActive = false;
                 addChatMessage('ai', "That concludes our mock interview session! You've successfully practiced " + MAX_MOCK_QUESTIONS + " questions. You can reset to try a different category.");
@@ -212,7 +296,7 @@ async function sendMockMessage() {
         console.error('Mock interview error:', err);
     } finally {
         hideElement(document.getElementById('chatLoading'));
-        
+
         // Re-enable inputs only if interview is still active
         if (isMockActive) {
             input.disabled = false;
@@ -227,12 +311,12 @@ function addChatMessage(role, text) {
     const msgDiv = document.createElement('div');
     msgDiv.className = `message message-${role}`;
     msgDiv.textContent = text;
-    
+
     container.appendChild(msgDiv);
-    
+
     // Add to history for API
     mockMessages.push({ role, content: text });
-    
+
     // Scroll to bottom
     container.scrollTop = container.scrollHeight;
 }
@@ -557,7 +641,7 @@ function showInterviewQuestions(category) {
             title.addEventListener('click', () => {
                 toggleAnswer(title);
             });
-            
+
             title.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
@@ -594,7 +678,7 @@ function showInterviewQuestions(category) {
 function closeInterview() {
     const panel = document.getElementById('questionsPanel');
     if (panel) hideElement(panel);
-    
+
     document.querySelectorAll('.category-btn').forEach(btn => {
         btn.classList.remove('active');
     });
