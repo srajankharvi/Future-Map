@@ -1,49 +1,52 @@
 // ==================== HOME PAGE MODULE ====================
-// Handles homepage-specific interactions and smooth scroll behavior
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Smooth scroll for "See How It Works" anchor link
-    const secondaryCta = document.getElementById('heroSecondary');
-    if (secondaryCta) {
-        secondaryCta.addEventListener('click', (e) => {
-            e.preventDefault();
-            const target = document.getElementById('how-it-works');
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+    // Setup hero buttons
+    const gotoYourpathBtn = document.querySelector('[data-action="goto-yourpath"]');
+    const gotoCareersBtn = document.querySelector('[data-action="goto-careers"]');
+
+    if (gotoYourpathBtn) {
+        gotoYourpathBtn.addEventListener('click', () => {
+            window.location.href = 'yourpath.html';
         });
     }
 
-    // Subtle scroll-triggered fade-in for sections
-    initScrollReveal();
+    if (gotoCareersBtn) {
+        gotoCareersBtn.addEventListener('click', () => {
+            window.location.href = 'careers.html';
+        });
+    }
+
+    // "Follow the Mouse" effect for hero feature cards
+    initFollowMouseEffect();
 });
 
-function initScrollReveal() {
-    const sections = document.querySelectorAll(
-        '.home-value, .home-steps, .home-features, .home-cta, .home-trust'
-    );
+function initFollowMouseEffect() {
+    const cards = document.querySelectorAll('.hero-feature-card');
+    if (!cards.length) return;
 
-    if (!sections.length) return;
+    // Check if device supports hover (desktop)
+    const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!isDesktop) return;
 
-    // Set initial state
-    sections.forEach(section => {
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(24px)';
-        section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    });
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
-            }
+    document.addEventListener('mousemove', (e) => {
+        cards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            // Calculate center of the card
+            const cardCenterX = rect.left + rect.width / 2;
+            const cardCenterY = rect.top + rect.height / 2;
+            
+            // Calculate distance from cursor to center
+            const distX = e.clientX - cardCenterX;
+            const distY = e.clientY - cardCenterY;
+            
+            // Translate the card slowly toward the mouse (divisor controls the amount)
+            const moveX = distX / 25;
+            const moveY = distY / 25;
+            
+            card.style.setProperty('--x', moveX);
+            card.style.setProperty('--y', moveY);
         });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -40px 0px'
     });
-
-    sections.forEach(section => observer.observe(section));
 }
+

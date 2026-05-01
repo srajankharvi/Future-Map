@@ -432,10 +432,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Determine current page
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    const isPublicPage = currentPage === 'login.html' || currentPage === 'index.html' || currentPage === '';
+    const isLoginPage = currentPage === 'login.html';
 
-    // AUTH GUARD: Protect all pages except login and homepage
-    if (!isPublicPage) {
+    // AUTH GUARD: Protect all pages except login
+    if (!isLoginPage) {
         const user = await checkAuth(true);
         if (!user) return;
 
@@ -443,13 +443,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateNavbarWithUser(user.username);
     } else {
         document.body.classList.add('auth-ready');
-        // On public pages, still check auth silently to show user info if logged in
-        const user = await checkAuth(false);
-        if (user) {
-            updateNavbarWithUser(user.username);
-        } else {
-            updateNavbarWithUser(null);
-        }
     }
 
     // Fetch global data
