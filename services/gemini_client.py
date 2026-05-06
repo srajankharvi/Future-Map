@@ -1,7 +1,7 @@
 """
 Gemini API client for AI-powered interview question generation.
 
-Uses Google's Generative AI SDK to generate structured interview questions.
+Uses Google's GenAI SDK to generate structured interview questions.
 Handles: API key validation, prompt construction, response parsing, timeouts.
 """
 
@@ -11,11 +11,12 @@ import logging
 
 # Defensive import — Gemini SDK may not be installed
 try:
-    import google.generativeai as genai
+    from google import genai
+    from google.genai import types
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False
-    logging.warning("google-generativeai not installed — Gemini client disabled")
+    logging.warning("google-genai not installed — Gemini client disabled")
 
 try:
     from google.api_core import exceptions as google_exceptions
@@ -126,18 +127,18 @@ def generate(role, level, topic, count=5):
     models_to_try = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash']
     
     try:
-        genai.configure(api_key=gemini_key)
+        client = genai.Client(api_key=gemini_key)
         
         last_error = None
         for model_name in models_to_try:
             try:
                 logging.info(f"[Gemini] Attempting generation with {model_name}...")
-                model = genai.GenerativeModel(model_name)
                 prompt = _build_prompt(role, level, topic, count)
                 
-                response = model.generate_content(
-                    prompt,
-                    generation_config=genai.types.GenerationConfig(
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
                         temperature=0.7,
                         max_output_tokens=4096
                     )
@@ -192,28 +193,33 @@ Your goal is to conduct a realistic mock interview.
         # List of models to try in order of preference
         models_to_try = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash']
         
-        # Convert history format
+        # Convert history format for the new SDK
         contents = []
         for h in history:
             role = 'user' if h['role'] == 'user' else 'model'
-            contents.append({'role': role, 'parts': [h['content']]})
+            contents.append(types.Content(
+                role=role,
+                parts=[types.Part.from_text(text=h['content'])]
+            ))
         
         # Gemini requires history to start with a 'user' message.
-        while contents and contents[0]['role'] == 'model':
+        while contents and contents[0].role == 'model':
             contents.pop(0)
 
-        genai.configure(api_key=gemini_key)
+        client = genai.Client(api_key=gemini_key)
         
         last_error = None
         for model_name in models_to_try:
             try:
                 logging.info(f"[Gemini Chat] Attempting with {model_name}...")
-                model = genai.GenerativeModel(
-                    model_name,
-                    system_instruction=system_prompt
+                chat_session = client.chats.create(
+                    model=model_name,
+                    config=types.GenerateContentConfig(
+                        system_instruction=system_prompt
+                    ),
+                    history=contents
                 )
                 
-                chat_session = model.start_chat(history=contents)
                 response = chat_session.send_message(message)
                 
                 if response and response.text:
