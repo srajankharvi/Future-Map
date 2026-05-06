@@ -1,6 +1,6 @@
-# Future Map — Career & Course Guidance System
+# Future Map — AI-Powered Career & Course Guidance Platform
 
-Future Map is a full-stack web application that helps students discover their ideal career path and educational programs based on their skills, academic performance, and education level. It features AI-powered interview preparation, personalized roadmaps, and a smart recommendation engine.
+Future Map is a full-stack web application that helps students discover their ideal career path and educational programs based on their skills, academic performance, and education level. It features AI-powered mock interviews, personalized learning roadmaps, and a smart recommendation engine.
 
 ---
 
@@ -30,7 +30,7 @@ Future Map is a full-stack web application that helps students discover their id
 - Access curated resources, projects, and skill development guides
 - Save and manage multiple roadmaps
 
-### 🎤 AI Mock Interview Chat
+### 🎤 AI Mock Interview
 - Interactive real-time interview experience with a persistent AI interviewer
 - Support for career categories and 3 experience levels (Fresher, Mid, Senior)
 - **Primary AI (Gemini 2.5 Flash)**: High-quality, context-aware technical interviewing
@@ -57,8 +57,8 @@ Future Map is a full-stack web application that helps students discover their id
 |-------|-----------|
 | **Frontend** | HTML5, CSS3, Vanilla JavaScript |
 | **Backend** | Python, Flask 2.3 |
-| **Databases** | MongoDB Atlas |
-| **AI** | Google Gemini (Primary) & Groq LLaMA (Fallback) |
+| **Database** | MongoDB Atlas |
+| **AI** | Google Gemini via `google-genai` SDK (Primary) & Groq LLaMA (Fallback) |
 | **Deployment** | Vercel (serverless Python) |
 | **Security** | Werkzeug password hashing, CSRF protection, XSS escaping, rate limiting |
 
@@ -91,8 +91,10 @@ Future Map/
 │   └── static.py             # Static file serving
 │
 ├── services/
-│   ├── recommendations.py    # Scoring algorithm
-│   └── gemini_client.py      # Google Gemini AI client
+│   ├── gemini_client.py      # Google Gemini AI client (google-genai SDK)
+│   ├── groq_client.py        # Groq LLaMA fallback client
+│   ├── interview_ai.py       # AI interview orchestration
+│   └── recommendations.py    # Scoring algorithm
 │
 ├── data/
 │   ├── careers.py            # Fallback career data
@@ -131,10 +133,11 @@ Future Map/
 - Python 3.9+
 - MongoDB Atlas account (free tier works)
 - Google Gemini API key (for AI interview features)
+- Groq API key (optional — for fallback AI)
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/srajankharvi/Future-Map.git
+git clone <your-repo-url>
 cd Future-Map
 ```
 
@@ -155,33 +158,36 @@ pip install -r requirements.txt
 ```
 
 ### 4. Configure Environment Variables
-Create a `.env` file in the project root and add the required configuration variables (Database URLs, API Keys, etc.).
+Create a `.env` file in the project root with the following keys:
 
+```env
+# MongoDB
+MONGO_URI=<your-mongodb-atlas-connection-string>
+
+# AI API Keys
+GEMINI_API_KEY=<your-gemini-api-key>
+GROQ_API_KEY=<your-groq-api-key>          # Optional
+
+# Flask
+SECRET_KEY=<your-flask-secret-key>
+```
 
 ### 5. Run the Application
 ```bash
 python main.py
 ```
-Open your browser and go to **https://future-map-xi.vercel.app**
+Open your browser and navigate to `http://localhost:5000`
 
 ---
 
 ## Deploying to Vercel
 
-### 1. Push Code to GitHub
-Make sure `vercel.json` is in the project root (already included).
+1. Push your code to GitHub — ensure `vercel.json` is in the project root (already included).
+2. Import the repository on [vercel.com](https://vercel.com).
+3. Add all required environment variables in **Settings → Environment Variables**.
+4. Deploy — Vercel will automatically build and deploy the application.
 
-### 2. Import Project on Vercel
-Go to [vercel.com](https://vercel.com), import your GitHub repository.
-
-### 3. Set Environment Variables
-Add the required environment variables in the Vercel Dashboard under **Settings → Environment Variables**.
-
-### 4. Deploy
-Vercel will automatically build and deploy your application.
-
-> **Note:** All application data, including user accounts, profiles, roadmaps, and projects, is stored in MongoDB Atlas for persistence across serverless cold starts.
-
+> **Note:** All application data (user accounts, profiles, roadmaps, projects) is stored in MongoDB Atlas for persistence across serverless cold starts.
 
 ---
 
@@ -220,8 +226,6 @@ The system scores careers and courses based on three factors:
 
 ---
 
-## Credits
+## License
 
-Designed by **I BCA — AI & ML (Artificial Intelligence)**
-
-© 2026 Future Map
+© 2026 Future Map. All rights reserved.
