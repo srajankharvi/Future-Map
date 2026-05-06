@@ -28,7 +28,7 @@ def register():
         if mongo_db is None:
             return jsonify({'success': False, 'error': 'Database not available'}), 503
 
-        username = data.get('username', '').strip()
+        username = data.get('username', '').strip().lower()
         email = data.get('email', '').strip()
         password = data.get('password', '').strip()
         full_name = data.get('full_name', '').strip()
@@ -110,7 +110,7 @@ def login():
         if mongo_db is None:
             return jsonify({'success': False, 'error': 'Database not available'}), 503
 
-        username = data.get('username', '').strip()
+        username = data.get('username', '').strip().lower()
         password = data.get('password', '').strip()
 
         if not username or not password:
