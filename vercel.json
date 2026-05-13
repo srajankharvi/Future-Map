@@ -1,34 +1,10 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "main.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/frontend/css/(.*)",
-      "dest": "/frontend/css/$1"
-    },
-    {
-      "src": "/frontend/js/(.*)",
-      "dest": "/frontend/js/$1"
-    },
-    {
-      "src": "/frontend/images/(.*)",
-      "dest": "/frontend/images/$1"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "main.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "main.py"
+      "source": "/:path*",
+      "destination": "/api/main"
     }
   ]
 }

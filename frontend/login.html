@@ -10,21 +10,61 @@
 </head>
 <body class="login-page">
     <div class="login-container">
-        <div class="login-box">
+        <!-- ===== LOGIN FORM ===== -->
+        <div class="login-box" id="loginBox">
             <div class="login-header">
                 <h1>Future Map</h1>
-                <p>Career & Course Guidance</p>
+                <p>Career &amp; Course Guidance</p>
             </div>
 
-            <form id="loginForm" class="login-form">
+            <!-- Issue #28: Static message containers with aria-live for accessibility (Issue #19) -->
+            <div id="loginErrorMsg" class="auth-msg auth-msg-error hidden" role="alert" aria-live="polite"></div>
+            <div id="loginSuccessMsg" class="auth-msg auth-msg-success hidden" role="alert" aria-live="polite"></div>
+
+            <form id="loginForm" class="login-form" novalidate>
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your username"
+                        required
+                        autocomplete="username"
+                        minlength="3"
+                        maxlength="30"
+                        aria-required="true"
+                        aria-describedby="usernameHelp"
+                    >
+                    <small id="usernameHelp" class="form-help hidden">3-30 characters: letters, numbers, underscore</small>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <div class="password-input-wrapper">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                            autocomplete="current-password"
+                            minlength="6"
+                            maxlength="128"
+                            aria-required="true"
+                        >
+                        <!-- Issue #17: Password visibility toggle -->
+                        <button type="button" class="password-toggle" data-target="password" aria-label="Toggle password visibility" tabindex="-1">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg class="eye-off-icon hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -34,47 +74,144 @@
                     </label>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-block">Login</button>
+                <button type="submit" id="loginSubmitBtn" class="btn btn-primary btn-block">
+                    <span class="btn-text">Login</span>
+                    <span class="btn-spinner hidden" aria-hidden="true"></span>
+                </button>
             </form>
 
             <div class="login-footer">
-                <p>Don't have an account? <a href="#" data-action="toggle-signup">Sign up here</a></p>
+                <p>Don't have an account? <a href="#" id="showSignupLink" data-action="toggle-signup">Sign up here</a></p>
             </div>
         </div>
 
-        <!-- Signup Form -->
+        <!-- ===== SIGNUP FORM ===== -->
         <div class="signup-box hidden" id="signupBox">
             <div class="login-header">
                 <h1>Create Account</h1>
                 <p>Join Future Map Today</p>
             </div>
 
-            <form id="signupForm" class="login-form">
+            <!-- Issue #28: Static message containers -->
+            <div id="signupErrorMsg" class="auth-msg auth-msg-error hidden" role="alert" aria-live="polite"></div>
+            <div id="signupSuccessMsg" class="auth-msg auth-msg-success hidden" role="alert" aria-live="polite"></div>
+
+            <form id="signupForm" class="login-form" novalidate>
+                <!-- Issue #15: Added full_name field -->
                 <div class="form-group">
-                    <label for="signupUsername">Username</label>
-                    <input type="text" id="signupUsername" name="signupUsername" placeholder="Choose a username" required>
+                    <label for="signupFullName">Full Name</label>
+                    <input
+                        type="text"
+                        id="signupFullName"
+                        name="signupFullName"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        maxlength="100"
+                        aria-describedby="fullNameHelp"
+                    >
+                    <small id="fullNameHelp" class="form-help hidden">Optional — displayed on your profile</small>
                 </div>
 
                 <div class="form-group">
-                    <label for="signupEmail">Email</label>
-                    <input type="email" id="signupEmail" name="signupEmail" placeholder="Enter your email" required>
+                    <label for="signupUsername">Username <span class="required-asterisk">*</span></label>
+                    <input
+                        type="text"
+                        id="signupUsername"
+                        name="signupUsername"
+                        placeholder="Choose a username"
+                        required
+                        autocomplete="username"
+                        minlength="3"
+                        maxlength="30"
+                        aria-required="true"
+                        aria-describedby="signupUsernameHelp"
+                    >
+                    <small id="signupUsernameHelp" class="form-help">3-30 characters: letters, numbers, underscore only</small>
                 </div>
 
                 <div class="form-group">
-                    <label for="signupPassword">Password</label>
-                    <input type="password" id="signupPassword" name="signupPassword" placeholder="Create a password" required>
+                    <label for="signupEmail">Email <span class="required-asterisk">*</span></label>
+                    <input
+                        type="email"
+                        id="signupEmail"
+                        name="signupEmail"
+                        placeholder="Enter your email"
+                        required
+                        autocomplete="email"
+                        aria-required="true"
+                    >
                 </div>
 
                 <div class="form-group">
-                    <label for="signupConfirmPassword">Confirm Password</label>
-                    <input type="password" id="signupConfirmPassword" name="signupConfirmPassword" placeholder="Confirm your password" required>
+                    <label for="signupPassword">Password <span class="required-asterisk">*</span></label>
+                    <div class="password-input-wrapper">
+                        <input
+                            type="password"
+                            id="signupPassword"
+                            name="signupPassword"
+                            placeholder="Create a password"
+                            required
+                            autocomplete="new-password"
+                            minlength="6"
+                            maxlength="128"
+                            aria-required="true"
+                            aria-describedby="passwordStrengthText"
+                        >
+                        <button type="button" class="password-toggle" data-target="signupPassword" aria-label="Toggle password visibility" tabindex="-1">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg class="eye-off-icon hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Issue #33: Password strength indicator -->
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="password-strength-bar">
+                            <div class="password-strength-fill" id="passwordStrengthFill"></div>
+                        </div>
+                        <small id="passwordStrengthText" class="password-strength-text">Min 6 characters</small>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password <span class="required-asterisk">*</span></label>
+                    <div class="password-input-wrapper">
+                        <input
+                            type="password"
+                            id="signupConfirmPassword"
+                            name="signupConfirmPassword"
+                            placeholder="Confirm your password"
+                            required
+                            autocomplete="new-password"
+                            minlength="6"
+                            maxlength="128"
+                            aria-required="true"
+                        >
+                        <button type="button" class="password-toggle" data-target="signupConfirmPassword" aria-label="Toggle password visibility" tabindex="-1">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg class="eye-off-icon hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" id="signupSubmitBtn" class="btn btn-primary btn-block">
+                    <span class="btn-text">Sign Up</span>
+                    <span class="btn-spinner hidden" aria-hidden="true"></span>
+                </button>
             </form>
 
             <div class="login-footer">
-                <p>Already have an account? <a href="#" data-action="toggle-signup">Login here</a></p>
+                <p>Already have an account? <a href="#" id="showLoginLink" data-action="toggle-signup">Login here</a></p>
             </div>
         </div>
     </div>
@@ -83,4 +220,3 @@
     <script src="js/login.js" defer></script>
 </body>
 </html>
-

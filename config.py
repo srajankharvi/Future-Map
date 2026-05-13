@@ -16,14 +16,17 @@ load_dotenv()
 FLASK_ENV = os.getenv('FLASK_ENV', 'development')
 
 # --- SECRET KEY (REQUIRED) ---
+# Issue #2 fix: Generate a cryptographically strong fallback instead of a weak one.
 # NOTE: For Vercel/Serverless, you MUST set SECRET_KEY in environment variables.
-# If missing, we use a stable fallback to prevent the "Login Loop" issue.
+# A random fallback will change on each restart, causing session invalidation.
 SECRET_KEY = os.getenv('SECRET_KEY')
 if not SECRET_KEY:
-    # Stable fallback to prevent login loops on Vercel restarts
-    SECRET_KEY = "futuremap-stable-fallback-secret-2026"
+    # Generate a strong random key as fallback
+    SECRET_KEY = secrets_module.token_hex(64)
     if FLASK_ENV == 'production':
-        logging.critical("!!! SECURITY WARNING: SECRET_KEY is not set in production. Using fallback. !!!")
+        logging.critical("!!! SECURITY WARNING: SECRET_KEY is not set in production. Using random fallback — sessions will not persist across restarts. !!!")
+    else:
+        logging.warning("SECRET_KEY not set. Using random fallback for development.")
 
 # --- SESSION SECURITY ---
 SESSION_COOKIE_HTTPONLY = True
@@ -36,6 +39,7 @@ USERNAME_REGEX = re.compile(r'^[a-zA-Z0-9_]{3,30}$')
 EMAIL_REGEX = re.compile(r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
 PASSWORD_MIN = 6
 PASSWORD_MAX = 128  # Prevent DoS via extremely long passwords
+FULL_NAME_MAX = 100  # Issue #11: Limit full_name length
 
 # --- STATIC FILE SERVING ---
 ALLOWED_EXTENSIONS = {'html', 'css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'ico', 'woff', 'woff2', 'ttf'}

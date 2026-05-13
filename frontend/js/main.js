@@ -250,7 +250,7 @@ async function handleLogout() {
     }
 
     sessionStorage.removeItem('futureMapUser');
-    localStorage.removeItem('futureMapUser');
+    // Issue #4: No longer storing auth data in localStorage (XSS risk)
     window.location.href = 'login.html';
 }
 

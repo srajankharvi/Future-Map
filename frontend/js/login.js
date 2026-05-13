@@ -1,6 +1,27 @@
 // ==================== LOGIN PAGE MODULE ====================
+// Fixes applied: Issues #4, #23, #24, #25, #26, #27, #28, #29
+
+// --- Constants (Issue #26: no magic numbers) ---
+const REDIRECT_DELAY_MS = 1200;
+const SIGNUP_TOGGLE_DELAY_MS = 1500;
+const MSG_AUTO_DISMISS_MS = 8000;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Issue #23: Verify global dependencies from main.js exist
+    if (typeof apiFetch !== 'function' || typeof API_BASE === 'undefined') {
+        console.error('[login.js] CRITICAL: main.js globals (apiFetch, API_BASE) not loaded.');
+        const body = document.querySelector('.login-container');
+        if (body) {
+            body.innerHTML = '<div style="padding:40px;text-align:center;color:#ef4444;">' +
+                '<h2>Loading Error</h2><p>Core scripts failed to load. Please refresh the page.</p></div>';
+        }
+        return;
+    }
+
+    // Issue #25: Redirect already-authenticated users away from login page
+    redirectIfAuthenticated();
+
+    // --- Form Submissions ---
     const loginForm = document.getElementById('loginForm');
     const signupForm = document.getElementById('signupForm');
 
@@ -18,37 +39,76 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Setup toggle signup buttons
+    // --- Toggle signup/login links ---
     document.querySelectorAll('[data-action="toggle-signup"]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             toggleSignup();
         });
     });
+
+    // --- Issue #17: Password visibility toggles ---
+    document.querySelectorAll('.password-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (!input) return;
+
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+
+            const eyeIcon = btn.querySelector('.eye-icon');
+            const eyeOffIcon = btn.querySelector('.eye-off-icon');
+            if (eyeIcon && eyeOffIcon) {
+                eyeIcon.classList.toggle('hidden', !isPassword);
+                eyeOffIcon.classList.toggle('hidden', isPassword);
+            }
+        });
+    });
+
+    // --- Issue #33: Password strength meter ---
+    const signupPassword = document.getElementById('signupPassword');
+    if (signupPassword) {
+        signupPassword.addEventListener('input', () => {
+            updatePasswordStrength(signupPassword.value);
+        });
+    }
 });
+
+
+/**
+ * Issue #25: Redirect to index if already logged in
+ */
+async function redirectIfAuthenticated() {
+    try {
+        if (typeof checkAuth === 'function') {
+            const user = await checkAuth(false); // Don't redirect on fail
+            if (user) {
+                window.location.href = 'index.html';
+            }
+        }
+    } catch (err) {
+        // Not authenticated — stay on login page
+    }
+}
+
 
 /**
  * Handle login form submission
  */
 async function handleLogin() {
     const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-    const rememberMe = document.getElementById('rememberMe');
+    const password = document.getElementById('password').value; // Issue #24: Don't trim password
 
-    clearLoginErrors();
+    clearAllMessages();
 
     if (!username || !password) {
-        showLoginError('Please enter both username and password');
+        showMessage('loginErrorMsg', 'Please enter both username and password');
         return;
     }
 
-    const loginBtn = document.querySelector('#loginForm .btn-block');
-    let originalText = '';
-    if (loginBtn) {
-        originalText = loginBtn.textContent;
-        loginBtn.textContent = 'Logging in...';
-        loginBtn.disabled = true;
-    }
+    // Issue #27: Show loading spinner
+    setButtonLoading('loginSubmitBtn', true);
 
     try {
         const result = await apiFetch(`${API_BASE}/auth/login`, {
@@ -57,193 +117,237 @@ async function handleLogin() {
         });
 
         if (result.success) {
-            if (rememberMe && rememberMe.checked) {
-                localStorage.setItem('futureMapUser', result.user.username);
-            }
+            // Issue #4: Use sessionStorage only (not localStorage — XSS-safe)
             sessionStorage.setItem('futureMapUser', result.user.username);
 
-            showLoginSuccess('Login successful! Welcome ' + escapeHTML(result.user.username));
+            showMessage('loginSuccessMsg', 'Login successful! Welcome ' + escapeHTML(result.user.username));
             setTimeout(() => {
                 window.location.href = 'index.html';
-            }, 1200);
+            }, REDIRECT_DELAY_MS);
         } else {
-            showLoginError(result.error || 'Invalid credentials');
+            showMessage('loginErrorMsg', result.error || 'Invalid credentials');
         }
     } catch (err) {
         console.error('Login error:', err);
-        showLoginError('Server error. Make sure the backend is running.');
+        showMessage('loginErrorMsg', 'Server error. Make sure the backend is running.');
     } finally {
-        if (loginBtn) {
-            loginBtn.textContent = originalText;
-            loginBtn.disabled = false;
-        }
+        setButtonLoading('loginSubmitBtn', false);
     }
 }
+
 
 /**
  * Handle signup form submission
  */
 async function handleSignup() {
+    const full_name = document.getElementById('signupFullName').value.trim();  // Issue #15/#29
     const username = document.getElementById('signupUsername').value.trim();
     const email = document.getElementById('signupEmail').value.trim();
-    const password = document.getElementById('signupPassword').value;
+    const password = document.getElementById('signupPassword').value;  // Issue #24: Don't trim
     const confirmPassword = document.getElementById('signupConfirmPassword').value;
 
-    clearLoginErrors();
+    clearAllMessages();
 
+    // --- Client-side validation ---
     if (!username || !email || !password || !confirmPassword) {
-        showSignupError('Please fill in all fields');
+        showMessage('signupErrorMsg', 'Please fill in all required fields');
         return;
     }
 
     if (!/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
-        showSignupError('Username must be 3-30 characters (letters, numbers, underscore only)');
+        showMessage('signupErrorMsg', 'Username must be 3-30 characters (letters, numbers, underscore only)');
         return;
     }
 
     if (password.length < 6) {
-        showSignupError('Password must be at least 6 characters');
+        showMessage('signupErrorMsg', 'Password must be at least 6 characters');
         return;
     }
 
     if (password.length > 128) {
-        showSignupError('Password is too long (max 128 characters)');
+        showMessage('signupErrorMsg', 'Password is too long (max 128 characters)');
         return;
     }
 
     if (password !== confirmPassword) {
-        showSignupError('Passwords do not match');
+        showMessage('signupErrorMsg', 'Passwords do not match');
         return;
     }
 
-    const signupBtn = document.querySelector('#signupForm .btn-block');
-    let originalText = '';
-    if (signupBtn) {
-        originalText = signupBtn.textContent;
-        signupBtn.textContent = 'Creating account...';
-        signupBtn.disabled = true;
-    }
+    // Issue #27: Show loading spinner
+    setButtonLoading('signupSubmitBtn', true);
 
     try {
+        // Issue #29: Send full_name + confirm_password to backend (Issue #10)
         const result = await apiFetch(`${API_BASE}/auth/register`, {
             method: 'POST',
-            body: JSON.stringify({ username, email, password })
+            body: JSON.stringify({
+                username,
+                email,
+                password,
+                confirm_password: confirmPassword,
+                full_name
+            })
         });
 
         if (result.success) {
-            showSignupSuccess('Account created successfully! Redirecting to login...');
+            showMessage('signupSuccessMsg', 'Account created successfully! Redirecting to login...');
             document.getElementById('signupForm').reset();
+            // Reset password strength meter
+            resetPasswordStrength();
             setTimeout(() => {
                 toggleSignup();
-                clearLoginErrors();
-            }, 1500);
+                clearAllMessages();
+            }, SIGNUP_TOGGLE_DELAY_MS);
         } else {
-            showSignupError(result.error || 'Error during registration');
+            showMessage('signupErrorMsg', result.error || 'Error during registration');
         }
     } catch (err) {
         console.error('Signup error:', err);
-        showSignupError('Server error. Make sure the backend is running.');
+        showMessage('signupErrorMsg', 'Server error. Make sure the backend is running.');
     } finally {
-        if (signupBtn) {
-            signupBtn.textContent = originalText;
-            signupBtn.disabled = false;
-        }
+        setButtonLoading('signupSubmitBtn', false);
     }
 }
 
+
 /**
- * Toggle between login and signup forms
+ * Toggle between login and signup forms with smooth transitions
  */
 function toggleSignup() {
-    const loginBox = document.querySelector('.login-box');
+    const loginBox = document.getElementById('loginBox');
     const signupBox = document.getElementById('signupBox');
     if (!loginBox || !signupBox) return;
 
-    clearLoginErrors();
+    clearAllMessages();
 
-    if (isHidden(loginBox)) {
-        showElement(loginBox);
-        hideElement(signupBox);
+    if (loginBox.classList.contains('hidden')) {
+        loginBox.classList.remove('hidden');
+        loginBox.classList.add('auth-fade-in');
+        signupBox.classList.add('hidden');
+        signupBox.classList.remove('auth-fade-in');
     } else {
-        hideElement(loginBox);
-        showElement(signupBox);
+        signupBox.classList.remove('hidden');
+        signupBox.classList.add('auth-fade-in');
+        loginBox.classList.add('hidden');
+        loginBox.classList.remove('auth-fade-in');
     }
 }
 
-/**
- * Show login error message
- */
-function showLoginError(message) {
-    let el = document.getElementById('loginErrorMsg');
-    if (!el) {
-        el = document.createElement('div');
-        el.id = 'loginErrorMsg';
-        el.className = 'upload-msg upload-error';
-        const form = document.getElementById('loginForm');
-        if (form) form.parentNode.insertBefore(el, form);
-    }
-    el.textContent = 'Error: ' + message;
-    showElement(el);
-}
+
+// ==================== MESSAGE HELPERS ====================
 
 /**
- * Show login success message
+ * Issue #28: Show a message in a pre-existing container with fade-in animation
+ * @param {string} elementId - ID of the message container
+ * @param {string} message - Message text to display
  */
-function showLoginSuccess(message) {
-    let el = document.getElementById('loginSuccessMsg');
-    if (!el) {
-        el = document.createElement('div');
-        el.id = 'loginSuccessMsg';
-        el.className = 'upload-msg upload-success';
-        const form = document.getElementById('loginForm');
-        if (form) form.parentNode.insertBefore(el, form);
-    }
-    el.textContent = 'Success: ' + message;
-    showElement(el);
-    const err = document.getElementById('loginErrorMsg');
-    if (err) hideElement(err);
-}
+function showMessage(elementId, message) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
 
-/**
- * Show signup error message
- */
-function showSignupError(message) {
-    let el = document.getElementById('signupErrorMsg');
-    if (!el) {
-        el = document.createElement('div');
-        el.id = 'signupErrorMsg';
-        el.className = 'upload-msg upload-error';
-        const form = document.getElementById('signupForm');
-        if (form) form.parentNode.insertBefore(el, form);
-    }
-    el.textContent = 'Error: ' + message;
-    showElement(el);
-}
+    el.textContent = message;
+    el.classList.remove('hidden');
+    el.classList.add('auth-msg-visible');
 
-/**
- * Show signup success message
- */
-function showSignupSuccess(message) {
-    let el = document.getElementById('signupSuccessMsg');
-    if (!el) {
-        el = document.createElement('div');
-        el.id = 'signupSuccessMsg';
-        el.className = 'upload-msg upload-success';
-        const form = document.getElementById('signupForm');
-        if (form) form.parentNode.insertBefore(el, form);
-    }
-    el.textContent = 'Success: ' + message;
-    showElement(el);
-    const err = document.getElementById('signupErrorMsg');
-    if (err) hideElement(err);
+    // Auto-dismiss after timeout
+    clearTimeout(el._dismissTimer);
+    el._dismissTimer = setTimeout(() => {
+        el.classList.remove('auth-msg-visible');
+        el.classList.add('hidden');
+    }, MSG_AUTO_DISMISS_MS);
 }
 
 /**
  * Clear all error and success messages
  */
-function clearLoginErrors() {
+function clearAllMessages() {
     ['loginErrorMsg', 'loginSuccessMsg', 'signupErrorMsg', 'signupSuccessMsg'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) hideElement(el);
+        if (el) {
+            el.classList.add('hidden');
+            el.classList.remove('auth-msg-visible');
+            el.textContent = '';
+            clearTimeout(el._dismissTimer);
+        }
     });
+}
+
+
+// ==================== BUTTON LOADING STATE ====================
+
+/**
+ * Issue #27: Toggle loading spinner on a button
+ * @param {string} btnId - Button element ID
+ * @param {boolean} loading - Whether to show loading state
+ */
+function setButtonLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+
+    const textEl = btn.querySelector('.btn-text');
+    const spinnerEl = btn.querySelector('.btn-spinner');
+
+    if (loading) {
+        btn.disabled = true;
+        btn.classList.add('btn-loading');
+        if (textEl) textEl.classList.add('hidden');
+        if (spinnerEl) spinnerEl.classList.remove('hidden');
+    } else {
+        btn.disabled = false;
+        btn.classList.remove('btn-loading');
+        if (textEl) textEl.classList.remove('hidden');
+        if (spinnerEl) spinnerEl.classList.add('hidden');
+    }
+}
+
+
+// ==================== PASSWORD STRENGTH METER ====================
+
+/**
+ * Issue #33: Calculate and display password strength
+ * @param {string} password - Current password value
+ */
+function updatePasswordStrength(password) {
+    const fill = document.getElementById('passwordStrengthFill');
+    const text = document.getElementById('passwordStrengthText');
+    if (!fill || !text) return;
+
+    let score = 0;
+    if (password.length >= 6) score++;
+    if (password.length >= 10) score++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[^a-zA-Z0-9]/.test(password)) score++;
+
+    const levels = [
+        { label: 'Min 6 characters', color: 'transparent', width: '0%' },
+        { label: 'Weak', color: '#ef4444', width: '20%' },
+        { label: 'Fair', color: '#f59e0b', width: '40%' },
+        { label: 'Good', color: '#3b82f6', width: '60%' },
+        { label: 'Strong', color: '#10b981', width: '80%' },
+        { label: 'Very Strong', color: '#059669', width: '100%' }
+    ];
+
+    const level = levels[Math.min(score, levels.length - 1)];
+    fill.style.width = level.width;
+    fill.style.background = level.color;
+    text.textContent = password.length === 0 ? 'Min 6 characters' : level.label;
+    text.style.color = level.color === 'transparent' ? 'var(--text-muted)' : level.color;
+}
+
+/**
+ * Reset password strength meter to initial state
+ */
+function resetPasswordStrength() {
+    const fill = document.getElementById('passwordStrengthFill');
+    const text = document.getElementById('passwordStrengthText');
+    if (fill) {
+        fill.style.width = '0%';
+        fill.style.background = 'transparent';
+    }
+    if (text) {
+        text.textContent = 'Min 6 characters';
+        text.style.color = 'var(--text-muted)';
+    }
 }
