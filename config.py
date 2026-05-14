@@ -34,12 +34,12 @@ if FLASK_ENV == 'production':
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_SAMESITE = 'Lax'
 else:
-    # Development: SameSite=None is required so that session cookies are sent
-    # on cross-origin fetch requests (e.g. Live Server on port 5500 → Flask on port 5000).
-    # Secure=True is needed because browsers reject SameSite=None without Secure,
-    # but Chrome/Firefox treat localhost/127.0.0.1 as a secure context.
-    SESSION_COOKIE_SECURE = True
-    SESSION_COOKIE_SAMESITE = 'None'
+    # Development: Flask serves the frontend directly (same-origin), so
+    # SameSite=Lax is correct and Secure=False is needed for plain HTTP.
+    # NOTE: If using Live Server (cross-origin), access via Flask at
+    # http://127.0.0.1:5000 instead to avoid cross-origin cookie issues.
+    SESSION_COOKIE_SECURE = False
+    SESSION_COOKIE_SAMESITE = 'Lax'
 PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
 
 # --- INPUT VALIDATION ---
