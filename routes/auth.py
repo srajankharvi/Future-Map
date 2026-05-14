@@ -325,7 +325,7 @@ def update_profile():
 def check_auth():
     """Check if user is currently authenticated"""
     if 'user_id' in session:
-        return jsonify({
+        resp = jsonify({
             'success': True,
             'authenticated': True,
             'user': {
@@ -333,8 +333,15 @@ def check_auth():
                 'username': session.get('username'),
                 'email': session.get('email')
             }
-        }), 200
-    return jsonify({
-        'success': True,
-        'authenticated': False
-    }), 200
+        })
+    else:
+        resp = jsonify({
+            'success': True,
+            'authenticated': False
+        })
+    
+    # Prevent caching of auth state
+    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp, 200

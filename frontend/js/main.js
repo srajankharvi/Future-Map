@@ -144,7 +144,7 @@ async function apiFetch(url, options = {}) {
  */
 async function checkAuth(redirectOnFail = true) {
     try {
-        const data = await apiFetch(`${API_BASE}/check-auth`);
+        const data = await apiFetch(`${API_BASE}/check-auth`, { cache: 'no-store' });
         if (data.success && data.authenticated) {
             return data.user;
         }
