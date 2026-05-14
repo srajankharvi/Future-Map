@@ -30,8 +30,16 @@ if not SECRET_KEY:
 
 # --- SESSION SECURITY ---
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SECURE = (FLASK_ENV == 'production')
-SESSION_COOKIE_SAMESITE = 'Lax'  # More compatible than 'Strict' for some browser/redirect scenarios
+if FLASK_ENV == 'production':
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+else:
+    # Development: SameSite=None is required so that session cookies are sent
+    # on cross-origin fetch requests (e.g. Live Server on port 5500 → Flask on port 5000).
+    # Secure=True is needed because browsers reject SameSite=None without Secure,
+    # but Chrome/Firefox treat localhost/127.0.0.1 as a secure context.
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_SAMESITE = 'None'
 PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
 
 # --- INPUT VALIDATION ---

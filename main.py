@@ -5,6 +5,7 @@ Creates the Flask app, applies config, extensions, blueprints, and error handler
 
 from flask import Flask
 from flask_cors import CORS
+import os
 
 from config import (
     SECRET_KEY,
@@ -31,7 +32,19 @@ def create_app():
     app.config['PERMANENT_SESSION_LIFETIME'] = PERMANENT_SESSION_LIFETIME
 
     # --- Extensions ---
-    CORS(app, supports_credentials=True)
+    # Allow cross-origin requests from local dev servers (Live Server, etc.)
+    # so that session cookies are properly sent/received.
+    cors_origins = [
+        'http://127.0.0.1:5500',
+        'http://localhost:5500',
+        'http://127.0.0.1:5501',
+        'http://localhost:5501',
+        'http://127.0.0.1:3000',
+        'http://localhost:3000',
+        'http://127.0.0.1:5000',
+        'http://localhost:5000',
+    ]
+    CORS(app, supports_credentials=True, origins=cors_origins)
     limiter.init_app(app)
 
     # --- Blueprints ---

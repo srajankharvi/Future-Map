@@ -3,8 +3,9 @@
 
 // Detect if running on a local development server (like VS Code Live Server)
 // and point to the Flask backend running on port 5000.
+// When already on Flask (port 5000), use same-origin to avoid cross-origin cookie issues.
 let API_BASE = window.location.origin + '/api';
-if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+if ((window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') && window.location.port !== '5000') {
     API_BASE = `http://${window.location.hostname}:5000/api`;
 }
 
