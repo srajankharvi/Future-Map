@@ -4,6 +4,7 @@ Recommendations route — career + course recommendations based on marks and ski
 
 import logging
 from flask import Blueprint, jsonify, request
+from extensions import limiter
 
 from routes.careers import fetch_careers
 from routes.courses import fetch_courses
@@ -14,6 +15,7 @@ recommendations_bp = Blueprint('recommendations', __name__)
 
 @recommendations_bp.route('/api/recommendation', methods=['GET', 'POST'])
 @recommendations_bp.route('/api/recommendations', methods=['GET', 'POST'])
+@limiter.limit("20 per minute")
 def get_recommendations():
     """Generate career and course recommendations based on marks and skills"""
     try:
@@ -33,8 +35,14 @@ def get_recommendations():
             return jsonify({'success': False, 'error': 'No data provided'}), 400
 
         marks = data.get('marks', 0)
-        skills = data.get('skills', [])
-        education_level = data.get('education_level', 'SSLC')
+        skills_raw = data.get('skills', [])
+        # Input Sanitization: Restrict skills list length and item size
+        if isinstance(skills_raw, list):
+            skills = [str(s).strip()[:50] for s in skills_raw[:20]]
+        else:
+            skills = []
+        
+        education_level = str(data.get('education_level', 'SSLC')).strip()[:30]
 
         if not skills:
             return jsonify({'success': False, 'error': 'Please select at least one skill'}), 400

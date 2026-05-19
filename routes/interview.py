@@ -52,9 +52,10 @@ def generate_interview_questions():
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
 
-        # --- Parse inputs (support both original and enhanced format) ---
-        category = data.get('category', '').strip()
-        level = data.get('level', '').strip().lower()
+        # --- Parse inputs & Apply AI Payload Security Limits ---
+        # Prevent token exhaust / Denial of Wallet by strictly truncating lengths
+        category = data.get('category', '').strip()[:50]
+        level = data.get('level', '').strip().lower()[:20]
         count = data.get('count', 5)
 
         # --- Check Daily Usage Limit ---
@@ -88,9 +89,9 @@ def generate_interview_questions():
                 }
             )
 
-        # Enhanced parameters (optional — used for more targeted AI prompts)
-        role = data.get('role', '').strip() or None
-        topic = data.get('topic', '').strip() or None
+        # Enhanced parameters (truncated for AI payload security)
+        role = (data.get('role', '').strip()[:100]) or None
+        topic = (data.get('topic', '').strip()[:100]) or None
 
 
         # --- Validate required inputs ---
@@ -227,9 +228,11 @@ def mock_interview_chat():
             return jsonify({'success': False, 'error': 'No data provided'}), 400
 
         user_id = session.get('user_id')
-        category = data.get('category', '').strip()
-        level = data.get('level', 'beginner').strip().lower()
-        message = data.get('message', '').strip()
+        category = data.get('category', '').strip()[:50]
+        level = data.get('level', 'beginner').strip().lower()[:20]
+        
+        # AI Payload Limit: Truncate messages to prevent huge context window exhaustion
+        message = data.get('message', '').strip()[:1000]
         history = data.get('history', [])
         
         if not category or not message:

@@ -53,6 +53,22 @@ def create_app():
     # --- Error handlers ---
     register_error_handlers(app)
 
+    # --- Security Headers (Backend Hardening) ---
+    @app.after_request
+    def add_security_headers(response):
+        # Prevent clickjacking (X-Frame-Options)
+        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        # Prevent MIME-type sniffing
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        # Basic CSP for API and static assets
+        response.headers['Content-Security-Policy'] = "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' http://127.0.0.1:5000 http://localhost:5000"
+        # HSTS (Strict-Transport-Security) - Applied if production (Secure Cookies on)
+        if app.config.get('SESSION_COOKIE_SECURE'):
+            response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        # Referrer Policy
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        return response
+
     # --- Database init ---
     init_db()
 

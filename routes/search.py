@@ -4,6 +4,7 @@ Search route — search across careers and courses.
 
 import logging
 from flask import Blueprint, jsonify, request
+from extensions import limiter
 
 from routes.careers import fetch_careers
 from routes.courses import fetch_courses
@@ -12,6 +13,7 @@ search_bp = Blueprint('search', __name__)
 
 
 @search_bp.route('/api/search', methods=['GET'])
+@limiter.limit("60 per minute")
 def search():
     """Search careers and courses"""
     try:
@@ -23,8 +25,9 @@ def search():
         all_careers = fetch_careers()
         all_courses = fetch_courses()
 
-        matched_careers = [c for c in all_careers if query in c.get('name', '').lower() or query in c.get('description', '').lower()]
-        matched_courses = [c for c in all_courses if query in c.get('name', '').lower() or query in c.get('description', '').lower()]
+        # Safely handle potential None values from the database by casting to string
+        matched_careers = [c for c in all_careers if query in str(c.get('name') or '').lower() or query in str(c.get('description') or '').lower()]
+        matched_courses = [c for c in all_courses if query in str(c.get('name') or '').lower() or query in str(c.get('description') or '').lower()]
 
         return jsonify({
             'success': True,

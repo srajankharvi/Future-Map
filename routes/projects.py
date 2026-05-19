@@ -46,9 +46,10 @@ def create_project():
             return jsonify({'success': False, 'error': 'Database not available'}), 503
 
         username = session.get('username', '')
-        title = data.get('title', '').strip()
-        link = data.get('link', '').strip()
-        description = data.get('description', '').strip()
+        # Database Security: Sanitize and strictly limit input lengths to prevent DB bloat/DoS
+        title = data.get('title', '').strip()[:100]
+        link = data.get('link', '').strip()[:500]
+        description = data.get('description', '').strip()[:1000]
 
         if not title or not link or not description:
             return jsonify({'success': False, 'error': 'All fields are required'}), 400
@@ -71,7 +72,7 @@ def create_project():
 
     except Exception as e:
         logging.exception("Project creation error")
-        return jsonify({'success': False, 'error': f'Could not upload project: {str(e)}'}), 500
+        return jsonify({'success': False, 'error': 'Could not upload project due to an internal error'}), 500
 
 
 @projects_bp.route('/api/user/projects', methods=['GET'])
