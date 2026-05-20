@@ -7,3 +7,7 @@ Werkzeug==2.3.7
 google-genai>=1.0.0
 requests>=2.31.0
 dnspython>=2.3.0
+Flask-Talisman==1.1.0
+pydantic==2.5.3
+email-validator==2.1.0
+bleach==6.1.0

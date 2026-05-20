@@ -20,49 +20,57 @@ from flask import Blueprint, jsonify, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson import ObjectId
 from pymongo.errors import DuplicateKeyError
+from pydantic import ValidationError
 
 from config import USERNAME_REGEX, EMAIL_REGEX, PASSWORD_MIN, PASSWORD_MAX, FULL_NAME_MAX
+from schemas import RegisterSchema, LoginSchema, UpdateProfileSchema
 from database import mongo_db
 from utils import login_required
 from extensions import limiter
 
 auth_bp = Blueprint('auth', __name__)
 
-# --- Per-user failed login tracking (in-memory, resets on restart) ---
-# Key: username, Value: {'count': int, 'locked_until': datetime or None}
-_login_attempts = {}
 MAX_FAILED_ATTEMPTS = 5
 LOCKOUT_DURATION_MINUTES = 15
 
-
 def _is_account_locked(username):
-    """Check if an account is temporarily locked due to failed attempts (Issue #13)."""
-    record = _login_attempts.get(username)
+    """Check if an account is temporarily locked due to failed attempts (DB-backed)."""
+    if mongo_db is None: return False
+    record = mongo_db.login_attempts.find_one({'username': username})
     if not record:
         return False
     if record.get('locked_until'):
-        if datetime.now(timezone.utc) < record['locked_until']:
-            return True
-        # Lockout expired — reset
-        _login_attempts.pop(username, None)
+        try:
+            locked_until_dt = datetime.fromisoformat(record['locked_until'])
+            if datetime.now(timezone.utc) < locked_until_dt:
+                return True
+        except ValueError:
+            pass
+        # Lockout expired or invalid format — reset
+        mongo_db.login_attempts.delete_one({'username': username})
         return False
     return False
 
-
 def _record_failed_attempt(username):
-    """Record a failed login attempt and lock if threshold reached (Issue #13)."""
-    record = _login_attempts.get(username, {'count': 0, 'locked_until': None})
-    record['count'] += 1
-    if record['count'] >= MAX_FAILED_ATTEMPTS:
-        from datetime import timedelta
-        record['locked_until'] = datetime.now(timezone.utc) + timedelta(minutes=LOCKOUT_DURATION_MINUTES)
-        logging.warning(f"Account '{username}' locked for {LOCKOUT_DURATION_MINUTES} min after {MAX_FAILED_ATTEMPTS} failed attempts")
-    _login_attempts[username] = record
-
+    """Record a failed login attempt and lock if threshold reached (DB-backed)."""
+    if mongo_db is None: return
+    from datetime import timedelta
+    record = mongo_db.login_attempts.find_one({'username': username})
+    if not record:
+        mongo_db.login_attempts.insert_one({'username': username, 'count': 1, 'locked_until': None})
+    else:
+        count = record.get('count', 0) + 1
+        update_data = {'count': count}
+        if count >= MAX_FAILED_ATTEMPTS:
+            locked_until_dt = datetime.now(timezone.utc) + timedelta(minutes=LOCKOUT_DURATION_MINUTES)
+            update_data['locked_until'] = locked_until_dt.isoformat()
+            logging.warning(f"Account '{username}' locked for {LOCKOUT_DURATION_MINUTES} min after {MAX_FAILED_ATTEMPTS} failed attempts")
+        mongo_db.login_attempts.update_one({'username': username}, {'$set': update_data})
 
 def _clear_failed_attempts(username):
     """Clear failed attempts after successful login."""
-    _login_attempts.pop(username, None)
+    if mongo_db is None: return
+    mongo_db.login_attempts.delete_one({'username': username})
 
 
 def _sanitize_text(text, max_length=255):
@@ -88,31 +96,17 @@ def register():
         if mongo_db is None:
             return jsonify({'success': False, 'error': 'Database not available'}), 503
 
-        username = data.get('username', '').strip().lower()
-        email = data.get('email', '').strip().lower()
-        password = data.get('password', '')  # Issue #9: Do NOT trim passwords
-        confirm_password = data.get('confirm_password', '')  # Issue #10
-        full_name = _sanitize_text(data.get('full_name', ''), FULL_NAME_MAX)  # Issue #11
+        try:
+            schema = RegisterSchema(**data)
+        except ValidationError as e:
+            msg = e.errors()[0]['msg']
+            field = e.errors()[0]['loc'][0] if e.errors()[0].get('loc') else 'Field'
+            return jsonify({'success': False, 'error': f'{field}: {msg}'}), 400
 
-        # Validation
-        if not username or not USERNAME_REGEX.match(username):
-            return jsonify({
-                'success': False,
-                'error': 'Username must be 3-30 characters (letters, numbers, underscore only)'
-            }), 400
-
-        if not email or not EMAIL_REGEX.match(email):
-            return jsonify({'success': False, 'error': 'Invalid email format'}), 400
-
-        if not password or len(password) < PASSWORD_MIN:
-            return jsonify({'success': False, 'error': f'Password must be at least {PASSWORD_MIN} characters'}), 400
-
-        if len(password) > PASSWORD_MAX:
-            return jsonify({'success': False, 'error': f'Password must be at most {PASSWORD_MAX} characters'}), 400
-
-        # Issue #10: Validate password confirmation on backend
-        if confirm_password and password != confirm_password:
-            return jsonify({'success': False, 'error': 'Passwords do not match'}), 400
+        username = schema.username
+        email = schema.email
+        password = schema.password
+        full_name = schema.full_name
 
         # Hash password
         password_hash = generate_password_hash(password)
@@ -180,11 +174,13 @@ def login():
         if mongo_db is None:
             return jsonify({'success': False, 'error': 'Database not available'}), 503
 
-        username = data.get('username', '').strip().lower()
-        password = data.get('password', '')  # Issue #9: Do NOT trim passwords
-
-        if not username or not password:
+        try:
+            schema = LoginSchema(**data)
+        except ValidationError as e:
             return jsonify({'success': False, 'error': 'Username and password required'}), 400
+
+        username = schema.username
+        password = schema.password
 
         # Issue #13: Check account lockout
         if _is_account_locked(username):
@@ -296,13 +292,14 @@ def update_profile():
 
         username = session.get('username')
 
-        # Whitelist allowed fields with sanitization (Issue #11)
-        allowed_fields = ['full_name', 'bio', 'avatar_url', 'birthday', 'status']
-        update_data = {}
-        for field in allowed_fields:
-            if field in data:
-                max_len = FULL_NAME_MAX if field == 'full_name' else 500
-                update_data[field] = _sanitize_text(str(data[field]), max_len)
+        try:
+            schema = UpdateProfileSchema(**data)
+        except ValidationError as e:
+            msg = e.errors()[0]['msg']
+            field = e.errors()[0]['loc'][0] if e.errors()[0].get('loc') else 'Field'
+            return jsonify({'success': False, 'error': f'{field}: {msg}'}), 400
+
+        update_data = schema.model_dump(exclude_unset=True)
 
         if update_data:
             mongo_db.user_profiles.update_one(

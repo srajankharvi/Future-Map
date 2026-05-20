@@ -16,17 +16,28 @@ load_dotenv()
 FLASK_ENV = os.getenv('FLASK_ENV', 'development')
 
 # --- SECRET KEY (REQUIRED) ---
-# Issue #2 fix: Generate a cryptographically strong fallback instead of a weak one.
 # NOTE: For Vercel/Serverless, you MUST set SECRET_KEY in environment variables.
 # A random fallback will change on each restart, causing session invalidation.
 SECRET_KEY = os.getenv('SECRET_KEY')
 if not SECRET_KEY:
-    # Generate a strong random key as fallback
-    SECRET_KEY = secrets_module.token_hex(64)
     if FLASK_ENV == 'production':
-        logging.critical("!!! SECURITY WARNING: SECRET_KEY is not set in production. Using random fallback — sessions will not persist across restarts. !!!")
-    else:
-        logging.warning("SECRET_KEY not set. Using random fallback for development.")
+        raise ValueError("CRITICAL SECURITY ERROR: SECRET_KEY environment variable must be set in production!")
+    # Generate a strong random key as fallback for development
+    SECRET_KEY = secrets_module.token_hex(64)
+    logging.warning("SECRET_KEY not set. Using random fallback for development.")
+
+# --- CORS SECURITY ---
+CORS_ORIGINS_ENV = os.getenv('CORS_ORIGINS')
+if CORS_ORIGINS_ENV:
+    CORS_ORIGINS = [origin.strip() for origin in CORS_ORIGINS_ENV.split(',')]
+else:
+    CORS_ORIGINS = [
+        'http://127.0.0.1:5500', 'http://localhost:5500',
+        'http://127.0.0.1:5501', 'http://localhost:5501',
+        'http://127.0.0.1:3000', 'http://localhost:3000',
+        'http://127.0.0.1:5000', 'http://localhost:5000',
+    ]
+
 
 # --- SESSION SECURITY ---
 SESSION_COOKIE_HTTPONLY = True
