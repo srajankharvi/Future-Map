@@ -99,6 +99,14 @@ let mockQuestionCount = 0;
 const MAX_MOCK_QUESTIONS = 10;
 let isMockActive = false;
 let mockSelectedLevel = 'beginner';
+let mockPendingIntegrityNotice = '';
+let lastMockIntegrityNotice = '';
+let lastMockIntegrityNoticeAt = 0;
+let lastMockTabViolationAt = 0;
+
+const MOCK_CLIPBOARD_WARNING = 'Copy, paste and cut are disabled during the mock interview.';
+const MOCK_TAB_WARNING = 'Warning: tab switching is not allowed during the mock interview.';
+const MOCK_MOBILE_CLOSE_WARNING = 'Mock interview closed because switching apps or tabs is not allowed on mobile.';
 
 function setupMockInterview() {
     const startBtn = document.getElementById('startMockBtn');
@@ -144,6 +152,149 @@ function setupMockInterview() {
             }
         });
     }
+
+    setupMockIntegrityGuards();
+}
+
+function setupMockIntegrityGuards() {
+    const mockSection = document.getElementById('mockInterview');
+    const chatInput = document.getElementById('chatInput');
+
+    if (mockSection) {
+        ['copy', 'cut', 'paste', 'drop'].forEach(eventName => {
+            mockSection.addEventListener(eventName, blockMockClipboardAction);
+        });
+        mockSection.addEventListener('contextmenu', blockMockContextMenu);
+    }
+
+    if (chatInput) {
+        chatInput.addEventListener('beforeinput', blockMockPasteInput);
+    }
+
+    document.addEventListener('keydown', blockMockClipboardShortcut);
+    document.addEventListener('visibilitychange', handleMockVisibilityChange);
+}
+
+function blockMockClipboardAction(event) {
+    if (!isMockActive) return;
+
+    event.preventDefault();
+    showMockIntegrityWarning(MOCK_CLIPBOARD_WARNING);
+}
+
+function blockMockContextMenu(event) {
+    if (!isMockActive) return;
+
+    event.preventDefault();
+    showMockIntegrityWarning(MOCK_CLIPBOARD_WARNING);
+}
+
+function blockMockPasteInput(event) {
+    if (!isMockActive) return;
+
+    const blockedInputTypes = ['insertFromPaste', 'insertFromPasteAsQuotation', 'insertFromDrop', 'insertFromYank'];
+    if (blockedInputTypes.includes(event.inputType)) {
+        event.preventDefault();
+        showMockIntegrityWarning(MOCK_CLIPBOARD_WARNING);
+    }
+}
+
+function blockMockClipboardShortcut(event) {
+    if (!isMockActive) return;
+
+    const key = event.key.toLowerCase();
+    const isClipboardShortcut = (event.ctrlKey || event.metaKey) && ['c', 'v', 'x'].includes(key);
+    const isInsertShortcut = key === 'insert' && (event.ctrlKey || event.shiftKey);
+
+    if (isClipboardShortcut || isInsertShortcut) {
+        event.preventDefault();
+        showMockIntegrityWarning(MOCK_CLIPBOARD_WARNING);
+    }
+}
+
+function handleMockVisibilityChange() {
+    if (document.visibilityState === 'visible') {
+        if (mockPendingIntegrityNotice) {
+            const message = mockPendingIntegrityNotice;
+            mockPendingIntegrityNotice = '';
+            showMockIntegrityWarning(message);
+        }
+        return;
+    }
+
+    if (document.visibilityState === 'hidden') {
+        handleMockTabViolation();
+    }
+}
+
+function handleMockTabViolation() {
+    if (!isMockActive) return;
+
+    const now = Date.now();
+    if (now - lastMockTabViolationAt < 1000) return;
+    lastMockTabViolationAt = now;
+
+    if (isMobileMockDevice()) {
+        closeMockInterviewForIntegrity(MOCK_MOBILE_CLOSE_WARNING);
+        return;
+    }
+
+    mockPendingIntegrityNotice = MOCK_TAB_WARNING;
+}
+
+function isMobileMockDevice() {
+    const mobileUserAgent = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent);
+    const compactTouchViewport = window.matchMedia('(max-width: 768px) and (pointer: coarse)').matches;
+    return mobileUserAgent || compactTouchViewport;
+}
+
+function showMockIntegrityWarning(message) {
+    if (document.visibilityState === 'hidden') {
+        mockPendingIntegrityNotice = message;
+        return;
+    }
+
+    const now = Date.now();
+    if (message === lastMockIntegrityNotice && now - lastMockIntegrityNoticeAt < 1500) return;
+    lastMockIntegrityNotice = message;
+    lastMockIntegrityNoticeAt = now;
+
+    removeMockIntegrityWarnings();
+
+    const warning = document.createElement('div');
+    warning.className = 'mock-integrity-warning';
+    warning.setAttribute('role', 'alert');
+
+    const title = document.createElement('strong');
+    title.textContent = 'Warning';
+    const text = document.createElement('span');
+    text.textContent = message;
+
+    warning.appendChild(title);
+    warning.appendChild(text);
+
+    const chatMessages = document.getElementById('chatMessages');
+    const mockChatbox = document.getElementById('mockChatbox');
+    const mockSetup = document.getElementById('mockSetup');
+    const showInChat = isMockActive && chatMessages && mockChatbox && !mockChatbox.classList.contains('hidden');
+
+    if (showInChat) {
+        warning.classList.add('in-chat');
+        chatMessages.appendChild(warning);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    } else if (mockSetup) {
+        mockSetup.prepend(warning);
+    }
+
+    window.setTimeout(() => {
+        if (warning.parentElement) {
+            warning.remove();
+        }
+    }, 6000);
+}
+
+function removeMockIntegrityWarnings() {
+    document.querySelectorAll('.mock-integrity-warning').forEach(warning => warning.remove());
 }
 
 async function startMockInterview() {
@@ -195,6 +346,9 @@ async function startMockInterview() {
     isMockActive = true;
     mockQuestionCount = 0;
     mockMessages = [];
+    mockPendingIntegrityNotice = '';
+    lastMockTabViolationAt = 0;
+    removeMockIntegrityWarnings();
     
     // Enable input area
     const chatInput = document.getElementById('chatInput');
@@ -210,29 +364,61 @@ async function startMockInterview() {
 
 function resetMockInterview() {
     if (confirm('Are you sure you want to reset the interview? Progress will be lost.')) {
-        // Clear session state
-        sessionStorage.removeItem('mockSessionActive');
-        
-        hideElement(document.getElementById('mockChatbox'));
-        showElement(document.getElementById('mockSetup'));
-        document.querySelector('.mock-interview-container').classList.remove('chat-active');
-        
-        document.getElementById('chatMessages').innerHTML = '';
+        clearMockInterviewState();
+    }
+}
 
-        const chatInput = document.getElementById('chatInput');
-        if (chatInput) {
-            chatInput.value = '';
-            chatInput.disabled = false;
-        }
-        
-        const sendBtn = document.getElementById('sendMessageBtn');
-        if (sendBtn) sendBtn.disabled = false;
-        
-        isMockActive = false;
-        mockMessages = [];
-        mockQuestionCount = 0;
-        
-        // Refresh limits display
+function closeMockInterviewForIntegrity(message) {
+    clearMockInterviewState({ clearWarnings: false });
+    showMockIntegrityWarning(message);
+}
+
+function clearMockInterviewState(options = {}) {
+    const { refreshLimits = true, clearWarnings = true } = options;
+
+    sessionStorage.removeItem('mockSessionActive');
+
+    hideElement(document.getElementById('mockChatbox'));
+    showElement(document.getElementById('mockSetup'));
+
+    const mockContainer = document.querySelector('.mock-interview-container');
+    if (mockContainer) {
+        mockContainer.classList.remove('chat-active');
+    }
+
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.innerHTML = '';
+    }
+
+    const chatLoading = document.getElementById('chatLoading');
+    if (chatLoading) {
+        hideElement(chatLoading);
+    }
+
+    const chatInput = document.getElementById('chatInput');
+    if (chatInput) {
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+        chatInput.disabled = false;
+    }
+
+    const sendBtn = document.getElementById('sendMessageBtn');
+    if (sendBtn) {
+        sendBtn.disabled = true;
+    }
+
+    isMockActive = false;
+    mockMessages = [];
+    mockQuestionCount = 0;
+    mockPendingIntegrityNotice = '';
+    lastMockTabViolationAt = 0;
+
+    if (clearWarnings) {
+        removeMockIntegrityWarnings();
+    }
+
+    if (refreshLimits) {
         checkAndDisplayLimits();
     }
 }
@@ -273,6 +459,8 @@ async function sendMockMessage() {
             })
         });
 
+        if (!isMockActive) return;
+
         if (response.success) {
             addChatMessage('ai', response.reply);
             if (response.isQuestion) {
@@ -292,7 +480,9 @@ async function sendMockMessage() {
             addChatMessage('ai', "I'm sorry, " + (response.error || "I encountered an error. Please try again."));
         }
     } catch (err) {
-        addChatMessage('ai', "Network error. Please check your connection.");
+        if (isMockActive) {
+            addChatMessage('ai', "Network error. Please check your connection.");
+        }
         console.error('Mock interview error:', err);
     } finally {
         hideElement(document.getElementById('chatLoading'));

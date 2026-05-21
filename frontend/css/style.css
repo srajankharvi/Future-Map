@@ -4103,6 +4103,33 @@ body.auth-ready {
     cursor: not-allowed;
 }
 
+.mock-integrity-warning {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.1);
+    color: #92400e;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.mock-integrity-warning.in-chat {
+    align-self: center;
+    width: min(100%, 620px);
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.mock-integrity-warning strong {
+    color: #78350f;
+    font-size: 13px;
+    font-weight: 700;
+}
+
 /* Animations for messages */
 @keyframes messageFadeIn {
     from { opacity: 0; transform: translateY(10px); }
