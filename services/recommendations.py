@@ -5,27 +5,43 @@ Recommendation engine — skill-career/course scoring algorithm.
 
 # Skill-to-career mapping
 SKILL_CAREER_MAP = {
-    'analytical': ['Data Scientist', 'Financial Analyst', 'Cybersecurity Analyst'],
-    'creative': ['UX/UI Designer', 'Architect', 'Web Developer'],
-    'technical': ['Software Developer', 'Web Developer', 'Cybersecurity Analyst', 'Mechanical Engineer', 'Civil Engineer'],
-    'communication': ['Product Manager', 'Teacher / Professor', 'Doctor (MBBS)'],
-    'leadership': ['Product Manager', 'Teacher / Professor'],
-    'problem-solving': ['Software Developer', 'Data Scientist', 'Mechanical Engineer', 'Civil Engineer'],
-    'teamwork': ['Product Manager', 'Civil Engineer', 'Doctor (MBBS)'],
-    'design': ['UX/UI Designer', 'Architect', 'Web Developer']
+    'analytical': ['Data Science', 'Machine Learning', 'Artificial Intelligence', 'Financial Planning', 'Banking and Finance', 'Chartered Accountancy (CA)', 'Cyber Security', 'Computer Science'],
+    'creative': ['UI/UX Design', 'Graphic Design', 'Game Design', 'Product Design', 'Interior Design', 'Fashion Design', 'Visual Communication', 'Animation and Multimedia'],
+    'technical': ['Software Engineering', 'Full Stack Development', 'Web Development', 'Mobile App Development', 'Cloud Computing', 'Computer Science', 'Machine Learning', 'Artificial Intelligence', 'Mechanical Engineering', 'Civil Engineering', 'Electrical Engineering', 'Robotics Engineering'],
+    'communication': ['Human Resource Management', 'Marketing Management', 'Aviation Management', 'Public Health', 'Bachelor of Education (B.Ed)', 'Special Education', 'Cabin Crew & Aviation Hospitality'],
+    'leadership': ['Master of Business Administration (MBA)', 'Bachelor of Business Administration (BBA)', 'Agribusiness Management', 'Supply Chain Management', 'Airport Operations Management', 'Aviation Management', 'Human Resource Management'],
+    'problem-solving': ['Software Engineering', 'Full Stack Development', 'Data Science', 'Machine Learning', 'Artificial Intelligence', 'Cyber Security', 'Robotics Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering'],
+    'teamwork': ['Master of Business Administration (MBA)', 'Bachelor of Business Administration (BBA)', 'MBBS', 'BDS', 'B.Sc Nursing', 'Cabin Crew & Aviation Hospitality', 'Aviation Management'],
+    'design': ['UI/UX Design', 'Product Design', 'Graphic Design', 'Fashion Design', 'Interior Design', 'Landscape Architecture', 'Bachelor of Architecture (B.Arch)', 'Auto CAD Design']
 }
 
 # Skill-to-course mapping
 SKILL_COURSE_MAP = {
-    'analytical': ['B.Tech (Computer Science)', 'B.Com (Commerce)', 'MBA (Business Administration)'],
-    'creative': ['B.Arch (Architecture)', 'BCA (Bachelor of Computer Applications)'],
-    'technical': ['B.Tech (Computer Science)', 'BCA (Bachelor of Computer Applications)', 'Diploma in Engineering'],
-    'communication': ['MBA (Business Administration)', 'B.Ed (Education)'],
-    'leadership': ['MBA (Business Administration)', 'B.Ed (Education)'],
-    'problem-solving': ['B.Tech (Computer Science)', 'Diploma in Engineering'],
-    'teamwork': ['MBA (Business Administration)', 'MBBS (Medicine)'],
-    'design': ['B.Arch (Architecture)', 'BCA (Bachelor of Computer Applications)']
+    'analytical': ['Computer Science Engineering (CSE)', 'Data Science', 'Bachelor of Commerce (B.Com)', 'Master of Commerce (M.Com)', 'Chartered Accountancy (CA)', 'Cyber Security'],
+    'creative': ['Bachelor of Design (B.Des)', 'Bachelor of Fine Arts (BFA)', 'Digital Marketing', 'Bachelor of Computer Applications (BCA)'],
+    'technical': ['Computer Science Engineering (CSE)', 'Bachelor of Computer Applications (BCA)', 'Software Engineering', 'Robotics Engineering', 'Cloud Computing', 'Internet of Things (IoT)', 'Mechanical Engineering', 'Civil Engineering', 'Electrical Engineering', 'Electronics and Communication Engineering (ECE)'],
+    'communication': ['Bachelor of Arts (B.A)', 'Master of Arts (M.A)', 'Digital Marketing', 'Public Relations Management', 'Bachelor of Education (B.Ed)', 'Hotel Management'],
+    'leadership': ['Master of Business Administration (MBA)', 'Bachelor of Business Administration (BBA)', 'Supply Chain Management', 'Human Resource Management', 'Financial Management', 'Aviation Management'],
+    'problem-solving': ['Computer Science Engineering (CSE)', 'Software Engineering', 'Robotics Engineering', 'Data Science', 'Cyber Security', 'Mechanical Engineering', 'Civil Engineering', 'Electrical Engineering'],
+    'teamwork': ['Master of Business Administration (MBA)', 'Bachelor of Business Administration (BBA)', 'MBBS', 'BDS', 'B.Sc Nursing', 'Hotel Management', 'Event Management'],
+    'design': ['Bachelor of Design (B.Des)', 'Bachelor of Fine Arts (BFA)', 'Digital Marketing', 'Bachelor of Computer Applications (BCA)']
 }
+
+
+def _education_from_requirements(item):
+    requirements = item.get('requirements')
+    if isinstance(requirements, dict):
+        return requirements.get('minimum_qualification') or requirements.get('qualification') or ''
+    if isinstance(requirements, str):
+        return requirements
+    return item.get('education', '')
+
+
+def _with_score(item, score):
+    result = dict(item)
+    result['score'] = score
+    result['education'] = _education_from_requirements(result) or 'Not specified'
+    return result
 
 
 def compute_recommendations(marks, skills, all_careers, all_courses, education_level='SSLC'):
@@ -42,20 +58,20 @@ def compute_recommendations(marks, skills, all_careers, all_courses, education_l
 
     # Level-based career filtering/bonus
     LEVEL_CAREER_SUITABILITY = {
-        'SSLC': ['Teacher / Professor'],
-        'PUC': ['Software Developer', 'Web Developer'],
-        'Diploma': ['Software Developer', 'Web Developer', 'Mechanical Engineer', 'Civil Engineer'],
-        'Degree': ['Software Developer', 'Data Scientist', 'Financial Analyst', 'UX/UI Designer', 'Architect', 'Cybersecurity Analyst', 'Product Manager', 'Teacher / Professor', 'Doctor (MBBS)'],
-        'Masters': ['Data Scientist', 'Product Manager', 'Teacher / Professor', 'Doctor (MBBS)', 'Senior Research Scientist', 'PhD Researcher']
+        'SSLC': ['Beauty Therapy', 'Cosmetology', 'Makeup Artistry', 'Nail Art Technology', 'Hair Styling and Care', 'Spa and Wellness Management', 'Vehicle Maintenance Technology'],
+        'PUC': ['Cabin Crew & Aviation Hospitality', 'Web Development', 'Graphic Design', 'Animation and Multimedia', 'Visual Communication'],
+        'Diploma': ['Mechanical Engineering', 'Civil Engineering', 'Electrical Engineering', 'Electronics Engineering', 'Automobile Engineering', 'Auto CAD Design', 'Web Development', 'Mobile App Development'],
+        'Degree': ['Software Engineering', 'Full Stack Development', 'UI/UX Design', 'Data Science', 'Cyber Security', 'Investment Banking', 'Chartered Accountancy (CA)', 'MBBS', 'BDS', 'Bachelor of Architecture (B.Arch)', 'Mechanical Engineering', 'Civil Engineering'],
+        'Masters': ['Master of Business Administration (MBA)', 'Master of Education (M.Ed)', 'Data Science', 'Machine Learning', 'Artificial Intelligence', 'Robotics Engineering', 'Special Education']
     }
 
     # Level-based course suitability
     LEVEL_COURSE_SUITABILITY = {
-        'SSLC': ['PUC Science', 'PUC Commerce', 'Diploma in Engineering', 'Diploma in Arts'],
-        'PUC': ['B.Tech (Computer Science)', 'BCA (Bachelor of Computer Applications)', 'B.Com (Commerce)', 'B.Arch (Architecture)', 'MBBS (Medicine)', 'B.Ed (Education)'],
-        'Diploma': ['B.Tech (Lateral Entry)', 'BCA (Bachelor of Computer Applications)', 'Jobs / Apprenticeship'],
-        'Degree': ['MBA (Business Administration)', 'M.Tech (Computer Science)', 'MCA (Computer Applications)', 'M.Sc (Data Science)', 'Specialization Course'],
-        'Masters': ['PhD (Research)', 'Post-Doc Research', 'Executive MBA', 'Specialized Fellowship']
+        'SSLC': ['Bachelor of Science (B.Sc)', 'Bachelor of Commerce (B.Com)', 'Bachelor of Arts (B.A)', 'General Nursing and Midwifery (GNM)'],
+        'PUC': ['Computer Science Engineering (CSE)', 'Bachelor of Computer Applications (BCA)', 'Bachelor of Business Administration (BBA)', 'Bachelor of Commerce (B.Com)', 'Bachelor of Arts (B.A)', 'Bachelor of Design (B.Des)', 'MBBS', 'BDS', 'Bachelor of Education (B.Ed)', 'Bachelor of Pharmacy (B.Pharm)', 'BPT', 'B.Sc Nursing'],
+        'Diploma': ['Computer Science Engineering (CSE)', 'Mechanical Engineering', 'Civil Engineering', 'Electrical Engineering', 'Electronics and Communication Engineering (ECE)', 'Bachelor of Computer Applications (BCA)'],
+        'Degree': ['Master of Business Administration (MBA)', 'Master of Computer Applications (MCA)', 'Master of Science (M.Sc)', 'Master of Arts (M.A)', 'Chartered Accountancy (CA)', 'Company Secretary (CS)', 'Cost and Management Accounting (CMA)'],
+        'Masters': ['MD', 'Master of Education (M.Ed)', 'Master of Business Administration (MBA)', 'Supply Chain Management', 'Human Resource Management']
     }
 
     # Score careers
@@ -91,7 +107,7 @@ def compute_recommendations(marks, skills, all_careers, all_courses, education_l
         level_bonus = 10 if career['name'] in suitable_careers else 0
         
         # Penalties for advanced roles if user has low education level
-        if education_level in ['SSLC', 'PUC'] and career['name'] in ['Data Scientist', 'Product Manager', 'Doctor (MBBS)']:
+        if education_level in ['SSLC', 'PUC'] and career['name'] in ['Data Science', 'Machine Learning', 'Artificial Intelligence', 'MBBS', 'BDS', 'Software Engineering']:
             level_bonus = -30
 
         if raw_score > 0 or level_bonus > 0:
@@ -100,14 +116,7 @@ def compute_recommendations(marks, skills, all_careers, all_courses, education_l
             
             # Only add if score is reasonable (depends on marks)
             if total_score > 20:
-                scored_careers.append({
-                    'name': career['name'],
-                    'category': career.get('category', ''),
-                    'description': career.get('description', ''),
-                    'salary': career.get('salary', 'N/A'),
-                    'education': career.get('education', 'N/A'),
-                    'score': total_score
-                })
+                scored_careers.append(_with_score(career, total_score))
 
     # Score courses
     course_scores = {}
@@ -122,11 +131,11 @@ def compute_recommendations(marks, skills, all_careers, all_courses, education_l
     # High achiever bonus paths
     if marks >= 85:
         if education_level == 'SSLC':
-            suitable_courses.extend(['PUC Science', 'Diploma in Engineering'])
+            suitable_courses.extend(['Computer Science Engineering (CSE)', 'Bachelor of Science (B.Sc)'])
         elif education_level == 'PUC':
-            suitable_courses.extend(['B.Tech (Computer Science)', 'MBBS (Medicine)'])
+            suitable_courses.extend(['Computer Science Engineering (CSE)', 'MBBS', 'Software Engineering'])
         elif education_level == 'Degree':
-            suitable_courses.extend(['MBA (Business Administration)', 'M.Tech (Computer Science)'])
+            suitable_courses.extend(['Master of Business Administration (MBA)', 'Master of Computer Applications (MCA)'])
 
     for course in all_courses:
         raw_score = course_scores.get(course['name'], 0)
@@ -137,13 +146,7 @@ def compute_recommendations(marks, skills, all_careers, all_courses, education_l
             total_score = min(max(round(skill_percent + marks_impact + level_bonus), 0), 99)
             
             if total_score > 15:
-                scored_courses.append({
-                    'name': course['name'],
-                    'type': course.get('type', ''),
-                    'description': course.get('description', ''),
-                    'duration': course.get('duration', 'N/A'),
-                    'score': total_score
-                })
+                scored_courses.append(_with_score(course, total_score))
 
     # Fallback for low but passing marks
     if not scored_courses and marks >= 30:

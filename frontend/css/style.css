@@ -4646,3 +4646,241 @@ body.auth-ready {
         font-size: 13px;
     }
 }
+
+/* --- Additional Roadmap styling updates --- */
+.detail-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 10px 0;
+}
+
+.detail-list li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.detail-list li::before {
+    content: "•";
+    position: absolute;
+    left: 6px;
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.skill-mini-tag {
+    display: inline-block;
+    background: rgba(99, 102, 241, 0.1);
+    color: #818cf8;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 3px 4px;
+    text-transform: capitalize;
+    transition: all 0.3s ease;
+}
+
+.skill-mini-tag:hover {
+    background: rgba(99, 102, 241, 0.2);
+    transform: translateY(-1px);
+}
+
+.career-option-tag {
+    display: inline-block;
+    background: rgba(16, 185, 129, 0.1);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 3px 4px;
+    text-transform: capitalize;
+}
+
+/* Custom styles for projects section */
+.project-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.project-number {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.project-difficulty {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+.project-difficulty.beginner {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.project-difficulty.intermediate {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.project-difficulty.advanced {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.project-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.project-skill-tag {
+    font-size: 10px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+
+.project-time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* --- Ticker Marquee Styling --- */
+.ticker-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    height: 72px;
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+    margin: 32px auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.ticker-title {
+    background: linear-gradient(135deg, var(--accent), var(--secondary));
+    color: #ffffff;
+    padding: 0 28px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    position: relative;
+    z-index: 20;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    box-shadow: 8px 0 20px rgba(0, 0, 0, 0.12);
+}
+
+.ticker-container {
+    flex-grow: 1;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.ticker-track {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    padding-left: 24px;
+    width: max-content;
+    animation: ticker-scroll 75s linear infinite;
+}
+
+.ticker-track:hover {
+    animation-play-state: paused;
+}
+
+.ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14.5px;
+    color: var(--text-primary);
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 8px 18px;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+}
+
+.ticker-item:hover {
+    color: var(--accent);
+    background: rgba(255, 255, 255, 0.8);
+    transform: scale(1.05) translateY(-1px);
+    box-shadow: 0 8px 20px -8px rgba(59, 130, 246, 0.25);
+    border-color: rgba(59, 130, 246, 0.15);
+}
+
+.ticker-item .ticker-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.9;
+}
+
+.ticker-item .ticker-badge {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+    color: var(--accent-dark);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 8px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ticker-item .ticker-badge.course-badge {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+@keyframes ticker-scroll {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(-50%, 0, 0);
+    }
+}
