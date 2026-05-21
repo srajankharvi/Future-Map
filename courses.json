@@ -1,0 +1,3252 @@
+[
+    {
+        "name": "Bachelor of Science (B.Sc)",
+        "type": "DEGREE",
+        "category": "Science",
+        "description": "Bachelor of Science (B.Sc) is a program designed to build knowledge and practical skills in Science.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Science industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Bachelor of Science (B.Sc) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Bachelor of Arts (B.A)",
+        "type": "DEGREE",
+        "category": "Arts",
+        "description": "Bachelor of Arts (B.A) is a program designed to build knowledge and practical skills in Arts.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Arts industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Bachelor of Arts (B.A) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Bachelor of Commerce (B.Com)",
+        "type": "DEGREE",
+        "category": "Commerce",
+        "description": "Bachelor of Commerce (B.Com) is a program designed to build knowledge and practical skills in Commerce.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Commerce industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Bachelor of Commerce (B.Com) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Bachelor of Business Administration (BBA)",
+        "type": "DEGREE",
+        "category": "Business",
+        "description": "Bachelor of Business Administration (BBA) is a program designed to build knowledge and practical skills in Business.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Business industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Bachelor of Business Administration (BBA) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Bachelor of Computer Applications (BCA)",
+        "type": "DEGREE",
+        "category": "Computer",
+        "description": "Bachelor of Computer Applications (BCA) is a program designed to build knowledge and practical skills in Computer.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Computer industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Bachelor of Computer Applications (BCA) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Bachelor of Education (B.Ed)",
+        "type": "PROFESSIONAL",
+        "category": "Education",
+        "description": "Bachelor of Education (B.Ed) is a program designed to build knowledge and practical skills in Education.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Education industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Bachelor of Education (B.Ed) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Bachelor of Social Work (BSW)",
+        "type": "DEGREE",
+        "category": "Social Work",
+        "description": "Bachelor of Social Work (BSW) is a program designed to build knowledge and practical skills in Social Work.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Social Work industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Bachelor of Social Work (BSW) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Bachelor of Fine Arts (BFA)",
+        "type": "DEGREE",
+        "category": "Arts",
+        "description": "Bachelor of Fine Arts (BFA) is a program designed to build knowledge and practical skills in Arts.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Arts industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Bachelor of Fine Arts (BFA) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Master of Science (M.Sc)",
+        "type": "DEGREE",
+        "category": "Science",
+        "description": "Master of Science (M.Sc) is a program designed to build knowledge and practical skills in Science.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Science industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Master of Science (M.Sc) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Master of Arts (M.A)",
+        "type": "DEGREE",
+        "category": "Arts",
+        "description": "Master of Arts (M.A) is a program designed to build knowledge and practical skills in Arts.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Arts industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Master of Arts (M.A) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Master of Commerce (M.Com)",
+        "type": "DEGREE",
+        "category": "Commerce",
+        "description": "Master of Commerce (M.Com) is a program designed to build knowledge and practical skills in Commerce.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Commerce industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Master of Commerce (M.Com) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Master of Business Administration (MBA)",
+        "type": "DEGREE",
+        "category": "Business",
+        "description": "Master of Business Administration (MBA) is a program designed to build knowledge and practical skills in Business.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Business industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Master of Business Administration (MBA) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Master of Computer Applications (MCA)",
+        "type": "DEGREE",
+        "category": "Computer",
+        "description": "Master of Computer Applications (MCA) is a program designed to build knowledge and practical skills in Computer.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Computer industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Master of Computer Applications (MCA) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Master of Education (M.Ed)",
+        "type": "PROFESSIONAL",
+        "category": "Education",
+        "description": "Master of Education (M.Ed) is a program designed to build knowledge and practical skills in Education.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Education industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Master of Education (M.Ed) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Bachelor of Design (B.Des)",
+        "type": "DEGREE",
+        "category": "Design",
+        "description": "Bachelor of Design (B.Des) is a program designed to build knowledge and practical skills in Design.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Design industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Bachelor of Design (B.Des) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "MBBS",
+        "type": "MEDICAL",
+        "category": "Medicine",
+        "description": "MBBS is a program designed to build knowledge and practical skills in Medicine.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Medicine industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "MBBS includes theoretical learning and practical experience."
+    },
+    {
+        "name": "BDS",
+        "type": "MEDICAL",
+        "category": "Dental",
+        "description": "BDS is a program designed to build knowledge and practical skills in Dental.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Dental industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "BDS includes theoretical learning and practical experience."
+    },
+    {
+        "name": "BAMS",
+        "type": "MEDICAL",
+        "category": "Ayurveda",
+        "description": "BAMS is a program designed to build knowledge and practical skills in Ayurveda.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Ayurveda industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "BAMS includes theoretical learning and practical experience."
+    },
+    {
+        "name": "BHMS",
+        "type": "MEDICAL",
+        "category": "Homeopathy",
+        "description": "BHMS is a program designed to build knowledge and practical skills in Homeopathy.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Homeopathy industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "BHMS includes theoretical learning and practical experience."
+    },
+    {
+        "name": "BPT",
+        "type": "MEDICAL",
+        "category": "Physiotherapy",
+        "description": "BPT is a program designed to build knowledge and practical skills in Physiotherapy.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Physiotherapy industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "BPT includes theoretical learning and practical experience."
+    },
+    {
+        "name": "B.Sc Nursing",
+        "type": "MEDICAL",
+        "category": "Nursing",
+        "description": "B.Sc Nursing is a program designed to build knowledge and practical skills in Nursing.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Nursing industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "B.Sc Nursing includes theoretical learning and practical experience."
+    },
+    {
+        "name": "General Nursing and Midwifery (GNM)",
+        "type": "MEDICAL",
+        "category": "Nursing",
+        "description": "General Nursing and Midwifery (GNM) is a program designed to build knowledge and practical skills in Nursing.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Nursing industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "General Nursing and Midwifery (GNM) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Pharm.D",
+        "type": "MEDICAL",
+        "category": "Pharmacy",
+        "description": "Pharm.D is a program designed to build knowledge and practical skills in Pharmacy.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Pharmacy industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Pharm.D includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Bachelor of Pharmacy (B.Pharm)",
+        "type": "MEDICAL",
+        "category": "Pharmacy",
+        "description": "Bachelor of Pharmacy (B.Pharm) is a program designed to build knowledge and practical skills in Pharmacy.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Pharmacy industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Bachelor of Pharmacy (B.Pharm) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "MD",
+        "type": "MEDICAL",
+        "category": "Medicine",
+        "description": "MD is a program designed to build knowledge and practical skills in Medicine.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Medicine industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "MD includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Chartered Accountancy (CA)",
+        "type": "PROFESSIONAL",
+        "category": "Finance",
+        "description": "Chartered Accountancy (CA) is a program designed to build knowledge and practical skills in Finance.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Finance industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Chartered Accountancy (CA) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Company Secretary (CS)",
+        "type": "PROFESSIONAL",
+        "category": "Management",
+        "description": "Company Secretary (CS) is a program designed to build knowledge and practical skills in Management.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Management industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Company Secretary (CS) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Cost and Management Accounting (CMA)",
+        "type": "PROFESSIONAL",
+        "category": "Finance",
+        "description": "Cost and Management Accounting (CMA) is a program designed to build knowledge and practical skills in Finance.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Finance industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Cost and Management Accounting (CMA) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Digital Marketing",
+        "type": "PROFESSIONAL",
+        "category": "Marketing",
+        "description": "Digital Marketing is a program designed to build knowledge and practical skills in Marketing.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Marketing industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Digital Marketing includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Human Resource Management",
+        "type": "PROFESSIONAL",
+        "category": "Management",
+        "description": "Human Resource Management is a program designed to build knowledge and practical skills in Management.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Management industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Human Resource Management includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Financial Management",
+        "type": "PROFESSIONAL",
+        "category": "Finance",
+        "description": "Financial Management is a program designed to build knowledge and practical skills in Finance.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Finance industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Financial Management includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Hotel Management",
+        "type": "PROFESSIONAL",
+        "category": "Hospitality",
+        "description": "Hotel Management is a program designed to build knowledge and practical skills in Hospitality.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Hospitality industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Hotel Management includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Event Management",
+        "type": "PROFESSIONAL",
+        "category": "Management",
+        "description": "Event Management is a program designed to build knowledge and practical skills in Management.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Management industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Event Management includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Aviation Management",
+        "type": "PROFESSIONAL",
+        "category": "Aviation",
+        "description": "Aviation Management is a program designed to build knowledge and practical skills in Aviation.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Aviation industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Aviation Management includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Supply Chain Management",
+        "type": "PROFESSIONAL",
+        "category": "Logistics",
+        "description": "Supply Chain Management is a program designed to build knowledge and practical skills in Logistics.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Logistics industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Supply Chain Management includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Retail Management",
+        "type": "PROFESSIONAL",
+        "category": "Retail",
+        "description": "Retail Management is a program designed to build knowledge and practical skills in Retail.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Retail industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Retail Management includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Public Relations Management",
+        "type": "PROFESSIONAL",
+        "category": "Media",
+        "description": "Public Relations Management is a program designed to build knowledge and practical skills in Media.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Media industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Public Relations Management includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Computer Science Engineering (CSE)",
+        "type": "TECHNICAL",
+        "category": "Engineering",
+        "description": "Computer Science Engineering (CSE) is a program designed to build knowledge and practical skills in Engineering.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Engineering industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Computer Science Engineering (CSE) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Information Technology (IT)",
+        "type": "TECHNICAL",
+        "category": "Technology",
+        "description": "Information Technology (IT) is a program designed to build knowledge and practical skills in Technology.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Technology industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Information Technology (IT) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Artificial Intelligence and Machine Learning (AI/ML)",
+        "type": "TECHNICAL",
+        "category": "AI",
+        "description": "Artificial Intelligence and Machine Learning (AI/ML) is a program designed to build knowledge and practical skills in AI.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in AI industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Artificial Intelligence and Machine Learning (AI/ML) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Data Science",
+        "type": "TECHNICAL",
+        "category": "Data",
+        "description": "Data Science is a program designed to build knowledge and practical skills in Data.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Data industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Data Science includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Cyber Security",
+        "type": "TECHNICAL",
+        "category": "Security",
+        "description": "Cyber Security is a program designed to build knowledge and practical skills in Security.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Security industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Cyber Security includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Software Engineering",
+        "type": "TECHNICAL",
+        "category": "Engineering",
+        "description": "Software Engineering is a program designed to build knowledge and practical skills in Engineering.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Engineering industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Software Engineering includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Mechanical Engineering",
+        "type": "TECHNICAL",
+        "category": "Engineering",
+        "description": "Mechanical Engineering is a program designed to build knowledge and practical skills in Engineering.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Engineering industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Mechanical Engineering includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Civil Engineering",
+        "type": "TECHNICAL",
+        "category": "Engineering",
+        "description": "Civil Engineering is a program designed to build knowledge and practical skills in Engineering.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Engineering industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Civil Engineering includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Electrical Engineering",
+        "type": "TECHNICAL",
+        "category": "Engineering",
+        "description": "Electrical Engineering is a program designed to build knowledge and practical skills in Engineering.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Engineering industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Electrical Engineering includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Electronics and Communication Engineering (ECE)",
+        "type": "TECHNICAL",
+        "category": "Engineering",
+        "description": "Electronics and Communication Engineering (ECE) is a program designed to build knowledge and practical skills in Engineering.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Engineering industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Electronics and Communication Engineering (ECE) includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Robotics Engineering",
+        "type": "TECHNICAL",
+        "category": "Engineering",
+        "description": "Robotics Engineering is a program designed to build knowledge and practical skills in Engineering.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Engineering industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Robotics Engineering includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Cloud Computing",
+        "type": "TECHNICAL",
+        "category": "Cloud",
+        "description": "Cloud Computing is a program designed to build knowledge and practical skills in Cloud.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Cloud industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Cloud Computing includes theoretical learning and practical experience."
+    },
+    {
+        "name": "Internet of Things (IoT)",
+        "type": "TECHNICAL",
+        "category": "Technology",
+        "description": "Internet of Things (IoT) is a program designed to build knowledge and practical skills in Technology.",
+        "duration": "2–5 years (varies by course)",
+        "requirements": {
+            "minimum_qualification": "12th/Graduation based on course",
+            "minimum_marks": "50% or institution criteria",
+            "entrance_exam": "Depends on institution"
+        },
+        "eligibility": [
+            "Meet academic requirements",
+            "Pass entrance exam if required"
+        ],
+        "course_objectives": [
+            "Develop domain knowledge",
+            "Build practical skills",
+            "Prepare for careers"
+        ],
+        "subjects": [
+            "Core Subject 1",
+            "Core Subject 2",
+            "Practical Training",
+            "Project Work"
+        ],
+        "skills_gained": [
+            "Communication",
+            "Problem Solving",
+            "Critical Thinking",
+            "Technical Skills"
+        ],
+        "career_options": [
+            "Specialist",
+            "Consultant",
+            "Manager",
+            "Researcher"
+        ],
+        "scope": "Career opportunities in Technology industries and related sectors.",
+        "higher_studies": [
+            "Master degree",
+            "Certification Programs",
+            "PhD"
+        ],
+        "salary": {
+            "fresher": "₹2–5 LPA",
+            "mid_level": "₹5–10 LPA",
+            "experienced": "₹10+ LPA"
+        },
+        "top_recruiters": [
+            "Government Organizations",
+            "Private Companies",
+            "Startups"
+        ],
+        "top_colleges": [
+            "Top University 1",
+            "Top University 2",
+            "Top University 3"
+        ],
+        "fees": {
+            "government_college": "₹10,000–₹50,000/year",
+            "private_college": "₹50,000–₹3,00,000/year"
+        },
+        "details": "Internet of Things (IoT) includes theoretical learning and practical experience."
+    }
+]
