@@ -5,7 +5,7 @@ Includes unique index creation for username and email fields.
 
 import os
 import logging
-from pymongo import MongoClient, ASCENDING
+from pymongo import MongoClient, ASCENDING, DESCENDING, TEXT
 from pymongo.errors import ConnectionFailure
 
 # --- MongoDB ---
@@ -37,7 +37,37 @@ else:
                 unique=True,
                 name='unique_email'
             )
-            logging.info("MongoDB unique indexes ensured for users collection")
+            mongo_db.login_attempts.create_index(
+                [('username', ASCENDING)],
+                unique=True,
+                name='unique_login_attempt_username'
+            )
+            mongo_db.projects.create_index(
+                [('created_at', DESCENDING)],
+                name='projects_created_at_desc'
+            )
+            mongo_db.projects.create_index(
+                [('username', ASCENDING), ('created_at', DESCENDING)],
+                name='projects_username_created_at'
+            )
+            mongo_db.roadmaps.create_index(
+                [('user_id', ASCENDING), ('updated_at', DESCENDING)],
+                name='roadmaps_user_updated_at'
+            )
+            mongo_db.roadmaps.create_index(
+                [('user_id', ASCENDING), ('career_name', ASCENDING), ('course_name', ASCENDING)],
+                unique=True,
+                name='unique_user_career_course_roadmap'
+            )
+            mongo_db.careers.create_index(
+                [('name', TEXT), ('description', TEXT), ('category', TEXT)],
+                name='careers_text_search'
+            )
+            mongo_db.courses.create_index(
+                [('name', TEXT), ('description', TEXT), ('category', TEXT)],
+                name='courses_text_search'
+            )
+            logging.info("MongoDB indexes ensured for users, attempts, projects, roadmaps, careers, and courses")
         except Exception as idx_err:
             logging.warning(f"Index creation note: {idx_err}")
 

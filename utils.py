@@ -3,9 +3,14 @@ Shared utility helpers used across routes and services.
 """
 
 import logging
+import hmac
+import secrets
 from datetime import datetime, timezone
 from functools import wraps
-from flask import jsonify, session
+from flask import jsonify, request, session
+
+
+CSRF_SESSION_KEY = '_csrf_token'
 
 
 def login_required(f):
@@ -14,6 +19,29 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
             return jsonify({'success': False, 'error': 'Login required'}), 401
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+def get_csrf_token():
+    """Return the current session CSRF token, creating one if needed."""
+    token = session.get(CSRF_SESSION_KEY)
+    if not token:
+        token = secrets.token_urlsafe(32)
+        session[CSRF_SESSION_KEY] = token
+    return token
+
+
+def csrf_protect(f):
+    """Decorator for routes that mutate server state using cookie auth."""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        expected = session.get(CSRF_SESSION_KEY)
+        provided = request.headers.get('X-CSRF-Token', '')
+
+        if not expected or not provided or not hmac.compare_digest(str(expected), str(provided)):
+            return jsonify({'success': False, 'error': 'Invalid or missing CSRF token'}), 403
+
         return f(*args, **kwargs)
     return decorated_function
 

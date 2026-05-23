@@ -148,7 +148,14 @@ def generate(role, level, topic, count=5):
 
         # Extract the assistant's message content
         data = response.json()
-        content = data['choices'][0]['message']['content']
+        choices = data.get('choices') or []
+        if not choices:
+            logging.warning("[Groq] Response missing choices")
+            return None, None
+        content = (choices[0].get('message') or {}).get('content')
+        if not content:
+            logging.warning("[Groq] Response missing message content")
+            return None, None
 
         # Parse and clean response
         raw_text = _clean_response(content)
@@ -197,8 +204,10 @@ Your goal is to conduct a realistic mock interview.
         # Construct messages for OpenAI-style API
         messages = [{"role": "system", "content": system_prompt}]
         for h in history:
-            role = "assistant" if h['role'] == 'ai' else "user"
-            messages.append({"role": role, "content": h['content']})
+            if not isinstance(h, dict) or not h.get('content'):
+                continue
+            role = "assistant" if h.get('role') in {'ai', 'assistant', 'model'} else "user"
+            messages.append({"role": role, "content": str(h.get('content'))[:1000]})
         
         messages.append({"role": "user", "content": message})
 
@@ -219,7 +228,11 @@ Your goal is to conduct a realistic mock interview.
         
         if response.status_code == 200:
             data = response.json()
-            return data['choices'][0]['message']['content'].strip()
+            choices = data.get('choices') or []
+            if not choices:
+                return None
+            content = (choices[0].get('message') or {}).get('content')
+            return content.strip() if content else None
         
         return None
 

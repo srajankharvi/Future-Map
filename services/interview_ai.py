@@ -110,19 +110,7 @@ def generate_questions(category, level, count, role=None, topic=None):
     except Exception as e:
         logging.warning(f"[Interview AI] Groq client crashed: {type(e).__name__}: {e}")
 
-    logging.info(f"[Interview AI] Attempting Gemini for {count} questions...")
-    questions, source = gemini_client.generate(ai_role, ai_level, ai_topic, count)
-    logging.info(f"[Interview AI] Gemini generated {len(questions)} questions")
-    if questions:
-        return questions, source
-
     # ── Step 2: Try Groq (secondary fallback) ─────────────────────
-    logging.info(f"[Interview AI] Gemini unavailable, trying Groq...")
-    questions, source = groq_client.generate(ai_role, ai_level, ai_topic, count)
-    logging.info(f"[Interview AI] Groq generated {len(questions)} questions")
-    if questions:
-        return questions, source
-
     # ── Step 3: Static question bank (final fallback) ─────────────
     logging.info(f"[Interview AI] Both APIs unavailable, using curated question bank")
     questions = _get_fallback_questions(category, level, count)
@@ -179,19 +167,5 @@ def conduct_mock_interview(category, level, message, history):
     # ── Step 3: Basic Fallback ──────────────────────────
     logging.warning("[Mock Interview] All AI providers failed, using static fallback")
     return "I apologize, but I'm having trouble connecting right now. Please try again in a moment, or reset the interview to start fresh."
-    logging.info(f"[Mock Interview] Attempting Gemini chat for {category}...")
-    reply = gemini_client.chat(category, ai_level, message, history)
-    logging.info(f"[Mock Interview] Gemini generated reply for {category}...")
-    if reply:
-        return reply
-
     # ── Step 2: Try Groq ────────────────────────────────
-    logging.info(f"[Mock Interview] Gemini unavailable, trying Groq chat...")
-    reply = groq_client.chat(category, ai_level, message, history)
-    logging.info(f"[Mock Interview] Groq generated reply for {category}...")
-    if reply:
-        return reply
-
     # ── Step 3: Basic Fallback ──────────────────────────
-    logging.info(f"[Mock Interview] Both APIs unavailable, using basic fallback for {category}...")
-    return "I apologize, but I'm having trouble connecting to my brain right now. Can you try saying that again?"

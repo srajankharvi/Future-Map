@@ -3,55 +3,62 @@ Roadmaps routes — save, list, get, delete user roadmaps (MongoDB).
 """
 
 import logging
+import json
 from datetime import datetime, timezone
 from flask import Blueprint, jsonify, request, session
 from bson import ObjectId
+from pydantic import ValidationError
 
 from database import mongo_db
-from utils import login_required
+from schemas import RoadmapSchema
+from utils import csrf_protect, login_required
 
 roadmaps_bp = Blueprint('roadmaps', __name__)
 
 
 @roadmaps_bp.route('/api/roadmaps', methods=['POST'])
 @login_required
+@csrf_protect
 def save_roadmap():
     """Save a generated roadmap for the current user"""
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
 
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
 
-        career_name = data.get('career_name', '').strip()
-        course_name = data.get('course_name', '').strip()
-        category = data.get('category', '').strip()
-        roadmap_data = data.get('roadmap_data', {})
+        try:
+            schema = RoadmapSchema(**data)
+        except ValidationError as e:
+            msg = e.errors()[0]['msg']
+            field = e.errors()[0]['loc'][0] if e.errors()[0].get('loc') else 'Field'
+            return jsonify({'success': False, 'error': f'{field}: {msg}'}), 400
 
-        if not career_name or not course_name:
-            return jsonify({'success': False, 'error': 'Career and course names are required'}), 400
+        roadmap_data_size = len(json.dumps(schema.roadmap_data, default=str))
+        if roadmap_data_size > 50000:
+            return jsonify({'success': False, 'error': 'Roadmap data is too large'}), 413
 
         if mongo_db is None:
             return jsonify({'success': False, 'error': 'Database not available'}), 503
 
         user_id = session.get('user_id')
         username = session.get('username', '')
+        now = datetime.now(timezone.utc).isoformat()
 
         roadmap = {
             'user_id': user_id,
             'username': username,
-            'career_name': career_name,
-            'course_name': course_name,
-            'category': category,
-            'roadmap_data': roadmap_data,
-            'created_at': datetime.now(timezone.utc).isoformat(),
-            'updated_at': datetime.now(timezone.utc).isoformat()
+            'career_name': schema.career_name,
+            'course_name': schema.course_name,
+            'category': schema.category,
+            'roadmap_data': schema.roadmap_data,
+            'updated_at': now
         }
 
         # Upsert: update if same user+career+course exists, else insert
         result = mongo_db.roadmaps.update_one(
-            {'user_id': user_id, 'career_name': career_name, 'course_name': course_name},
-            {'$set': roadmap},
+            {'user_id': user_id, 'career_name': schema.career_name, 'course_name': schema.course_name},
+            {'$set': roadmap, '$setOnInsert': {'created_at': now}},
             upsert=True
         )
 
@@ -120,6 +127,7 @@ def get_roadmap(roadmap_id):
 
 @roadmaps_bp.route('/api/roadmaps/<roadmap_id>', methods=['DELETE'])
 @login_required
+@csrf_protect
 def delete_roadmap(roadmap_id):
     """Delete a saved roadmap"""
     try:

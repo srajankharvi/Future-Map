@@ -49,7 +49,7 @@ def create_app():
     csp = {
         'default-src': '\'self\'',
         'img-src': ['\'self\'', 'data:', 'https:'],
-        'script-src': ['\'self\'', '\'unsafe-inline\''],
+        'script-src': ['\'self\''],
         'style-src': ['\'self\'', '\'unsafe-inline\''],
         'connect-src': ['\'self\'', 'http://127.0.0.1:5000', 'http://localhost:5000']
     }
@@ -72,4 +72,3 @@ if __name__ == '__main__':
     print("Open http://127.0.0.1:5000")
 
     app.run(debug=True, use_reloader=False)
-

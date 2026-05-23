@@ -6,15 +6,60 @@ import logging
 from datetime import datetime, timezone
 from flask import Blueprint, jsonify, request, session
 from bson import ObjectId
+from pymongo import ReturnDocument
+from pydantic import ValidationError
 
 from database import mongo_db
 
-from utils import login_required
+from schemas import AIQuestionRequestSchema, MockInterviewRequestSchema
+from utils import csrf_protect, login_required
 from extensions import limiter
 from data.interview import FALLBACK_INTERVIEW_QUESTIONS, AI_INTERVIEW_CATEGORIES
 from services.interview_ai import generate_questions
 
 interview_bp = Blueprint('interview', __name__)
+
+DAILY_INTERVIEW_LIMIT = 5
+
+
+def _today_str():
+    return datetime.now(timezone.utc).date().isoformat()
+
+
+def _increment_daily_counter(user_id, count_field, date_field, limit=DAILY_INTERVIEW_LIMIT):
+    """Atomically increment a per-user daily counter if it is below the limit."""
+    if mongo_db is None:
+        return True, 0
+
+    oid = ObjectId(user_id)
+    current_date_str = _today_str()
+    user = mongo_db.users.find_one({'_id': oid}, {count_field: 1, date_field: 1})
+    if not user:
+        return False, 0
+
+    if user.get(date_field) != current_date_str:
+        mongo_db.users.update_one(
+            {'_id': oid},
+            {'$set': {count_field: 0, date_field: current_date_str}}
+        )
+
+    updated = mongo_db.users.find_one_and_update(
+        {
+            '_id': oid,
+            date_field: current_date_str,
+            '$or': [
+                {count_field: {'$lt': limit}},
+                {count_field: {'$exists': False}}
+            ]
+        },
+        {'$inc': {count_field: 1}},
+        projection={count_field: 1},
+        return_document=ReturnDocument.AFTER
+    )
+
+    if not updated:
+        return False, limit
+    return True, updated.get(count_field, 0)
 
 
 @interview_bp.route('/api/interview-questions', methods=['GET'])
@@ -38,6 +83,7 @@ def get_interview_questions():
 @interview_bp.route('/api/generate-interview-questions', methods=['POST'])
 @login_required
 @limiter.limit("10 per minute")
+@csrf_protect
 def generate_interview_questions():
     """
     Generate AI-powered interview questions.
@@ -48,50 +94,24 @@ def generate_interview_questions():
     Fallback chain: Gemini → Groq → curated question bank.
     """
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
 
-        # --- Parse inputs & Apply AI Payload Security Limits ---
-        # Prevent token exhaust / Denial of Wallet by strictly truncating lengths
-        category = data.get('category', '').strip()[:50]
-        level = data.get('level', '').strip().lower()[:20]
-        count = data.get('count', 5)
+        try:
+            schema = AIQuestionRequestSchema(**data)
+        except ValidationError as e:
+            msg = e.errors()[0]['msg']
+            field = e.errors()[0]['loc'][0] if e.errors()[0].get('loc') else 'Field'
+            return jsonify({'success': False, 'error': f'{field}: {msg}'}), 400
 
-        # --- Check Daily Usage Limit ---
-        if mongo_db is not None:
-            user_id = session.get('user_id')
-            user = mongo_db.users.find_one({'_id': ObjectId(user_id)})
-            gen_count = user.get('interview_gen_count', 0)
-            last_date_str = user.get('last_interview_gen_at')
-            current_date_str = datetime.now(timezone.utc).date().isoformat()
-            
-            # Reset if new day
-            if last_date_str != current_date_str:
-                gen_count = 0
-                mongo_db.users.update_one(
-                    {'_id': ObjectId(user_id)},
-                    {'$set': {'interview_gen_count': 0, 'last_interview_gen_at': current_date_str}}
-                )
-
-            if gen_count >= 5:
-                return jsonify({
-                    'success': False, 
-                    'error': 'Daily question generation limit reached (5 per day). Please come back tomorrow!'
-                }), 403
-            
-            # Increment
-            mongo_db.users.update_one(
-                {'_id': ObjectId(user_id)},
-                {
-                    '$inc': {'interview_gen_count': 1},
-                    '$set': {'last_interview_gen_at': current_date_str}
-                }
-            )
+        category = schema.category
+        level = schema.level
+        count = schema.count
 
         # Enhanced parameters (truncated for AI payload security)
-        role = (data.get('role', '').strip()[:100]) or None
-        topic = (data.get('topic', '').strip()[:100]) or None
+        role = schema.role or None
+        topic = schema.topic or None
 
 
         # --- Validate required inputs ---
@@ -107,13 +127,21 @@ def generate_interview_questions():
                 'error': 'Level must be beginner, intermediate, or advanced'
             }), 400
 
-        try:
-            count = int(count)
-            count = max(1, min(count, 50))
-        except (ValueError, TypeError):
-            count = 5
+        # --- Check Daily Usage Limit ---
+        if mongo_db is not None:
+            user_id = session.get('user_id')
+            allowed, _new_count = _increment_daily_counter(
+                user_id,
+                'interview_gen_count',
+                'last_interview_gen_at'
+            )
+            if not allowed:
+                return jsonify({
+                    'success': False,
+                    'error': 'Daily question generation limit reached (5 per day). Please come back tomorrow!'
+                }), 403
 
-        # --- Generate questions (Gemini → Groq → static bank) ---
+        # --- Generate questions (Gemini -> Groq -> static bank) ---
         questions, source = generate_questions(
             category=category,
             level=level,
@@ -175,6 +203,7 @@ def get_interview_limits():
 
 @interview_bp.route('/api/mock-interview/start', methods=['POST'])
 @login_required
+@csrf_protect
 def start_mock_interview():
     """Explicitly start a mock interview and increment the daily count"""
     try:
@@ -182,34 +211,20 @@ def start_mock_interview():
             return jsonify({'success': True}), 200
 
         user_id = session.get('user_id')
-        user = mongo_db.users.find_one({'_id': ObjectId(user_id)})
-        count = user.get('mock_interview_count', 0)
-        last_date_str = user.get('last_mock_interview_at')
-        current_date_str = datetime.now(timezone.utc).date().isoformat()
-
-        if last_date_str != current_date_str:
-            count = 0
-            mongo_db.users.update_one(
-                {'_id': ObjectId(user_id)},
-                {'$set': {'mock_interview_count': 0, 'last_mock_interview_at': current_date_str}}
-            )
-
-        if count >= 5:
+        allowed, new_count = _increment_daily_counter(
+            user_id,
+            'mock_interview_count',
+            'last_mock_interview_at'
+        )
+        if not allowed:
             return jsonify({
                 'success': False, 
                 'error': 'Daily limit reached (5 per day). Please come back tomorrow!'
             }), 403
 
-        # Increment count
-        mongo_db.users.update_one(
-            {'_id': ObjectId(user_id)},
-            {
-                '$inc': {'mock_interview_count': 1},
-                '$set': {'last_mock_interview_at': current_date_str}
-            }
-        )
+        session['mock_interview_active_date'] = _today_str()
 
-        return jsonify({'success': True, 'new_count': count + 1}), 200
+        return jsonify({'success': True, 'new_count': new_count}), 200
     except Exception as e:
         logging.exception("Start mock interview error")
         return jsonify({'success': False, 'error': 'Could not start interview'}), 500
@@ -218,40 +233,46 @@ def start_mock_interview():
 @interview_bp.route('/api/mock-interview', methods=['POST'])
 @login_required
 @limiter.limit("20 per minute")
+@csrf_protect
 def mock_interview_chat():
     """
     Handle an interactive mock interview turn.
     """
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
 
+        try:
+            schema = MockInterviewRequestSchema(**data)
+        except ValidationError as e:
+            msg = e.errors()[0]['msg']
+            field = e.errors()[0]['loc'][0] if e.errors()[0].get('loc') else 'Field'
+            return jsonify({'success': False, 'error': f'{field}: {msg}'}), 400
+
         user_id = session.get('user_id')
-        category = data.get('category', '').strip()[:50]
-        level = data.get('level', 'beginner').strip().lower()[:20]
-        
-        # AI Payload Limit: Truncate messages to prevent huge context window exhaustion
-        message = data.get('message', '').strip()[:1000]
-        history = data.get('history', [])
-        
-        if not category or not message:
-            return jsonify({'success': False, 'error': 'Missing required fields'}), 400
+        category = schema.category
+        level = schema.level
+        message = schema.message
+        history = schema.history
 
         # --- Check Daily Usage Limit ---
         if mongo_db is not None:
             user = mongo_db.users.find_one({'_id': ObjectId(user_id)})
             count = user.get('mock_interview_count', 0)
             last_date_str = user.get('last_mock_interview_at')
-            current_date_str = datetime.now(timezone.utc).date().isoformat()
+            current_date_str = _today_str()
             
             if last_date_str != current_date_str:
                 # If date changed, count should be reset, but we don't increment here anymore
                 # The start endpoint handles incrementing.
                 count = 0
 
-            if count > 5:
-                 return jsonify({'success': False, 'error': 'Daily limit reached.'}), 403
+            if count <= 0 or session.get('mock_interview_active_date') != current_date_str:
+                return jsonify({'success': False, 'error': 'Please start a mock interview first.'}), 403
+
+            if count > DAILY_INTERVIEW_LIMIT:
+                return jsonify({'success': False, 'error': 'Daily limit reached.'}), 403
 
 
         from services.interview_ai import conduct_mock_interview

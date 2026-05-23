@@ -5,9 +5,11 @@ Projects routes — community projects CRUD with MongoDB Atlas.
 import logging
 from datetime import datetime, timezone
 from flask import Blueprint, jsonify, request, session
+from pydantic import ValidationError
 
 from database import mongo_db
-from utils import login_required
+from schemas import ProjectSchema
+from utils import csrf_protect, login_required
 
 projects_bp = Blueprint('projects', __name__)
 
@@ -18,13 +20,23 @@ def get_all_projects():
         if mongo_db is None:
             return jsonify({'success': False, 'error': 'Database not available'}), 503
 
-        projects = list(mongo_db.projects.find().sort('created_at', -1))
+        try:
+            page = max(1, int(request.args.get('page', 1)))
+            limit = min(100, max(1, int(request.args.get('limit', 50))))
+        except (TypeError, ValueError):
+            page = 1
+            limit = 50
+
+        skip = (page - 1) * limit
+        projects = list(mongo_db.projects.find().sort('created_at', -1).skip(skip).limit(limit))
         for p in projects:
             p['_id'] = str(p['_id'])
             
         return jsonify({
             'success': True, 
-            'data': projects if projects else []
+            'data': projects if projects else [],
+            'page': page,
+            'limit': limit
         }), 200
 
     except Exception as e:
@@ -34,10 +46,11 @@ def get_all_projects():
 
 @projects_bp.route('/api/projects', methods=['POST'])
 @login_required
+@csrf_protect
 def create_project():
     """Upload a new project to MongoDB Atlas"""
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
 
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
@@ -45,20 +58,20 @@ def create_project():
         if mongo_db is None:
             return jsonify({'success': False, 'error': 'Database not available'}), 503
 
-        username = session.get('username', '')
-        # Database Security: Sanitize and strictly limit input lengths to prevent DB bloat/DoS
-        title = data.get('title', '').strip()[:100]
-        link = data.get('link', '').strip()[:500]
-        description = data.get('description', '').strip()[:1000]
+        try:
+            schema = ProjectSchema(**data)
+        except ValidationError as e:
+            msg = e.errors()[0]['msg']
+            field = e.errors()[0]['loc'][0] if e.errors()[0].get('loc') else 'Field'
+            return jsonify({'success': False, 'error': f'{field}: {msg}'}), 400
 
-        if not title or not link or not description:
-            return jsonify({'success': False, 'error': 'All fields are required'}), 400
+        username = session.get('username', '')
 
         project_data = {
             'username': username,
-            'title': title,
-            'link': link,
-            'description': description,
+            'title': schema.title,
+            'link': schema.link,
+            'description': schema.description,
             'created_at': datetime.now(timezone.utc).isoformat()
         }
 
@@ -84,7 +97,7 @@ def get_user_projects():
             return jsonify({'success': False, 'error': 'Database not available'}), 503
 
         username = session.get('username')
-        projects = list(mongo_db.projects.find({'username': username}).sort('created_at', -1))
+        projects = list(mongo_db.projects.find({'username': username}).sort('created_at', -1).limit(100))
         
         for p in projects:
             p['_id'] = str(p['_id'])

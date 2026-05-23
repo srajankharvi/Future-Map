@@ -4,10 +4,12 @@ Recommendations route — career + course recommendations based on marks and ski
 
 import logging
 from flask import Blueprint, jsonify, request
+from pydantic import ValidationError
 from extensions import limiter
 
 from routes.careers import fetch_careers
 from routes.courses import fetch_courses
+from schemas import RecommendationRequestSchema
 from services.recommendations import compute_recommendations
 
 recommendations_bp = Blueprint('recommendations', __name__)
@@ -34,25 +36,25 @@ def get_recommendations():
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
 
-        marks = data.get('marks', 0)
-        skills_raw = data.get('skills', [])
-        # Input Sanitization: Restrict skills list length and item size
-        if isinstance(skills_raw, list):
-            skills = [str(s).strip()[:50] for s in skills_raw[:20]]
-        else:
-            skills = []
-        
-        education_level = str(data.get('education_level', 'SSLC')).strip()[:30]
-
-        if not skills:
-            return jsonify({'success': False, 'error': 'Please select at least one skill'}), 400
+        try:
+            schema = RecommendationRequestSchema(**data)
+        except ValidationError as e:
+            msg = e.errors()[0]['msg']
+            field = e.errors()[0]['loc'][0] if e.errors()[0].get('loc') else 'Field'
+            return jsonify({'success': False, 'error': f'{field}: {msg}'}), 400
 
         # Fetch data directly (no need to go through Flask view functions)
         all_careers = fetch_careers()
         all_courses = fetch_courses()
 
         # Compute recommendations
-        result = compute_recommendations(marks, skills, all_careers, all_courses, education_level)
+        result = compute_recommendations(
+            schema.marks,
+            schema.skills,
+            all_careers,
+            all_courses,
+            schema.education_level
+        )
 
         return jsonify({
             'success': True,

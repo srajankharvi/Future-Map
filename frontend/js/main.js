@@ -9,6 +9,8 @@ if ((window.location.hostname === '127.0.0.1' || window.location.hostname === 'l
     API_BASE = `http://${window.location.hostname}:5000/api`;
 }
 
+let CSRF_TOKEN = null;
+
 // Global data stores
 let careerData = [];
 let courseData = [];
@@ -85,6 +87,39 @@ function escapeHTML(str) {
     return div.innerHTML;
 }
 
+function safeExternalUrl(value) {
+    try {
+        const url = new URL(String(value || '').trim());
+        if (url.protocol === 'http:' || url.protocol === 'https:') {
+            return url.href;
+        }
+    } catch (err) {
+        // Invalid URL
+    }
+    return '';
+}
+
+function isUnsafeMethod(method) {
+    return ['POST', 'PUT', 'PATCH', 'DELETE'].includes(String(method || 'GET').toUpperCase());
+}
+
+async function getCsrfToken(forceRefresh = false) {
+    if (CSRF_TOKEN && !forceRefresh) return CSRF_TOKEN;
+
+    const response = await fetch(`${API_BASE}/csrf-token`, {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-store',
+        headers: { 'Accept': 'application/json' }
+    });
+    const data = await response.json();
+    if (!response.ok || !data.success || !data.csrf_token) {
+        throw new Error(data.error || 'Could not initialize security token');
+    }
+    CSRF_TOKEN = data.csrf_token;
+    return CSRF_TOKEN;
+}
+
 // ==================== REUSABLE API HELPER ====================
 /**
  * Wrapper around fetch with credentials, error handling, and JSON parsing.
@@ -93,6 +128,7 @@ function escapeHTML(str) {
  * @returns {Promise<object>} parsed JSON response
  */
 async function apiFetch(url, options = {}) {
+    const method = String(options.method || 'GET').toUpperCase();
     const defaults = {
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
@@ -111,7 +147,16 @@ async function apiFetch(url, options = {}) {
     }
 
     try {
-        const response = await fetch(url, merged);
+        if (isUnsafeMethod(method)) {
+            merged.headers['X-CSRF-Token'] = await getCsrfToken();
+        }
+
+        let response = await fetch(url, merged);
+        if (response.status === 403 && isUnsafeMethod(method)) {
+            CSRF_TOKEN = null;
+            merged.headers['X-CSRF-Token'] = await getCsrfToken(true);
+            response = await fetch(url, merged);
+        }
         const contentType = response.headers.get("content-type");
         
         // Handle non-JSON responses (like HTML 404s from Live Server)
@@ -229,9 +274,12 @@ function updateNavbarWithUser(username) {
             if (!logoutLi) {
                 logoutLi = document.createElement('li');
                 logoutLi.id = 'navLogoutBtn';
-                logoutLi.innerHTML = '<a href="javascript:void(0)" data-action="logout" style="color: #ef4444;">Logout</a>';
+                logoutLi.innerHTML = '<a href="#" data-action="logout" style="color: #ef4444;">Logout</a>';
                 navLinks.appendChild(logoutLi);
-                logoutLi.querySelector('a').addEventListener('click', handleLogout);
+                logoutLi.querySelector('a').addEventListener('click', (event) => {
+                    event.preventDefault();
+                    handleLogout();
+                });
             }
         }
     } else {

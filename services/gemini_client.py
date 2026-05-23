@@ -196,10 +196,12 @@ Your goal is to conduct a realistic mock interview.
         # Convert history format for the new SDK
         contents = []
         for h in history:
-            role = 'user' if h['role'] == 'user' else 'model'
+            if not isinstance(h, dict) or not h.get('content'):
+                continue
+            role = 'user' if h.get('role') == 'user' else 'model'
             contents.append(types.Content(
                 role=role,
-                parts=[types.Part.from_text(text=h['content'])]
+                parts=[types.Part.from_text(text=str(h.get('content'))[:1000])]
             ))
         
         # Gemini requires history to start with a 'user' message.

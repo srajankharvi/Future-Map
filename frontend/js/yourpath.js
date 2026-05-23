@@ -546,7 +546,7 @@ function generatePath() {
         {
             step: "Phase 1",
             title: `Academic Foundation & Enrollment`,
-            desc: `Enroll in <strong>${escapeHTML(course.name)}</strong> (duration: ${escapeHTML(course.duration)}). Focus on meeting the entry requirements: ${typeof course.requirements === 'object' ? escapeHTML(course.requirements.minimum_qualification || '10+2') : escapeHTML(course.requirements || '10+2')}. Keep in mind the average fees structure: Government: ${course.fees?.government_college || 'Moderate'} / Private: ${course.fees?.private_college || 'Varies'}.`,
+            desc: `Enroll in <strong>${escapeHTML(course.name)}</strong> (duration: ${escapeHTML(course.duration)}). Focus on meeting the entry requirements: ${typeof course.requirements === 'object' ? escapeHTML(course.requirements.minimum_qualification || '10+2') : escapeHTML(course.requirements || '10+2')}. Keep in mind the average fees structure: Government: ${escapeHTML(course.fees?.government_college || 'Moderate')} / Private: ${escapeHTML(course.fees?.private_college || 'Varies')}.`,
             duration: "Year 1"
         },
         {
@@ -710,11 +710,11 @@ function generatePath() {
                             <div class="skill-breakdown-item">
                                 <div class="skill-breakdown-header">
                                     <span class="sbi-icon">${icon(s.icon, 18)}</span>
-                                    <span class="sbi-name">${s.name}</span>
-                                    <span class="sbi-level">${s.level}</span>
+                                    <span class="sbi-name">${escapeHTML(s.name)}</span>
+                                    <span class="sbi-level">${escapeHTML(s.level)}</span>
                                 </div>
-                                <p class="sbi-desc">${s.description}</p>
-                                <div class="sbi-bar-bg"><div class="sbi-bar-fill" style="width: ${s.percentage}%; background: ${s.color}"></div></div>
+                                <p class="sbi-desc">${escapeHTML(s.description)}</p>
+                                <div class="sbi-bar-bg"><div class="sbi-bar-fill" style="width: ${Number(s.percentage) || 0}%; background: ${escapeHTML(s.color)}"></div></div>
                             </div>
                         `).join('')}
                     </div>
@@ -739,15 +739,15 @@ function generatePath() {
                         <div class="project-card" style="animation-delay: ${i * 0.1}s">
                             <div class="project-card-top">
                                 <span class="project-number">${i + 1}</span>
-                                <span class="project-difficulty ${project.difficulty.toLowerCase()}">${project.difficulty}</span>
+                                <span class="project-difficulty ${String(project.difficulty).toLowerCase().replace(/[^a-z0-9_-]/g, '')}">${escapeHTML(project.difficulty)}</span>
                             </div>
-                            <h4 class="project-title">${project.title}</h4>
-                            <p class="project-desc">${project.description}</p>
+                            <h4 class="project-title">${escapeHTML(project.title)}</h4>
+                            <p class="project-desc">${escapeHTML(project.description)}</p>
                             <div class="project-skills">
-                                ${project.skills.map(s => `<span class="project-skill-tag">${s}</span>`).join('')}
+                                ${project.skills.map(s => `<span class="project-skill-tag">${escapeHTML(s)}</span>`).join('')}
                             </div>
                             <div class="project-time">
-                                <span>${icon('clock', 14)}</span> ${project.timeEstimate}
+                                <span>${icon('clock', 14)}</span> ${escapeHTML(project.timeEstimate)}
                             </div>
                         </div>
                     `).join('')}
@@ -770,19 +770,19 @@ function generatePath() {
                     <div class="resource-column">
                         <h4>${icon('wrench', 18)} Tools & Software</h4>
                         <ul class="detail-list">
-                            ${resourceData.tools.map(t => `<li>${t}</li>`).join('')}
+                            ${resourceData.tools.map(t => `<li>${escapeHTML(t)}</li>`).join('')}
                         </ul>
                     </div>
                     <div class="resource-column">
                         <h4>${icon('award', 18)} Certifications</h4>
                         <ul class="detail-list">
-                            ${resourceData.certifications.map(c => `<li>${c}</li>`).join('')}
+                            ${resourceData.certifications.map(c => `<li>${escapeHTML(c)}</li>`).join('')}
                         </ul>
                     </div>
                     <div class="resource-column">
                         <h4>${icon('book', 18)} Subjects to Study</h4>
                         <ul class="detail-list">
-                            ${resourceData.subjects.map(s => `<li>${s}</li>`).join('')}
+                            ${resourceData.subjects.map(s => `<li>${escapeHTML(s)}</li>`).join('')}
                         </ul>
                     </div>
                 </div>
@@ -926,7 +926,7 @@ function showSaveNotification(message) {
         notif.className = 'save-notification hidden';
         document.body.appendChild(notif);
     }
-    notif.innerHTML = `${icon('checkCircle', 16)} <span class="notif-icon-gap">${message}</span>`;
+    notif.innerHTML = `${icon('checkCircle', 16)} <span class="notif-icon-gap">${escapeHTML(message)}</span>`;
     notif.classList.remove('hidden');
     notif.classList.add('visible');
     setTimeout(() => { notif.classList.remove('visible'); }, 3000);

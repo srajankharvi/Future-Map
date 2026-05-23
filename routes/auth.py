@@ -25,7 +25,7 @@ from pydantic import ValidationError
 from config import USERNAME_REGEX, EMAIL_REGEX, PASSWORD_MIN, PASSWORD_MAX, FULL_NAME_MAX
 from schemas import RegisterSchema, LoginSchema, UpdateProfileSchema
 from database import mongo_db
-from utils import login_required
+from utils import csrf_protect, get_csrf_token, login_required
 from extensions import limiter
 
 auth_bp = Blueprint('auth', __name__)
@@ -83,8 +83,19 @@ def _sanitize_text(text, max_length=255):
     return text
 
 
+@auth_bp.route('/api/csrf-token', methods=['GET'])
+def csrf_token():
+    """Issue a CSRF token bound to the current Flask session."""
+    resp = jsonify({'success': True, 'csrf_token': get_csrf_token()})
+    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp, 200
+
+
 @auth_bp.route('/api/auth/register', methods=['POST'])
 @limiter.limit("10 per minute")
+@csrf_protect
 def register():
     """Register a new user in MongoDB"""
     try:
@@ -124,14 +135,9 @@ def register():
         # The unique index on username/email in MongoDB handles concurrency safely.
         try:
             result = mongo_db.users.insert_one(user_doc)
-        except DuplicateKeyError as dke:
+        except DuplicateKeyError:
             # Issue #6: Generic error message — don't reveal which field is duplicate
-            error_msg = str(dke)
-            if 'username' in error_msg:
-                return jsonify({'success': False, 'error': 'Username is already taken'}), 409
-            elif 'email' in error_msg:
-                return jsonify({'success': False, 'error': 'Email is already registered'}), 409
-            return jsonify({'success': False, 'error': 'Account already exists'}), 409
+            return jsonify({'success': False, 'error': 'An account with those details already exists'}), 409
 
         user_id = str(result.inserted_id)
 
@@ -163,6 +169,7 @@ def register():
 
 @auth_bp.route('/api/auth/login', methods=['POST'])
 @limiter.limit("10 per minute")
+@csrf_protect
 def login():
     """Login user with MongoDB Atlas"""
     try:
@@ -224,6 +231,7 @@ def login():
 
 @auth_bp.route('/api/auth/logout', methods=['POST'])
 @login_required  # Issue #14: Require authentication for logout
+@csrf_protect
 def logout():
     """Logout user — destroy session completely"""
     try:
@@ -279,6 +287,7 @@ def get_current_user():
 
 @auth_bp.route('/api/auth/update-profile', methods=['PUT'])
 @login_required
+@csrf_protect
 def update_profile():
     """Update user profile in MongoDB"""
     try:

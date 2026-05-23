@@ -86,7 +86,7 @@ function displayProjects(projects, grid) {
         const username = escapeHTML(project.username || 'Anonymous');
         const title = escapeHTML(project.title || 'Untitled');
         const description = escapeHTML(project.description || 'No description provided.');
-        const link = escapeHTML(project.link || '#');
+        const safeLink = safeExternalUrl(project.link);
         const initial = username.charAt(0).toUpperCase();
         const date = project.created_at
             ? new Date(project.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
@@ -103,9 +103,11 @@ function displayProjects(projects, grid) {
                 </div>
                 <h3 class="project-display-title">${title}</h3>
                 <p class="project-display-desc">${description}</p>
-                <a href="${link}" target="_blank" rel="noopener noreferrer" class="btn btn-primary project-display-link">
-                    ${typeof icon === 'function' ? icon('link', 16) : ''} View Project
-                </a>
+                ${safeLink ? `
+                    <a href="${escapeHTML(safeLink)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary project-display-link">
+                        ${typeof icon === 'function' ? icon('link', 16) : ''} View Project
+                    </a>
+                ` : '<span class="text-muted-padded">Invalid project link</span>'}
             </div>
         `;
     }).join('');
@@ -177,8 +179,14 @@ function setupUploadForm() {
         }
 
         // URL validation
+        const normalizedLink = safeExternalUrl(link);
+        if (!normalizedLink) {
+            showUploadMessage('Please enter a valid http(s) URL (e.g., https://github.com/...)', 'error');
+            return;
+        }
+
         try {
-            new URL(link);
+            new URL(normalizedLink);
         } catch {
             showUploadMessage('Please enter a valid URL (e.g., https://github.com/...)', 'error');
             return;
@@ -193,16 +201,12 @@ function setupUploadForm() {
         }
 
         try {
-            const response = await fetch(`${API_BASE}/projects`, {
+            const result = await apiFetch(`${API_BASE}/projects`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ title, link, description })
+                body: JSON.stringify({ title, link: normalizedLink, description })
             });
 
-            const result = await response.json();
-
-            if (response.status === 401) {
+            if (result.status === 401) {
                 window.location.href = 'login.html';
                 return;
             }
@@ -253,4 +257,3 @@ function showUploadMessage(message, type) {
         hideElement(msgEl);
     }, 5000);
 }
-
