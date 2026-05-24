@@ -647,7 +647,7 @@ function generatePath() {
     document.getElementById('roadmapSkills').innerHTML = skillsHtml;
     
     // Generate Dynamic Skill Breakdown
-    const colors = ["#667eea", "#f093fb", "#4facfe", "#10b981", "#f59e0b"];
+    const colors = ["#3d6b6e", "#5a8f8a", "#2b5b63", "#4a7d86", "#3d6b6e"];
     const icons = ["laptop", "puzzle", "chart", "wrench", "mic", "sparkles", "users", "handshake"];
     const levels = ["Expert", "Advanced", "Intermediate", "Intermediate", "Basic"];
     const percentages = [90, 80, 75, 70, 60];
@@ -802,7 +802,7 @@ function generatePath() {
 }
 
 function getStepColor(index) {
-    const colors = ['#667eea', '#f093fb', '#4facfe', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+    const colors = ['#3d6b6e', '#5a8f8a', '#2b5b63', '#4a7d86', '#3d6b6e', '#5a8f8a', '#4a7d86'];
     return colors[index % colors.length];
 }
 

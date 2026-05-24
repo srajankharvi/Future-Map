@@ -50,15 +50,15 @@ async function loadProjects() {
             if (result.source === 'sqlite' && error) {
                 showElement(error);
                 error.innerHTML = '<strong>⚠️ Database Status:</strong> Projects are being stored locally (SQLite). MongoDB is currently unavailable - your projects will sync when connection is restored.';
-                error.style.backgroundColor = '#e3f2fd';
-                error.style.color = '#1565c0';
-                error.style.border = '1px solid #90caf9';
+                error.style.backgroundColor = '#eef3ef';
+                error.style.color = '#2a4f54';
+                error.style.border = '1px solid rgba(61, 107, 110, 0.2)';
             } else if (result.source === 'demo' && error) {
                 showElement(error);
                 error.innerHTML = '<strong>ℹ️ Demo Mode:</strong> Showing sample projects. Submit your own projects to get started!';
-                error.style.backgroundColor = '#f3e5f5';
-                error.style.color = '#6a1b9a';
-                error.style.border = '1px solid #ce93d8';
+                error.style.backgroundColor = '#eef3ef';
+                error.style.color = '#2a4f54';
+                error.style.border = '1px solid rgba(61, 107, 110, 0.2)';
             }
             
             displayProjects(result.data, grid);

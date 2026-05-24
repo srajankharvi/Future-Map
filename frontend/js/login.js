@@ -323,8 +323,8 @@ function updatePasswordStrength(password) {
     const levels = [
         { label: 'Min 6 characters', color: 'transparent', width: '0%' },
         { label: 'Weak', color: '#ef4444', width: '20%' },
-        { label: 'Fair', color: '#f59e0b', width: '40%' },
-        { label: 'Good', color: '#3b82f6', width: '60%' },
+        { label: 'Fair', color: '#5a8f8a', width: '40%' },
+        { label: 'Good', color: '#3d6b6e', width: '60%' },
         { label: 'Strong', color: '#10b981', width: '80%' },
         { label: 'Very Strong', color: '#059669', width: '100%' }
     ];

@@ -43,11 +43,11 @@ FALLBACK_CAREER_DETAILED_INFO = {
     "Computer": {
         "growthOutlook": "Very High - IT/Tech sector is the fastest growing globally",
         "skillBreakdown": [
-            {"name": "Programming", "icon": "laptop", "level": "Expert", "percentage": 95, "color": "#667eea", "description": "Python, Java, JavaScript, C++"},
-            {"name": "Problem Solving", "icon": "puzzle", "level": "Expert", "percentage": 90, "color": "#f093fb", "description": "Data structures, algorithms, debugging"},
-            {"name": "Analytical Skills", "icon": "chart", "level": "Advanced", "percentage": 85, "color": "#4facfe", "description": "Data analysis, architecture decisions"},
+            {"name": "Programming", "icon": "laptop", "level": "Expert", "percentage": 95, "color": "#3d6b6e", "description": "Python, Java, JavaScript, C++"},
+            {"name": "Problem Solving", "icon": "puzzle", "level": "Expert", "percentage": 90, "color": "#5a8f8a", "description": "Data structures, algorithms, debugging"},
+            {"name": "Analytical Skills", "icon": "chart", "level": "Advanced", "percentage": 85, "color": "#2b5b63", "description": "Data analysis, architecture decisions"},
             {"name": "Technical Tools", "icon": "wrench", "level": "Advanced", "percentage": 80, "color": "#10b981", "description": "Git, Docker, cloud platforms"},
-            {"name": "Communication", "icon": "mic", "level": "Intermediate", "percentage": 65, "color": "#f59e0b", "description": "Code reviews, documentation"}
+            {"name": "Communication", "icon": "mic", "level": "Intermediate", "percentage": 65, "color": "#4a7d86", "description": "Code reviews, documentation"}
         ]
     }
 }

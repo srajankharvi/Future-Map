@@ -16,24 +16,24 @@
 /* ==================== CSS VARIABLES ==================== */
 :root {
     --bg-primary: #f5f7f4;
-    --bg-secondary: #ffffff;
-    --bg-card: #ffffff;
+    --bg-secondary: #f3f7f2;
+    --bg-card: #f6f9f5;
     --bg-card-hover: #fafbf9;
-    --bg-input: #ffffff;
+    --bg-input: #f7faf6;
     --text-primary: #1a2e35;
     --text-secondary: #475c63;
     --text-muted: #7a9099;
     --accent: #3d6b6e;
     --accent-dark: #2a4f54;
     --accent-light: #dceae6;
-    --secondary: #eab308;
-    --pink: #db2777;
+    --secondary: #5a8f8a;
+    --pink: #5a8f8a;
     --green: #22c55e;
-    --amber: #eab308;
+    --amber: #5a8f8a;
     --border: rgba(43, 91, 99, 0.08);
     --border-hover: rgba(43, 91, 99, 0.15);
-    --glass: rgba(255, 255, 255, 0.9);
-    --glass-border: rgba(43, 91, 99, 0.06);
+    --glass: rgba(246, 249, 245, 0.92);
+    --glass-border: rgba(43, 91, 99, 0.1);
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.03);
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
@@ -458,7 +458,7 @@ body.auth-ready {
 
 .blue-grad { background: linear-gradient(135deg, #2b5b63, #1b434c); }
 .purple-grad { background: linear-gradient(135deg, #4a7d86, #2b5b63); }
-.pink-grad { background: linear-gradient(135deg, #eab308, #ca8a04); }
+.pink-grad { background: var(--gradient-primary); }
 
 .hero-bg-overlay {
     position: absolute;
@@ -545,7 +545,7 @@ body.auth-ready {
 /* ==================== FEATURES SECTION ==================== */
 .features {
     padding: 100px 0;
-    background: var(--bg-card);
+    background: var(--gradient-hero);
 }
 
 .section-header {
@@ -653,7 +653,7 @@ body.auth-ready {
 
 /* ==================== RECOMMENDATION SECTION ==================== */
 .recommendation, .recommendation-full {
-    background: var(--bg-primary);
+    background: var(--gradient-hero);
     padding: 60px 20px;
 }
 
@@ -1300,7 +1300,7 @@ body.auth-ready {
 }
 
 .beginner-dot { background: #22c55e; }
-.intermediate-dot { background: #f59e0b; }
+.intermediate-dot { background: #5a8f8a; }
 .advanced-dot { background: #ef4444; }
 
 .diff-pill.active .pill-dot {
@@ -2251,7 +2251,7 @@ body.auth-ready {
 
 /* ==================== FOOTER ==================== */
 .footer {
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--gradient-hero);
     border-top: 1px solid var(--border);
     color: var(--text-secondary);
     padding: 30px 20px;
@@ -2398,7 +2398,7 @@ body.auth-ready {
 
 /* Premium field (login page) */
 .premium-field {
-    background: linear-gradient(135deg, rgba(140, 177, 238, 0.06), rgba(150, 117, 227, 0.06));
+    background: linear-gradient(135deg, rgba(61, 107, 110, 0.06), rgba(90, 143, 138, 0.06));
     padding: 14px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -2471,7 +2471,7 @@ body.auth-ready {
 
 /* Selection Section */
 .yourpath-selection {
-    background: var(--bg-primary);
+    background: var(--gradient-hero);
     padding: 70px 20px 80px;
 }
 
@@ -2549,8 +2549,8 @@ body.auth-ready {
 }
 
 .course-icon-lg {
-    background: linear-gradient(135deg, #eab308, #ca8a04);
-    box-shadow: 0 6px 20px rgba(234, 179, 8, 0.15);
+    background: var(--gradient-primary);
+    box-shadow: 0 6px 20px rgba(43, 91, 99, 0.15);
 }
 
 .selection-card-header h3 {
@@ -2633,7 +2633,7 @@ body.auth-ready {
 }
 
 .course-badge {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
+    background: var(--gradient-primary);
 }
 
 .selected-preview h4 {
@@ -2672,8 +2672,8 @@ body.auth-ready {
 }
 
 .type-tag {
-    background: rgba(245, 158, 11, 0.1);
-    color: #f59e0b;
+    background: rgba(61, 107, 110, 0.1);
+    color: var(--accent-dark);
 }
 
 /* Generate Button */
@@ -2721,7 +2721,7 @@ body.auth-ready {
 
 /* Roadmap Section */
 .yourpath-roadmap {
-    background: var(--bg-primary);
+    background: var(--gradient-hero);
     padding: 70px 20px 80px;
 }
 
@@ -2784,9 +2784,9 @@ body.auth-ready {
 }
 
 .summary-card:nth-child(1) { border-top-color: #3d6b6e; }
-.summary-card:nth-child(2) { border-top-color: #ec4899; }
+.summary-card:nth-child(2) { border-top-color: #5a8f8a; }
 .summary-card:nth-child(3) { border-top-color: #22c55e; }
-.summary-card:nth-child(4) { border-top-color: #f59e0b; }
+.summary-card:nth-child(4) { border-top-color: #4a7d86; }
 
 .summary-icon { font-size: 32px; margin-bottom: 10px; }
 
@@ -2817,7 +2817,7 @@ body.auth-ready {
     position: absolute;
     left: 26px; top: 0; bottom: 0;
     width: 3px;
-    background: linear-gradient(180deg, #2b5b63, #4a7d86, #22c55e, #eab308);
+    background: linear-gradient(180deg, #2b5b63, #4a7d86, #3d6b6e, #5a8f8a);
     border-radius: 2px;
 }
 
@@ -2851,10 +2851,10 @@ body.auth-ready {
 }
 
 .timeline-dot.step-1 { background: var(--gradient-primary); }
-.timeline-dot.step-2 { background: linear-gradient(135deg, #eab308, #ca8a04); }
-.timeline-dot.step-3 { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+.timeline-dot.step-2 { background: linear-gradient(135deg, #5a8f8a, #3d6b6e); }
+.timeline-dot.step-3 { background: linear-gradient(135deg, #4a7d86, #2b5b63); }
 .timeline-dot.step-4 { background: linear-gradient(135deg, #22c55e, #16a34a); }
-.timeline-dot.step-5 { background: linear-gradient(135deg, #eab308, #ca8a04); }
+.timeline-dot.step-5 { background: linear-gradient(135deg, #5a8f8a, #3d6b6e); }
 .timeline-dot.step-6 { background: linear-gradient(135deg, #ef4444, #dc2626); }
 .timeline-dot.step-7 { background: linear-gradient(135deg, #4a7d86, #2b5b63); }
 
@@ -3668,7 +3668,7 @@ body.auth-ready {
 }
 
 .dropbtn {
-    background: linear-gradient(135deg, #4f46e5, #9333ea);
+    background: var(--gradient-primary);
     color: white;
     padding: 10px 18px;
     border-radius: 10px;
@@ -3692,7 +3692,7 @@ body.auth-ready {
     max-height: 350px;
     overflow-y: auto;
 
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--glass);
     backdrop-filter: blur(15px);
     border-radius: 15px;
     padding: 10px;
@@ -3847,13 +3847,13 @@ body.auth-ready {
 }
 
 .custom-select-item:hover {
-    background: rgba(99, 102, 241, 0.05); /* 5% opacity of primary */
+    background: rgba(61, 107, 110, 0.08);
 }
 
 .custom-select-item.selected {
-    color: var(--accent); /* Brand's primary */
+    color: var(--accent);
     font-weight: 500;
-    background: rgba(99, 102, 241, 0.05);
+    background: rgba(61, 107, 110, 0.08);
 }
 
 .custom-select-checkmark {
@@ -3879,7 +3879,7 @@ body.auth-ready {
 /* ==================== MOCK INTERVIEW STYLES ==================== */
 .mock-interview {
     padding: 80px 0;
-    background: var(--bg-card);
+    background: var(--gradient-hero);
 }
 
 .mock-interview-container {
@@ -4107,9 +4107,9 @@ body.auth-ready {
     gap: 4px;
     padding: 12px 14px;
     margin-bottom: 16px;
-    border: 1px solid rgba(245, 158, 11, 0.35);
+    border: 1px solid rgba(61, 107, 110, 0.25);
     border-radius: 10px;
-    background: rgba(245, 158, 11, 0.1);
+    background: rgba(61, 107, 110, 0.08);
     color: var(--secondary);
     font-size: 13px;
     line-height: 1.45;
@@ -4699,9 +4699,9 @@ body.auth-ready {
 
 .skill-mini-tag {
     display: inline-block;
-    background: rgba(99, 102, 241, 0.1);
-    color: #818cf8;
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    background: rgba(61, 107, 110, 0.1);
+    color: var(--accent-dark);
+    border: 1px solid rgba(61, 107, 110, 0.2);
     border-radius: 6px;
     padding: 3px 8px;
     font-size: 11px;
@@ -4712,7 +4712,7 @@ body.auth-ready {
 }
 
 .skill-mini-tag:hover {
-    background: rgba(99, 102, 241, 0.2);
+    background: rgba(61, 107, 110, 0.18);
     transform: translateY(-1px);
 }
 
@@ -4764,8 +4764,8 @@ body.auth-ready {
 }
 
 .project-difficulty.intermediate {
-    background: rgba(245, 158, 11, 0.1);
-    color: #f59e0b;
+    background: rgba(61, 107, 110, 0.1);
+    color: var(--accent-dark);
 }
 
 .project-difficulty.advanced {
@@ -4816,7 +4816,7 @@ body.auth-ready {
 }
 
 .ticker-title {
-    background: linear-gradient(135deg, var(--accent), var(--secondary));
+    background: var(--gradient-primary);
     color: #ffffff;
     padding: 0 28px;
     height: 100%;
