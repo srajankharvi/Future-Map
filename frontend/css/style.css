@@ -1253,7 +1253,7 @@ body.auth-ready {
 .career-category, .course-type {
     display: inline-block;
     background: rgba(61, 107, 110, 0.12);
-    color: var(--accent-light);
+    color: var(--accent-dark);
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 12px;
