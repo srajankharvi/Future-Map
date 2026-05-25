@@ -104,8 +104,15 @@ function displayProjects(projects, grid) {
                 <h3 class="project-display-title">${title}</h3>
                 <p class="project-display-desc">${description}</p>
                 ${safeLink ? `
-                    <a href="${escapeHTML(safeLink)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary project-display-link">
-                        ${typeof icon === 'function' ? icon('link', 16) : ''} View Project
+                    <a href="${escapeHTML(safeLink)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary pearl-button project-display-link">
+                        <span class="wrap">
+                            <span class="pearl-label">
+                                <span class="pearl-star">✧</span>
+                                <span class="pearl-star-alt">✦</span>
+                                ${typeof icon === 'function' ? icon('link', 16) : ''}
+                                <span>View Project</span>
+                            </span>
+                        </span>
                     </a>
                 ` : '<span class="text-muted-padded">Invalid project link</span>'}
             </div>

@@ -92,8 +92,14 @@ async function loadUserProjects() {
                     <h4 class="project-display-title">${escapeHTML(project.title)}</h4>
                     <p class="project-display-desc">${escapeHTML(project.description)}</p>
                     ${safeExternalUrl(project.link) ? `
-                        <a href="${escapeHTML(safeExternalUrl(project.link))}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm project-display-link">
-                            View Project
+                        <a href="${escapeHTML(safeExternalUrl(project.link))}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm pearl-button project-display-link">
+                            <span class="wrap">
+                                <span class="pearl-label">
+                                    <span class="pearl-star">✧</span>
+                                    <span class="pearl-star-alt">✦</span>
+                                    <span>View Project</span>
+                                </span>
+                            </span>
                         </a>
                     ` : '<span class="text-muted-padded">Invalid project link</span>'}
                 </div>
