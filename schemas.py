@@ -100,7 +100,8 @@ class RoadmapSchema(BaseModel):
 
 class RecommendationRequestSchema(BaseModel):
     marks: float = Field(..., ge=0, le=100)
-    skills: List[str] = Field(..., min_length=1, max_length=20)
+    # Fixed: Pydantic v2 uses max_items for List, not max_length
+    skills: List[str] = Field(..., min_items=1, max_items=20)
     education_level: str = Field(default='SSLC', max_length=30)
 
     @field_validator('skills')
@@ -135,7 +136,8 @@ class MockInterviewRequestSchema(BaseModel):
     category: str = Field(..., min_length=1, max_length=50)
     level: str = Field(default='beginner', max_length=20)
     message: str = Field(..., min_length=1, max_length=1000)
-    history: List[Dict[str, Any]] = Field(default_factory=list, max_length=30)
+    # Fixed: Pydantic v2 uses max_items for List, not max_length
+    history: List[Dict[str, Any]] = Field(default_factory=list, max_items=30)
 
     @field_validator('category', 'level', 'message', mode='before')
     def sanitize_mock_text(cls, v):

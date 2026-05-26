@@ -199,11 +199,13 @@ function setupUploadForm() {
             return;
         }
 
-        // Loading state
+        // Loading state (update label only — preserve pearl-button markup)
         const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn ? submitBtn.textContent : '';
+        const labelEl = submitBtn?.querySelector('.pearl-label > span:last-child');
+        const originalLabel = labelEl?.textContent ?? submitBtn?.textContent ?? '';
         if (submitBtn) {
-            submitBtn.textContent = 'Uploading...';
+            if (labelEl) labelEl.textContent = 'Uploading...';
+            else submitBtn.textContent = 'Uploading...';
             submitBtn.disabled = true;
         }
 
@@ -245,7 +247,8 @@ function setupUploadForm() {
             showUploadMessage('Server error. Make sure the backend is running.', 'error');
         } finally {
             if (submitBtn) {
-                submitBtn.textContent = originalText;
+                if (labelEl) labelEl.textContent = originalLabel;
+                else submitBtn.textContent = originalLabel;
                 submitBtn.disabled = false;
             }
         }
