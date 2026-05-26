@@ -224,8 +224,19 @@ function setupUploadForm() {
                     'Project saved locally! (will sync to database when available)';
                 showUploadMessage(storageMsg, 'success');
                 form.reset();
-                // Refresh project list
-                setTimeout(() => loadProjects(), 1000);
+
+                // Notify account page (if present) to refresh user projects
+                if (typeof loadUserProjects === 'function') {
+                    // Call immediately to refresh user's project list on account page
+                    loadUserProjects();
+                    // Also show account-level message if available
+                    if (typeof showAccountMessage === 'function') {
+                        showAccountMessage('Project uploaded successfully', 'success');
+                    }
+                } else {
+                    // Fallback: refresh public projects listing
+                    setTimeout(() => loadProjects(), 1000);
+                }
             } else {
                 showUploadMessage(result.error || 'Could not upload project', 'error');
             }

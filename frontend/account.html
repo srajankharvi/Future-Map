@@ -144,6 +144,19 @@
         </div>
     </footer>
 
+    <!-- Confirm Delete Modal -->
+    <div id="confirmDeleteModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirmDeleteTitle">
+        <div class="modal-content">
+            <button class="close" id="confirmDeleteClose" aria-label="Close">&times;</button>
+            <h3 id="confirmDeleteTitle">Confirm Deletion</h3>
+            <p id="confirmDeleteMessage">Are you sure you want to delete this project?</p>
+                <div class="form-actions" style="margin-top:18px; display:flex; gap:12px; justify-content:flex-end;">
+                <button id="confirmCancelBtn" class="btn btn-secondary press-button press-button-secondary"> <span class="text">Cancel</span></button>
+                <button id="confirmDeleteBtn" class="btn btn-primary press-button"> <span class="text">Delete</span></button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/main.js" defer></script>
     <script src="js/account.js" defer></script>
     <script src="js/projects.js" defer></script>

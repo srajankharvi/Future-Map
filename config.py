@@ -9,11 +9,17 @@ import secrets as secrets_module
 from datetime import timedelta
 from dotenv import load_dotenv
 
-# Load environment variables from .env
-load_dotenv()
-
-# --- FLASK ENVIRONMENT ---
+# Determine FLASK environment early so we only load .env in development.
+# Avoid loading `.env` in production so the app doesn't unintentionally
+# rely on a checked-in file for secrets.
 FLASK_ENV = os.getenv('FLASK_ENV', 'development')
+
+if FLASK_ENV != 'production':
+    # Local development: load variables from .env (if present).
+    load_dotenv()
+else:
+    # Production: do not load .env — rely on real environment variables.
+    pass
 
 # --- SECRET KEY (REQUIRED) ---
 # NOTE: For Vercel/Serverless, you MUST set SECRET_KEY in environment variables.

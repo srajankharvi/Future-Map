@@ -10,6 +10,8 @@ from pydantic import ValidationError
 from database import mongo_db
 from schemas import ProjectSchema
 from utils import csrf_protect, login_required
+from bson.objectid import ObjectId
+from flask import current_app
 
 projects_bp = Blueprint('projects', __name__)
 
@@ -66,9 +68,11 @@ def create_project():
             return jsonify({'success': False, 'error': f'{field}: {msg}'}), 400
 
         username = session.get('username', '')
+        user_id = session.get('user_id')
 
         project_data = {
             'username': username,
+            'user_id': user_id,
             'title': schema.title,
             'link': schema.link,
             'description': schema.description,
@@ -110,3 +114,72 @@ def get_user_projects():
     except Exception as e:
         logging.exception("User projects fetch error")
         return jsonify({'success': False, 'error': 'Could not load your projects'}), 500
+
+
+@projects_bp.route('/api/projects/<project_id>', methods=['DELETE'])
+@login_required
+@csrf_protect
+def delete_project(project_id):
+    """Delete a project by id. Only the owner may delete their project."""
+    try:
+        if mongo_db is None:
+            logging.warning('Delete attempted but DB not available')
+            return jsonify({'success': False, 'message': 'Database not available'}), 503
+
+        # Validate ObjectId
+        if not project_id or not ObjectId.is_valid(project_id):
+            logging.info('Delete attempted with invalid ObjectId: %s', project_id)
+            return jsonify({'success': False, 'message': 'Invalid project id'}), 400
+
+        pid = ObjectId(project_id)
+
+        # Ensure project exists
+        project = mongo_db.projects.find_one({'_id': pid})
+        if not project:
+            logging.info('Project not found for id: %s', project_id)
+            return jsonify({'success': False, 'message': 'Project not found'}), 404
+
+        # Verify ownership: prefer user_id, fall back to case-insensitive username match
+        username = session.get('username')
+        user_id = session.get('user_id')
+
+        project_username = project.get('username')
+        project_user_id = project.get('user_id')
+
+        authorized_by_id = False
+        authorized_by_username = False
+
+        if user_id and project_user_id and str(user_id) == str(project_user_id):
+            authorized_by_id = True
+        elif project_username and username and str(project_username).lower() == str(username).lower():
+            authorized_by_username = True
+
+        if not (authorized_by_id or authorized_by_username):
+            logging.warning('Unauthorized delete attempt. session.user_id=%s session.username=%s project.user_id=%s project.username=%s project_id=%s', user_id, username, project_user_id, project_username, project_id)
+            return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+
+        # Perform deletion using the strongest available check
+        if authorized_by_id:
+            result = mongo_db.projects.delete_one({'_id': pid, 'user_id': user_id})
+        else:
+            # Use the stored project username to avoid case issues
+            result = mongo_db.projects.delete_one({'_id': pid, 'username': project_username})
+        logging.info('Delete result for %s: deleted_count=%s', project_id, getattr(result, 'deleted_count', None))
+        if result.deleted_count == 0:
+            return jsonify({'success': False, 'message': 'Project not found or already deleted'}), 404
+
+        resp = {'success': True, 'message': 'Project deleted successfully'}
+        # Attach helpful debug info in non-production for troubleshooting
+        if current_app and current_app.debug:
+            resp['debug'] = {
+                'project_id': project_id,
+                'deleted_count': result.deleted_count,
+                'session_username': username,
+                'project_username': project.get('username')
+            }
+
+        return jsonify(resp), 200
+
+    except Exception as e:
+        logging.exception('Project deletion error')
+        return jsonify({'success': False, 'message': 'Internal server error'}), 500
