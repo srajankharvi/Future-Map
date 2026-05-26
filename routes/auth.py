@@ -141,17 +141,24 @@ def register():
 
         user_id = str(result.inserted_id)
 
-        # Create profile
-        mongo_db.user_profiles.insert_one({
-            'user_id': user_id,
-            'username': username,
-            'full_name': full_name,
-            'bio': '',
-            'birthday': '',
-            'status': 'Online',
-            'avatar_url': '',
-            'created_at': datetime.now(timezone.utc).isoformat()
-        })
+        # Create profile using upsert to avoid duplicate data bugs
+        mongo_db.user_profiles.update_one(
+            {'username': username},
+            {
+                '$set': {
+                    'user_id': user_id,
+                    'full_name': full_name
+                },
+                '$setOnInsert': {
+                    'bio': '',
+                    'birthday': '',
+                    'status': 'Online',
+                    'avatar_url': '',
+                    'created_at': datetime.now(timezone.utc).isoformat()
+                }
+            },
+            upsert=True
+        )
 
         return jsonify({
             'success': True,

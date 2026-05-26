@@ -2817,6 +2817,15 @@ body.auth-ready {
     border: 1px solid var(--glass-border);
     overflow: visible;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.selection-card:nth-child(1) {
+    z-index: 10;
+}
+
+.selection-card:nth-child(2) {
+    z-index: 5;
 }
 
 .selection-card:hover {
@@ -2959,7 +2968,7 @@ body.auth-ready {
 .meta-tag {
     display: inline-block;
     background: rgba(61, 107, 110, 0.1);
-    color: var(--accent-light);
+    color: var(--accent-dark);
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 12px;
@@ -3712,29 +3721,59 @@ body.auth-ready {
     }
 
     .nav-links {
-        display: none;
+        display: flex;
         flex-direction: column;
         position: fixed;
         top: 0;
         right: 0;
-        width: 280px;
+        width: 320px;
         height: 100vh;
-        background: var(--bg-secondary);
-        padding: 80px 20px 20px;
-        gap: 4px;
+        background: rgba(246, 249, 245, 0.85); /* Glassmorphism background */
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        padding: 90px 24px 30px;
+        gap: 8px;
         z-index: 999;
-        border-left: 1px solid var(--border);
-        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+        border-left: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: -20px 0 60px rgba(0, 0, 0, 0.15);
+        
+        /* Smooth Slide-in Animation */
+        transform: translateX(100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .nav-links.active {
-        display: flex;
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .nav-links li {
+        width: 100%;
     }
 
     .nav-links a {
-        padding: 12px 16px;
-        font-size: 15px;
-        border-radius: 10px;
+        display: block;
+        padding: 16px 20px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 14px;
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        border: 1px solid transparent;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+        background: rgba(61, 107, 110, 0.08);
+        color: var(--accent);
+        border-color: rgba(61, 107, 110, 0.15);
+        transform: scale(1.02);
     }
 
 
