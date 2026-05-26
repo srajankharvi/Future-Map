@@ -308,8 +308,13 @@ async function startMockInterview() {
 
     const startBtn = document.getElementById('startMockBtn');
     if (startBtn) {
-        const originalText = startBtn.textContent;
-        startBtn.textContent = 'Preparing...';
+        const textSpan = startBtn.querySelector('.text');
+        const originalHTML = textSpan ? textSpan.innerHTML : startBtn.innerHTML;
+        if (textSpan) {
+            textSpan.textContent = 'Preparing...';
+        } else {
+            startBtn.textContent = 'Preparing...';
+        }
         startBtn.disabled = true;
         
         try {
@@ -320,7 +325,7 @@ async function startMockInterview() {
                 const response = await apiFetch(`${API_BASE}/mock-interview/start`, { method: 'POST' });
                 if (!response.success) {
                     alert(response.error || 'Daily mock interview limit reached. Please come back tomorrow!');
-                    startBtn.textContent = originalText;
+                    if (textSpan) { textSpan.innerHTML = originalHTML; } else { startBtn.innerHTML = originalHTML; }
                     startBtn.disabled = false;
                     return;
                 }
@@ -331,7 +336,7 @@ async function startMockInterview() {
             console.error('Start interview error:', e);
         }
         
-        startBtn.textContent = originalText;
+        if (textSpan) { textSpan.innerHTML = originalHTML; } else { startBtn.innerHTML = originalHTML; }
         startBtn.disabled = false;
     }
 
@@ -598,10 +603,18 @@ async function generateAIQuestions() {
     // Disable button
     if (generateBtn) {
         generateBtn.disabled = true;
-        generateBtn.innerHTML = `
-            <svg class="spin-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-            Generating...
-        `;
+        const textSpan = generateBtn.querySelector('.text');
+        if (textSpan) {
+            textSpan.innerHTML = `
+                <svg class="spin-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Generating...
+            `;
+        } else {
+            generateBtn.innerHTML = `
+                <svg class="spin-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Generating...
+            `;
+        }
     }
 
     try {
@@ -637,10 +650,16 @@ async function generateAIQuestions() {
         // Re-enable button
         if (generateBtn) {
             generateBtn.disabled = false;
-            generateBtn.innerHTML = `
+            const textSpan = generateBtn.querySelector('.text');
+            const restoreHTML = `
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
                 Generate Questions
             `;
+            if (textSpan) {
+                textSpan.innerHTML = restoreHTML;
+            } else {
+                generateBtn.innerHTML = restoreHTML;
+            }
         }
     }
 }

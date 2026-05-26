@@ -1053,6 +1053,13 @@ body.auth-ready {
     display: flex;
     gap: 12px;
     margin-top: 28px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.form-actions .press-button {
+    width: fit-content;
+    flex-shrink: 0;
 }
 
 /* Results */
@@ -1662,7 +1669,7 @@ body.auth-ready {
 }
 
 .press-button:hover .text {
-    transform: scale(0.9);
+    transform: none;
 }
 
 .press-button:active {
@@ -1676,7 +1683,7 @@ body.auth-ready {
 }
 
 .press-button:active .text {
-    transform: scale(0.8);
+    transform: none;
 }
 
 .press-button-lg,

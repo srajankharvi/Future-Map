@@ -366,10 +366,15 @@ async function generateRecommendations() {
 
     // Loading state
     const generateBtn = document.querySelector('[data-action="generate-recommendations"]');
-    let originalText = '';
+    let originalHTML = '';
     if (generateBtn) {
-        originalText = generateBtn.textContent;
-        generateBtn.textContent = 'Generating...';
+        const textSpan = generateBtn.querySelector('.text');
+        originalHTML = textSpan ? textSpan.innerHTML : generateBtn.innerHTML;
+        if (textSpan) {
+            textSpan.textContent = 'Generating...';
+        } else {
+            generateBtn.textContent = 'Generating...';
+        }
         generateBtn.disabled = true;
     }
 
@@ -395,7 +400,12 @@ async function generateRecommendations() {
         alert('Could not connect to server. Make sure the backend is running.');
     } finally {
         if (generateBtn) {
-            generateBtn.textContent = originalText;
+            const textSpan = generateBtn.querySelector('.text');
+            if (textSpan) {
+                textSpan.innerHTML = originalHTML;
+            } else {
+                generateBtn.innerHTML = originalHTML;
+            }
             generateBtn.disabled = false;
         }
     }
