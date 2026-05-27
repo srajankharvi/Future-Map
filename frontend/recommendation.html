@@ -89,7 +89,7 @@
                     <p class="form-description">Fill in your details to get personalized career and course recommendations</p>
 
                     <div class="form-group">
-                        <label>Select Your Education Level <span class="required-asterisk">*</span></label>
+                        <label for="educationLevel">Select Your Education Level <span class="required-asterisk">*</span></label>
                         <select id="educationLevel" class="form-input">
                             <option value="SSLC">SSLC</option>
                             <option value="PUC">PUC</option>
@@ -100,7 +100,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label id="marksLabel">SSLC Academic Marks (0-100) <span class="required-asterisk">*</span></label>
+                        <label id="marksLabel" for="marks">SSLC Academic Marks (0-100) <span class="required-asterisk">*</span></label>
                         <div class="marks-input-wrapper">
                             <input type="number" id="marks" min="0" max="100" placeholder="Enter your marks" value="75" class="form-input">
                             <div class="marks-display">
@@ -111,9 +111,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Select Your Skills <span class="required-asterisk">*</span></label>
+                        <div class="form-group-label" id="skillsGroupLabel">Select Your Skills <span class="required-asterisk">*</span></div>
                         <p class="skills-description">Choose the skills you're best at (select at least 1)</p>
-                        <div class="skills-grid skills-grid-large">
+                        <div class="skills-grid skills-grid-large" role="group" aria-labelledby="skillsGroupLabel">
                             <label class="skill-checkbox">
                                 <input type="checkbox" value="analytical" class="skill-input">
                                 <span class="skill-name" style="display:flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg> Analytical</span>

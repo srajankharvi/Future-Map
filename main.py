@@ -50,7 +50,8 @@ def create_app():
         'default-src': '\'self\'',
         'img-src': ['\'self\'', 'data:', 'https:'],
         'script-src': ['\'self\''],
-        'style-src': ['\'self\'', '\'unsafe-inline\''],
+        'style-src': ['\'self\'', '\'unsafe-inline\'', 'https://fonts.googleapis.com'],
+        'font-src': ['\'self\'', 'https://fonts.gstatic.com'],
         'connect-src': ['\'self\'', 'http://127.0.0.1:5000', 'http://localhost:5000']
     }
     # Only force HTTPS if we are in production (SESSION_COOKIE_SECURE is True)

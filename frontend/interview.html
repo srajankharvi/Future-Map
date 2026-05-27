@@ -87,11 +87,11 @@
 
                 <!-- Difficulty Level -->
                 <div class="ai-field-group">
-                    <label class="ai-field-label">
+                    <div class="ai-field-label" id="difficultyLabel">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
                         Difficulty Level
-                    </label>
-                    <div class="difficulty-pills" id="difficultyPills">
+                    </div>
+                    <div class="difficulty-pills" id="difficultyPills" role="group" aria-labelledby="difficultyLabel">
                         <button class="diff-pill active" data-level="beginner">
                             <span class="pill-dot beginner-dot"></span>
                             Beginner
@@ -213,11 +213,11 @@
 
                     <!-- Difficulty Level -->
                     <div class="ai-field-group">
-                        <label class="ai-field-label">
+                        <div class="ai-field-label" id="mockDifficultyLabel">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
                             Difficulty Level
-                        </label>
-                        <div class="difficulty-pills" id="mockDifficultyPills">
+                        </div>
+                        <div class="difficulty-pills" id="mockDifficultyPills" role="group" aria-labelledby="mockDifficultyLabel">
                             <button class="diff-pill active" data-level="beginner">
                                 <span class="pill-dot beginner-dot"></span>
                                 Beginner
@@ -266,6 +266,7 @@
                     </div>
 
                     <div class="chat-input-area">
+                        <label class="sr-only" for="chatInput">Interview response</label>
                         <textarea id="chatInput" placeholder="Type your response here..." rows="1"></textarea>
                         <button id="sendMessageBtn" class="chat-send-btn" disabled>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
