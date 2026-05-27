@@ -1,6 +1,6 @@
 import re
 import bleach
-from pydantic import BaseModel, Field, EmailStr, field_validator, model_validator
+from pydantic import BaseModel, Field, EmailStr, field_validator, model_validator, StrictStr, ConfigDict
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
@@ -18,18 +18,24 @@ def sanitize_html(text: str) -> str:
     return bleach.clean(text, tags=[], attributes={}, strip=True)
 
 class RegisterSchema(BaseModel):
-    username: str = Field(..., pattern=USERNAME_REGEX, min_length=3, max_length=30)
+    model_config = ConfigDict(extra='forbid')
+
+    username: StrictStr = Field(..., pattern=USERNAME_REGEX, min_length=3, max_length=30)
     email: EmailStr
-    password: str = Field(..., min_length=PASSWORD_MIN, max_length=PASSWORD_MAX)
-    confirm_password: str
-    full_name: Optional[str] = Field(default="", max_length=FULL_NAME_MAX)
+    password: StrictStr = Field(..., min_length=PASSWORD_MIN, max_length=PASSWORD_MAX)
+    confirm_password: StrictStr
+    full_name: Optional[StrictStr] = Field(default="", max_length=FULL_NAME_MAX)
 
     @field_validator('username')
     def validate_username(cls, v):
+        if not isinstance(v, str):
+            raise ValueError('username must be a string')
         return v.strip().lower()
 
     @field_validator('full_name')
     def validate_full_name(cls, v):
+        if not isinstance(v, str):
+            return ''
         return sanitize_html(v.strip())
 
     @model_validator(mode='after')
@@ -39,25 +45,33 @@ class RegisterSchema(BaseModel):
         return self
 
 class LoginSchema(BaseModel):
-    username: str = Field(..., min_length=1)
-    password: str = Field(..., min_length=1)
+    model_config = ConfigDict(extra='forbid')
+
+    username: StrictStr = Field(..., min_length=1)
+    password: StrictStr = Field(..., min_length=1)
 
     @field_validator('username')
     def validate_username(cls, v):
+        if not isinstance(v, str):
+            raise ValueError('username must be a string')
         return v.strip().lower()
 
 class UpdateProfileSchema(BaseModel):
-    full_name: Optional[str] = Field(default=None, max_length=FULL_NAME_MAX)
-    bio: Optional[str] = Field(default=None, max_length=500)
-    avatar_url: Optional[str] = Field(default=None, max_length=500)
-    birthday: Optional[str] = Field(default=None, max_length=100)
-    status: Optional[str] = Field(default=None, max_length=100)
+    model_config = ConfigDict(extra='forbid')
+
+    full_name: Optional[StrictStr] = Field(default=None, max_length=FULL_NAME_MAX)
+    bio: Optional[StrictStr] = Field(default=None, max_length=500)
+    avatar_url: Optional[StrictStr] = Field(default=None, max_length=500)
+    birthday: Optional[StrictStr] = Field(default=None, max_length=100)
+    status: Optional[StrictStr] = Field(default=None, max_length=100)
 
     @field_validator('full_name', 'bio', 'avatar_url', 'birthday', 'status', mode='before')
     def sanitize_fields(cls, v):
-        if v is not None:
-            return sanitize_html(str(v).strip())
-        return v
+        if v is None:
+            return v
+        if not isinstance(v, str):
+            raise ValueError('must be a string')
+        return sanitize_html(v.strip())
 
     @field_validator('avatar_url')
     def validate_avatar_url(cls, v):
@@ -69,17 +83,27 @@ class UpdateProfileSchema(BaseModel):
         return v
 
 class ProjectSchema(BaseModel):
-    title: str = Field(..., min_length=1, max_length=100)
-    link: str = Field(..., min_length=1, max_length=500)
-    description: str = Field(..., min_length=1, max_length=1000)
+    model_config = ConfigDict(extra='forbid')
+
+    title: StrictStr = Field(..., min_length=1, max_length=100)
+    link: StrictStr = Field(..., min_length=1, max_length=500)
+    description: StrictStr = Field(..., min_length=1, max_length=1000)
 
     @field_validator('title', 'description', mode='before')
     def sanitize_text_fields(cls, v):
-        return sanitize_html(str(v).strip()) if v is not None else ''
+        if v is None:
+            return ''
+        if not isinstance(v, str):
+            raise ValueError('must be a string')
+        return sanitize_html(v.strip())
 
     @field_validator('link', mode='before')
     def sanitize_link(cls, v):
-        return sanitize_html(str(v).strip()) if v is not None else ''
+        if v is None:
+            return ''
+        if not isinstance(v, str):
+            raise ValueError('must be a string')
+        return sanitize_html(v.strip())
 
     @field_validator('link')
     def validate_http_url(cls, v):
@@ -89,59 +113,79 @@ class ProjectSchema(BaseModel):
         return v
 
 class RoadmapSchema(BaseModel):
-    career_name: str = Field(..., min_length=1, max_length=150)
-    course_name: str = Field(..., min_length=1, max_length=150)
-    category: Optional[str] = Field(default='', max_length=100)
+    model_config = ConfigDict(extra='forbid')
+
+    career_name: StrictStr = Field(..., min_length=1, max_length=150)
+    course_name: StrictStr = Field(..., min_length=1, max_length=150)
+    category: Optional[StrictStr] = Field(default='', max_length=100)
     roadmap_data: Dict[str, Any] = Field(default_factory=dict)
 
     @field_validator('career_name', 'course_name', 'category', mode='before')
     def sanitize_roadmap_text(cls, v):
-        return sanitize_html(str(v).strip()) if v is not None else ''
+        if v is None:
+            return ''
+        if not isinstance(v, str):
+            raise ValueError('must be a string')
+        return sanitize_html(v.strip())
 
 class RecommendationRequestSchema(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
     marks: float = Field(..., ge=0, le=100)
     # Fixed: Pydantic v2 uses max_items for List, not max_length
-    skills: List[str] = Field(..., min_items=1, max_items=20)
-    education_level: str = Field(default='SSLC', max_length=30)
+    skills: List[StrictStr] = Field(..., min_items=1, max_items=20)
+    education_level: StrictStr = Field(default='SSLC', max_length=30)
 
     @field_validator('skills')
     def sanitize_skills(cls, v):
-        cleaned = [sanitize_html(str(skill).strip()[:50]) for skill in v if str(skill).strip()]
+        cleaned = [sanitize_html(skill.strip()[:50]) for skill in v if isinstance(skill, str) and skill.strip()]
         if not cleaned:
             raise ValueError('Please select at least one skill')
         return cleaned
 
     @field_validator('education_level')
     def sanitize_education_level(cls, v):
-        return sanitize_html(str(v).strip()[:30]) or 'SSLC'
+        if not isinstance(v, str):
+            return 'SSLC'
+        return sanitize_html(v.strip()[:30]) or 'SSLC'
 
 class AIQuestionRequestSchema(BaseModel):
-    category: str = Field(..., min_length=1, max_length=50)
-    level: str = Field(default='beginner', max_length=20)
+    model_config = ConfigDict(extra='forbid')
+
+    category: StrictStr = Field(..., min_length=1, max_length=50)
+    level: StrictStr = Field(default='beginner', max_length=20)
     count: int = Field(default=5, ge=1, le=50)
-    role: Optional[str] = Field(default=None, max_length=100)
-    topic: Optional[str] = Field(default=None, max_length=100)
+    role: Optional[StrictStr] = Field(default=None, max_length=100)
+    topic: Optional[StrictStr] = Field(default=None, max_length=100)
 
     @field_validator('category', 'level', 'role', 'topic', mode='before')
     def sanitize_ai_text(cls, v):
         if v is None:
             return None
-        return sanitize_html(str(v).strip())
+        if not isinstance(v, str):
+            raise TypeError('must be a string')
+        return sanitize_html(v.strip())
 
     @field_validator('level')
     def normalize_level(cls, v):
         return v.lower()
 
 class MockInterviewRequestSchema(BaseModel):
-    category: str = Field(..., min_length=1, max_length=50)
-    level: str = Field(default='beginner', max_length=20)
-    message: str = Field(..., min_length=1, max_length=1000)
+    model_config = ConfigDict(extra='forbid')
+
+    category: StrictStr = Field(..., min_length=1, max_length=50)
+    level: StrictStr = Field(default='beginner', max_length=20)
+    message: StrictStr = Field(..., min_length=1, max_length=1000)
     # Fixed: Pydantic v2 uses max_items for List, not max_length
     history: List[Dict[str, Any]] = Field(default_factory=list, max_items=30)
 
     @field_validator('category', 'level', 'message', mode='before')
     def sanitize_mock_text(cls, v):
-        return sanitize_html(str(v).strip()) if v is not None else ''
+        if v is None:
+            return ''
+        if not isinstance(v, str):
+            raise TypeError('must be a string')
+        return sanitize_html(v.strip())
 
     @field_validator('level')
     def normalize_mock_level(cls, v):
