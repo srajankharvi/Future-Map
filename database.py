@@ -35,6 +35,7 @@ else:
             (mongo_db.projects, [('username', ASCENDING), ('created_at', DESCENDING)], {'name': 'projects_username_created_at'}),
             (mongo_db.roadmaps, [('user_id', ASCENDING), ('updated_at', DESCENDING)], {'name': 'roadmaps_user_updated_at'}),
             (mongo_db.roadmaps, [('user_id', ASCENDING), ('career_name', ASCENDING), ('course_name', ASCENDING)], {'unique': True, 'name': 'unique_user_career_course_roadmap'}),
+            (mongo_db.career_skill_progress, [('user_id', ASCENDING)], {'unique': True, 'name': 'unique_user_skill_progress'}),
             (mongo_db.careers, [('name', TEXT), ('description', TEXT), ('category', TEXT)], {'name': 'careers_text_search'}),
             (mongo_db.courses, [('name', TEXT), ('description', TEXT), ('category', TEXT)], {'name': 'courses_text_search'}),
         ]

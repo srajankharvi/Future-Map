@@ -71,6 +71,60 @@
                 </form>
             </div>
 
+            <!-- Career Skill Roadmap Tracker -->
+            <div id="skillRoadmapSection" class="skill-roadmap-section card">
+                <div class="skill-roadmap-header">
+                    <div class="skill-roadmap-header-text">
+                        <h2>Career Skill Roadmap</h2>
+                        <p>Choose your target career and track skills step by step</p>
+                    </div>
+                </div>
+
+                <div id="skillRoadmapMessage" class="skill-roadmap-msg hidden" role="status"></div>
+
+                <div class="skill-roadmap-career-picker">
+                    <div class="custom-select-wrapper skill-roadmap-select-group">
+                        <label for="careerCategorySelect">Filter by Category</label>
+                        <select id="careerCategorySelect" class="custom-select">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                    <div class="custom-select-wrapper skill-roadmap-select-group">
+                        <label for="careerSelect">Select Career</label>
+                        <select id="careerSelect" class="custom-select">
+                            <option value="">-- Choose a Career --</option>
+                        </select>
+                    </div>
+                    <div class="skill-roadmap-save-row">
+                        <button type="button" id="saveCareerBtn" class="btn btn-primary pearl-button">
+                            <span class="wrap">
+                                <span class="pearl-label">
+                                    <span class="pearl-star">✧</span>
+                                    <span class="pearl-star-alt">✦</span>
+                                    <span>Save Career</span>
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                    <p id="selectedCareerLabel" class="skill-roadmap-selected-label hidden"></p>
+                </div>
+
+                <div id="skillRoadmapProgressWrap" class="skill-roadmap-progress-wrap hidden">
+                    <div class="skill-roadmap-progress-header">
+                        <span>Progress</span>
+                        <span id="skillProgressPercent">0%</span>
+                    </div>
+                    <div class="skill-roadmap-progress-track" aria-hidden="true">
+                        <div id="skillProgressBar" class="skill-roadmap-progress-fill" style="width: 0%"></div>
+                    </div>
+                    <p id="skillProgressDetail" class="skill-roadmap-progress-detail">0 of 0 skills completed</p>
+                </div>
+
+                <div id="skillRoadmapSteps" class="skill-roadmap-steps">
+                    <p class="skill-roadmap-placeholder">Select and save a career to view your personalized skill roadmap.</p>
+                </div>
+            </div>
+
             <div class="my-projects-section">
                 <h2>My Uploaded Projects</h2>
                 <div id="userProjectsGrid" class="projects-mini-grid">
@@ -159,6 +213,7 @@
 
     <script src="js/main.js" defer></script>
     <script src="js/account.js" defer></script>
+    <script src="js/skill-roadmap.js" defer></script>
     <script src="js/projects.js" defer></script>
 </body>
 </html>

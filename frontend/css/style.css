@@ -5323,3 +5323,355 @@ body.auth-ready {
         transform: translate3d(-50%, 0, 0);
     }
 }
+
+/* ==================== CAREER SKILL ROADMAP TRACKER ==================== */
+.skill-roadmap-section {
+    margin-top: 32px;
+    margin-bottom: 32px;
+    padding: 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    color: var(--text-primary);
+    position: relative;
+    overflow: visible;
+    isolation: isolate;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.skill-roadmap-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background: radial-gradient(ellipse at 15% 0%, rgba(90, 143, 138, 0.08), transparent 50%),
+        radial-gradient(ellipse at 85% 100%, rgba(61, 107, 110, 0.06), transparent 45%);
+    pointer-events: none;
+}
+
+/* Picker sits above progress + roadmap steps */
+.skill-roadmap-section .skill-roadmap-career-picker {
+    position: relative;
+    z-index: 200;
+}
+
+.skill-roadmap-section .skill-roadmap-select-group {
+    position: relative;
+    z-index: 1;
+    overflow: visible;
+}
+
+.skill-roadmap-section .skill-roadmap-select-group.is-open {
+    z-index: 500;
+}
+
+.skill-roadmap-section .skill-roadmap-career-picker .custom-select-wrapper.open {
+    z-index: 501;
+}
+
+.skill-roadmap-section .skill-roadmap-career-picker .custom-select-dropdown {
+    z-index: 9999;
+}
+
+.skill-roadmap-section .skill-roadmap-progress-wrap,
+.skill-roadmap-section .skill-roadmap-steps,
+.skill-roadmap-section .skill-roadmap-header,
+.skill-roadmap-section .skill-roadmap-msg,
+.skill-roadmap-section .skill-roadmap-save-row {
+    position: relative;
+    z-index: 1;
+}
+
+.skill-roadmap-header h2 {
+    color: var(--accent);
+    font-size: 22px;
+    margin-bottom: 6px;
+}
+
+.skill-roadmap-header p {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.skill-roadmap-msg {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.skill-roadmap-msg--success {
+    background: rgba(34, 197, 94, 0.1);
+    color: #15803d;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.skill-roadmap-msg--error {
+    background: rgba(239, 68, 68, 0.08);
+    color: #b91c1c;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.skill-roadmap-career-picker {
+    margin-bottom: 24px;
+}
+
+.skill-roadmap-career-picker .custom-select-wrapper {
+    margin-bottom: 16px;
+    overflow: visible;
+}
+
+.skill-roadmap-save-row {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.skill-roadmap-selected-label {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.skill-roadmap-progress-wrap {
+    margin-bottom: 28px;
+    padding: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+}
+
+.skill-roadmap-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.skill-roadmap-progress-header span:last-child {
+    color: var(--accent);
+}
+
+.skill-roadmap-progress-track {
+    height: 12px;
+    background: var(--accent-light);
+    border-radius: 100px;
+    overflow: hidden;
+    border: 1px solid rgba(61, 107, 110, 0.12);
+}
+
+.skill-roadmap-progress-fill {
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: 100px;
+    transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 8px rgba(61, 107, 110, 0.25);
+}
+
+.skill-roadmap-progress-detail {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.skill-roadmap-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.skill-roadmap-placeholder {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 24px;
+    font-size: 15px;
+}
+
+.skill-roadmap-step {
+    padding: 24px;
+    animation: skillRoadmapFadeIn 0.5s ease both;
+}
+
+@keyframes skillRoadmapFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.skill-roadmap-section .glass-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+}
+
+.skill-roadmap-step-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.skill-roadmap-skill-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.skill-roadmap-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px;
+    border-radius: var(--radius);
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.skill-roadmap-item:hover {
+    border-color: rgba(61, 107, 110, 0.2);
+    background: var(--bg-card-hover);
+    box-shadow: var(--shadow);
+}
+
+.skill-roadmap-item--done {
+    border-color: rgba(61, 107, 110, 0.28);
+    background: rgba(220, 234, 230, 0.45);
+}
+
+.skill-roadmap-item-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.skill-roadmap-skill-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.skill-roadmap-skill-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin-bottom: 6px;
+}
+
+.skill-roadmap-skill-why {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.skill-roadmap-skill-why strong {
+    color: var(--accent);
+}
+
+/* Custom animated checkbox — teal theme, same animation behavior */
+.skill-roadmap-section .skill-check-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+    display: none;
+}
+
+.skill-roadmap-section .skill-check-container {
+    --size: 50px;
+    --check-bg: #dceae6;
+    --check-shadow-dark: rgba(42, 79, 84, 0.22);
+    --check-shadow-light: rgba(255, 255, 255, 0.95);
+    --check-inset-dark: rgba(42, 79, 84, 0.18);
+    --check-inset-light: rgba(255, 255, 255, 0.9);
+    width: var(--size);
+    display: block;
+    height: var(--size);
+    flex-shrink: 0;
+    background-color: var(--check-bg);
+    border-radius: 100%;
+    cursor: pointer;
+    padding: 5px;
+    box-shadow:
+        1.5px 1.5px 3px var(--check-shadow-dark),
+        -1.5px -1.5px 3px var(--check-shadow-light),
+        inset 0 0 0 var(--check-inset-dark),
+        inset 0 -0px 0 var(--check-inset-light);
+}
+
+.skill-roadmap-section .skill-check-container .checkmark {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow:
+        1.5px 1.5px 3px var(--check-shadow-dark),
+        -1.5px -1.5px 3px var(--check-shadow-light),
+        inset 0 0 0 var(--check-inset-dark),
+        inset 0 -0px 0 var(--check-inset-light);
+    transition: all ease 0.3s;
+    padding: 8px;
+}
+
+.skill-roadmap-section .skill-check-container .checkmark svg {
+    opacity: 0;
+    transition: all ease 0.3s;
+    color: var(--accent);
+    stroke: var(--accent);
+}
+
+.skill-roadmap-section .skill-check-container input:checked + .checkmark {
+    background: linear-gradient(145deg, rgba(61, 107, 110, 0.12), rgba(90, 143, 138, 0.08));
+    box-shadow:
+        0 0 0 transparent,
+        0 0 0 transparent,
+        inset 1.5px 1.5px 3px var(--check-inset-dark),
+        inset -1.5px -1.5px 3px var(--check-inset-light);
+}
+
+.skill-roadmap-section .skill-check-container input:checked + .checkmark svg {
+    opacity: 1;
+    color: var(--accent-dark);
+    stroke: var(--accent-dark);
+}
+
+.skill-roadmap-section .skill-check-container input:disabled + .checkmark {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+@media (max-width: 768px) {
+    .skill-roadmap-section {
+        padding: 20px;
+    }
+
+    .skill-roadmap-save-row .pearl-button {
+        width: 100%;
+    }
+
+    .skill-roadmap-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .skill-roadmap-section .skill-check-container {
+        --size: 44px;
+    }
+}

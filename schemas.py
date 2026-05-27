@@ -170,6 +170,31 @@ class AIQuestionRequestSchema(BaseModel):
     def normalize_level(cls, v):
         return v.lower()
 
+class SkillTrackerCareerSchema(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    career_name: StrictStr = Field(..., min_length=1, max_length=150)
+
+    @field_validator('career_name', mode='before')
+    def sanitize_career_name(cls, v):
+        if not isinstance(v, str):
+            raise ValueError('career_name must be a string')
+        return sanitize_html(v.strip())
+
+
+class SkillTrackerToggleSchema(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    skill_key: StrictStr = Field(..., min_length=1, max_length=120)
+    completed: bool
+
+    @field_validator('skill_key', mode='before')
+    def sanitize_skill_key(cls, v):
+        if not isinstance(v, str):
+            raise ValueError('skill_key must be a string')
+        return sanitize_html(v.strip().lower())
+
+
 class MockInterviewRequestSchema(BaseModel):
     model_config = ConfigDict(extra='forbid')
 

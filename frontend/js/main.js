@@ -442,6 +442,7 @@ function setupCustomSelects() {
                 dropdown.querySelectorAll('.custom-select-item').forEach(el => el.classList.remove('selected'));
                 item.classList.add('selected');
                 wrapper.classList.remove('open');
+                resetSkillRoadmapSelectGroups();
             });
             
             dropdown.appendChild(item);
@@ -454,7 +455,9 @@ function setupCustomSelects() {
             document.querySelectorAll('.custom-select-wrapper.open').forEach(el => {
                 if (el !== wrapper) el.classList.remove('open');
             });
+            resetSkillRoadmapSelectGroups();
             wrapper.classList.toggle('open');
+            elevateSkillRoadmapSelectGroup(select, wrapper.classList.contains('open'));
         });
         
         select.parentNode.insertBefore(wrapper, select.nextSibling);
@@ -465,9 +468,23 @@ function setupCustomSelects() {
     if (!document.hasCustomSelectListener) {
         document.addEventListener('click', () => {
             document.querySelectorAll('.custom-select-wrapper.open').forEach(el => el.classList.remove('open'));
+            resetSkillRoadmapSelectGroups();
         });
         document.hasCustomSelectListener = true;
     }
+}
+
+/** Raise account-page career/category dropdown above progress bar when open */
+function resetSkillRoadmapSelectGroups() {
+    document.querySelectorAll('#skillRoadmapSection .skill-roadmap-select-group').forEach(el => {
+        el.classList.remove('is-open');
+    });
+}
+
+function elevateSkillRoadmapSelectGroup(select, isOpen) {
+    const group = select.closest('.skill-roadmap-select-group');
+    if (!group) return;
+    group.classList.toggle('is-open', isOpen);
 }
 
 
