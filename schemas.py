@@ -203,6 +203,9 @@ class MockInterviewRequestSchema(BaseModel):
     message: StrictStr = Field(..., min_length=1, max_length=1000)
     # Fixed: Pydantic v2 uses max_items for List, not max_length
     history: List[Dict[str, Any]] = Field(default_factory=list, max_items=30)
+    # Deprecated: kept only so cached frontend bundles that still send it do not
+    # break live interviews. The server computes progress from conversation state.
+    question_count: Optional[int] = Field(default=None, ge=0, le=30)
 
     @field_validator('category', 'level', 'message', mode='before')
     def sanitize_mock_text(cls, v):

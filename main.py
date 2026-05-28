@@ -3,7 +3,7 @@ Future Map — Entry Point
 Creates the Flask app, applies config, extensions, blueprints, and error handlers.
 """
 
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 import os
 
@@ -43,6 +43,18 @@ def create_app():
 
     # --- Error handlers ---
     register_error_handlers(app)
+
+    @app.after_request
+    def add_static_cache_headers(response):
+        """Keep deployed HTML/JS fresh so API payload changes roll out together."""
+        path = request.path.lower()
+        if path == '/' or path.endswith('.html'):
+            response.headers['Cache-Control'] = 'no-store'
+        elif path.endswith(('.js', '.css')):
+            response.headers['Cache-Control'] = 'no-cache, max-age=0, must-revalidate'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+        return response
 
     # --- Security Headers (Flask-Talisman) ---
     from flask_talisman import Talisman

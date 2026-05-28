@@ -26,6 +26,19 @@ def _today_str():
     return datetime.now(timezone.utc).date().isoformat()
 
 
+def _validation_error_summary(error):
+    """Return validation errors without echoing user-provided input."""
+    summary = []
+    for item in error.errors():
+        loc = item.get('loc') or ('Field',)
+        summary.append({
+            'field': '.'.join(str(part) for part in loc),
+            'message': item.get('msg', 'Invalid value'),
+            'type': item.get('type', 'validation_error')
+        })
+    return summary
+
+
 def _increment_daily_counter(user_id, count_field, date_field, limit=DAILY_INTERVIEW_LIMIT):
     """Atomically increment a per-user daily counter if it is below the limit."""
     if mongo_db is None:
@@ -246,8 +259,10 @@ def mock_interview_chat():
         try:
             schema = MockInterviewRequestSchema(**data)
         except ValidationError as e:
-            msg = e.errors()[0]['msg']
-            field = e.errors()[0]['loc'][0] if e.errors()[0].get('loc') else 'Field'
+            errors = _validation_error_summary(e)
+            logging.warning("Mock interview validation failed: %s", errors)
+            msg = errors[0]['message']
+            field = errors[0]['field']
             return jsonify({'success': False, 'error': f'{field}: {msg}'}), 400
 
         user_id = session.get('user_id')
@@ -255,6 +270,8 @@ def mock_interview_chat():
         level = schema.level
         message = schema.message
         history = schema.history
+        if schema.question_count is not None:
+            logging.info("Ignoring deprecated mock interview question_count field from client")
 
         # --- Check Daily Usage Limit ---
         if mongo_db is not None:

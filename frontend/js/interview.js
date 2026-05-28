@@ -459,8 +459,7 @@ async function sendMockMessage() {
                 category,
                 level,
                 message: text,
-                history: currentHistory,
-                question_count: mockQuestionCount
+                history: currentHistory
             })
         });
 
@@ -482,6 +481,10 @@ async function sendMockMessage() {
                 return;
             }
         } else {
+            console.warn('Mock interview request failed:', {
+                status: response.status,
+                error: response.error
+            });
             addChatMessage('ai', "I'm sorry, " + (response.error || "I encountered an error. Please try again."));
         }
     } catch (err) {
