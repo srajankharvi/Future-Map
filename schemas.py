@@ -1,5 +1,6 @@
 import re
 import bleach
+import html
 from pydantic import BaseModel, Field, EmailStr, field_validator, model_validator, StrictStr, ConfigDict
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
@@ -15,7 +16,8 @@ def sanitize_html(text: str) -> str:
     if not text:
         return text
     # Strip all HTML tags
-    return bleach.clean(text, tags=[], attributes={}, strip=True)
+    cleaned = bleach.clean(text, tags=[], attributes={}, strip=True)
+    return html.unescape(cleaned)
 
 class RegisterSchema(BaseModel):
     model_config = ConfigDict(extra='forbid')

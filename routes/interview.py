@@ -126,13 +126,19 @@ def generate_interview_questions():
         role = schema.role or None
         topic = schema.topic or None
 
-
         # --- Validate required inputs ---
-        if category not in AI_INTERVIEW_CATEGORIES:
+        category_lookup = {c.lower().strip(): c for c in AI_INTERVIEW_CATEGORIES}
+        normalized_cat = category.lower().strip() if category else ""
+        if normalized_cat not in category_lookup:
+            logging.warning(
+                "Invalid interview category received: %r (normalized: %r). Allowed: %s",
+                category, normalized_cat, AI_INTERVIEW_CATEGORIES
+            )
             return jsonify({
                 'success': False,
                 'error': f'Invalid category. Choose from: {", ".join(AI_INTERVIEW_CATEGORIES)}'
             }), 400
+        category = category_lookup[normalized_cat]
 
         if level not in ['beginner', 'intermediate', 'advanced']:
             return jsonify({
@@ -268,6 +274,21 @@ def mock_interview_chat():
         user_id = session.get('user_id')
         category = schema.category
         level = schema.level
+
+        # --- Validate and normalize category ---
+        category_lookup = {c.lower().strip(): c for c in AI_INTERVIEW_CATEGORIES}
+        normalized_cat = category.lower().strip() if category else ""
+        if normalized_cat not in category_lookup:
+            logging.warning(
+                "Invalid mock interview category received: %r (normalized: %r). Allowed: %s",
+                category, normalized_cat, AI_INTERVIEW_CATEGORIES
+            )
+            return jsonify({
+                'success': False,
+                'error': f'Invalid category. Choose from: {", ".join(AI_INTERVIEW_CATEGORIES)}'
+            }), 400
+        category = category_lookup[normalized_cat]
+
         message = schema.message
         history = schema.history
         if schema.question_count is not None:

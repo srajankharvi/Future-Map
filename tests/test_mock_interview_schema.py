@@ -104,3 +104,29 @@ def test_mock_interview_yes_turn_continues_flow(mock_interview_client, extra_pay
     data = response.get_json()
     assert data["success"] is True
     assert data["isQuestion"] is True
+
+
+def test_mock_interview_category_normalization(mock_interview_client):
+    # Test that &amp; and lowercase values are correctly normalized and accepted by /api/mock-interview
+    payload = {
+        "category": "aerospace &amp; aviation",  # Lowercase and containing entity
+        "level": "beginner",
+        "message": "yes",
+        "history": [
+            {
+                "role": "ai",
+                "content": "Hi! Are you ready to begin?",
+            }
+        ]
+    }
+
+    response = mock_interview_client.post(
+        '/api/mock-interview',
+        json=payload,
+        headers={'X-CSRF-Token': 'mock_tok'},
+    )
+
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["success"] is True
+
