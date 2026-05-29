@@ -70,12 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Ticker initialization
-    if (typeof careerData !== 'undefined' && careerData.length > 0) {
-        initTicker();
-    }
-    document.addEventListener('app:data-loaded', () => {
-        initTicker();
-    });
+if (typeof careerData !== 'undefined' && careerData.length > 0 && typeof courseData !== 'undefined' && courseData.length > 0) {
+    initTicker();
+}
+document.addEventListener('app:data-loaded', () => {
+    initTicker();
+});
 });
 
 /**
