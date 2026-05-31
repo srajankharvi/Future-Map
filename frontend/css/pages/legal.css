@@ -2,6 +2,10 @@
    FUTURE MAP — Legal Pages Styles (Privacy & Terms)
    ============================================================ */
 
+html {
+    scroll-behavior: smooth;
+}
+
 /* ==================== LEGAL HERO ==================== */
 .legal-hero {
     padding: 72px 0 52px;
@@ -90,14 +94,19 @@
     padding: 0 8px;
 }
 
-.legal-nav {
+.legal-nav-list {
+    position: relative;
     list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.legal-nav li a {
+.legal-nav-link {
+    position: relative;
+    z-index: 1;
     display: block;
     padding: 9px 12px;
     border-radius: 8px;
@@ -105,11 +114,11 @@
     font-weight: 500;
     color: var(--text-secondary);
     text-decoration: none;
-    transition: all 0.25s ease;
+    transition: all 0.25s ease, font-weight 0.15s ease;
     border-left: 2px solid transparent;
 }
 
-.legal-nav .nav-icon {
+.legal-nav-link .nav-icon {
     width: 14px;
     height: 14px;
     display: inline-block;
@@ -119,16 +128,36 @@
     flex-shrink: 0;
 }
 
-.legal-nav li a:hover {
+.legal-nav-link:hover {
     color: var(--accent);
     background: rgba(61, 107, 110, 0.05);
 }
 
-.legal-nav li a.active {
+.legal-nav-link.active {
     color: var(--accent);
     background: rgba(61, 107, 110, 0.06);
     border-left-color: var(--accent);
     font-weight: 600;
+}
+
+/* Dynamic indicator pill */
+.legal-nav-indicator {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background: rgba(61, 107, 110, 0.06);
+    border-left: 2px solid var(--accent);
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+}
+
+/* Progressive enhancement: when JS is active, the indicator handles background/borders */
+.legal-nav-list.js-active .legal-nav-link.active {
+    background: transparent !important;
+    border-left-color: transparent !important;
 }
 
 /* ==================== LEGAL CONTENT ==================== */
@@ -280,48 +309,6 @@
     background: rgba(61, 107, 110, 0.02);
 }
 
-/* Contact CTA at bottom */
-.legal-contact-cta {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 28px;
-    text-align: center;
-    margin-top: 48px;
-}
-
-.legal-contact-cta h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-}
-
-.legal-contact-cta p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-}
-
-.legal-contact-cta a {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    background: var(--gradient-primary);
-    color: white;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(61, 107, 110, 0.2);
-}
-
-.legal-contact-cta a:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(61, 107, 110, 0.3);
-}
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 1024px) {
@@ -335,20 +322,31 @@
         padding: 20px;
         background: var(--bg-card);
     }
-    .legal-nav {
+    .legal-nav-list {
         flex-direction: row;
         flex-wrap: wrap;
         gap: 6px;
     }
-    .legal-nav li a {
+    .legal-nav-link {
         border-left: none;
         border-bottom: 2px solid transparent;
         padding: 6px 12px;
         font-size: 12px;
     }
-    .legal-nav li a.active {
+    .legal-nav-link.active {
         border-bottom-color: var(--accent);
         background: rgba(61, 107, 110, 0.06);
+    }
+    
+    .legal-nav-indicator.mobile-mode {
+        border-left: none;
+        border-bottom: 2px solid var(--accent);
+        border-radius: 6px;
+    }
+    
+    .legal-nav-list.js-active .legal-nav-link.active {
+        background: transparent !important;
+        border-bottom-color: transparent !important;
     }
 }
 

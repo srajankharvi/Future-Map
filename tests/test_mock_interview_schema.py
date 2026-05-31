@@ -23,7 +23,7 @@ def test_mock_interview_schema_accepts_current_frontend_payload():
     assert schema.question_count is None
 
 
-def test_mock_interview_schema_tolerates_deprecated_question_count():
+def test_mock_interview_schema_accepts_question_count():
     payload = {
         "category": "Computer",
         "level": "beginner",
@@ -68,7 +68,7 @@ def mock_interview_client(monkeypatch):
     monkeypatch.setattr(
         services.interview_ai,
         "conduct_mock_interview",
-        lambda category, level, message, history: "Great, let's begin. What is your strongest technical skill?",
+        lambda category, level, message, history, answers_completed=0, max_answers=10, **kwargs: "Great, let's begin. What is your strongest technical skill?",
     )
 
     with app.test_client() as client:
@@ -104,6 +104,9 @@ def test_mock_interview_yes_turn_continues_flow(mock_interview_client, extra_pay
     data = response.get_json()
     assert data["success"] is True
     assert data["isQuestion"] is True
+    assert data["isComplete"] is False
+    assert data["answersCompleted"] == 1
+    assert data["maxAnswers"] == 10
 
 
 def test_mock_interview_category_normalization(mock_interview_client):
@@ -130,3 +133,174 @@ def test_mock_interview_category_normalization(mock_interview_client):
     data = response.get_json()
     assert data["success"] is True
 
+
+def test_mock_interview_final_answer_completes_without_new_question(mock_interview_client, monkeypatch):
+    import services.interview_ai
+
+    monkeypatch.setattr(
+        services.interview_ai,
+        "conduct_mock_interview",
+        lambda *args, **kwargs: pytest.fail("conduct_mock_interview should not run after 10 answers"),
+    )
+    monkeypatch.setattr(
+        services.interview_ai,
+        "generate_mock_interview_report",
+        lambda category, level, history: {
+            "overall_score": 82,
+            "detailed_evaluation": "Strong completion.",
+            "good_parts": ["Clear answers"],
+            "bad_parts": [],
+            "improvement_tips": ["Keep practicing"],
+        },
+    )
+
+    history = []
+    for i in range(1, 10):
+        history.append({"role": "ai", "content": f"Question {i}?"})
+        history.append({"role": "user", "content": f"Answer {i}."})
+
+    payload = {
+        "category": "Computer",
+        "level": "beginner",
+        "message": "Answer 10.",
+        "history": history,
+    }
+
+    response = mock_interview_client.post(
+        '/api/mock-interview',
+        json=payload,
+        headers={'X-CSRF-Token': 'mock_tok'},
+    )
+
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["success"] is True
+    assert data["isComplete"] is True
+    assert data["answersCompleted"] == 10
+    assert data["maxAnswers"] == 10
+    assert data["reply"]["overall_score"] == 82
+
+
+def test_count_user_answers_with_message():
+    from services.interview_ai import count_user_answers, count_user_answers_with_message
+
+    history = [
+        {"role": "ai", "content": "Ready?"},
+        {"role": "user", "content": "Yes"},
+    ]
+    assert count_user_answers(history) == 1
+    assert count_user_answers_with_message(history, "Second answer") == 2
+    assert count_user_answers_with_message(history + [{"role": "user", "content": "Second answer"}], "Second answer") == 2
+
+
+def test_count_user_answers_caps_at_ten():
+    from services.interview_ai import count_user_answers_with_message
+
+    history = []
+    for i in range(12):
+        history.append({"role": "user", "content": f"Answer {i}"})
+    assert count_user_answers_with_message(history, "") == 10
+
+
+def test_mock_interview_replaces_early_ai_summary(monkeypatch):
+    import services.interview_ai as interview_ai
+
+    monkeypatch.setattr(
+        interview_ai.gemini_client,
+        "chat",
+        lambda *args, **kwargs: (
+            "That's the end of our mock interview. Here's a brief summary of your "
+            "performance: you did well and should keep practicing."
+        ),
+    )
+    monkeypatch.setattr(interview_ai.groq_client, "chat", lambda *args, **kwargs: None)
+
+    reply = interview_ai.conduct_mock_interview(
+        "Computer",
+        "beginner",
+        "code reusability",
+        [],
+        answers_completed=7,
+        max_answers=10,
+    )
+
+    assert reply.endswith("?")
+    assert "summary" not in reply.lower()
+    assert "performance" not in reply.lower()
+    assert "mock interview" not in reply.lower()
+
+
+def test_mock_interview_strips_acknowledgement_and_numbering(monkeypatch):
+    import services.interview_ai as interview_ai
+
+    monkeypatch.setattr(
+        interview_ai.gemini_client,
+        "chat",
+        lambda *args, **kwargs: "Good answer. Question 8: What is an API and why is it useful?",
+    )
+    monkeypatch.setattr(interview_ai.groq_client, "chat", lambda *args, **kwargs: None)
+
+    reply = interview_ai.conduct_mock_interview(
+        "Computer",
+        "beginner",
+        "code reusability",
+        [],
+        answers_completed=7,
+        max_answers=10,
+    )
+
+    assert reply == "What is an API and why is it useful?"
+
+
+def test_mock_interview_report_schema():
+    from schemas import MockInterviewReportRequestSchema
+    payload = {
+        "category": "Computer",
+        "level": "beginner",
+        "history": [
+            {"role": "ai", "content": "Hi! Are you ready to begin?"},
+            {"role": "user", "content": "Yes, I am."}
+        ]
+    }
+    schema = MockInterviewReportRequestSchema(**payload)
+    assert schema.category == "Computer"
+    assert schema.level == "beginner"
+    assert len(schema.history) == 2
+
+
+def test_mock_interview_report_endpoint(mock_interview_client, monkeypatch):
+    import services.interview_ai
+
+    # Mock the report generator
+    monkeypatch.setattr(
+        services.interview_ai,
+        "generate_mock_interview_report",
+        lambda category, level, history: {
+            "overall_score": 85,
+            "detailed_evaluation": "Good job.",
+            "good_parts": ["Part A"],
+            "bad_parts": ["Part B"],
+            "improvement_tips": ["Tip C"]
+        }
+    )
+
+    payload = {
+        "category": "Computer",
+        "level": "beginner",
+        "history": [
+            {"role": "ai", "content": "Hi! Are you ready to begin?"},
+            {"role": "user", "content": "Yes, I am."}
+        ]
+    }
+
+    response = mock_interview_client.post(
+        '/api/mock-interview/report',
+        json=payload,
+        headers={'X-CSRF-Token': 'mock_tok'}
+    )
+
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["success"] is True
+    assert data["report"]["overall_score"] == 85
+    assert data["report"]["detailed_evaluation"] == "Good job."

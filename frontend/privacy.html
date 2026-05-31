@@ -257,43 +257,7 @@
     <script src="js/main.js" defer></script>
     <script src="js/footer.js" defer></script>
     <script src="js/cookie-consent.js" defer></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Sidebar Scroll Spy / Active Links indicator
-            const sections = document.querySelectorAll('.legal-section');
-            const navLinks = document.querySelectorAll('.legal-nav-link');
-
-            window.addEventListener('scroll', () => {
-                let current = '';
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    const sectionHeight = section.clientHeight;
-                    // Trigger slightly before reaching the element
-                    if (window.scrollY >= (sectionTop - 180)) {
-                        current = section.getAttribute('id');
-                    }
-                });
-
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${current}`) {
-                        link.classList.add('active');
-                    }
-                });
-            });
-
-            // Trigger cookie preferences modal
-            const cookiePrefLink = document.getElementById('openCookiePrefs');
-            if (cookiePrefLink) {
-                cookiePrefLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (window.CookieConsent && typeof window.CookieConsent.openPreferences === 'function') {
-                        window.CookieConsent.openPreferences();
-                    }
-                });
-            }
-        });
-    </script>
+    <script src="js/legal.js" defer></script>
 </body>
 
 </html>

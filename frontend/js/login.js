@@ -60,8 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const eyeIcon = btn.querySelector('.eye-icon');
             const eyeOffIcon = btn.querySelector('.eye-off-icon');
             if (eyeIcon && eyeOffIcon) {
-                eyeIcon.classList.toggle('hidden', !isPassword);
-                eyeOffIcon.classList.toggle('hidden', isPassword);
+                eyeIcon.classList.toggle('hidden', isPassword);
+                eyeOffIcon.classList.toggle('hidden', !isPassword);
             }
         });
     });

@@ -11,7 +11,7 @@ from pydantic import ValidationError
 
 from database import mongo_db
 
-from schemas import AIQuestionRequestSchema, MockInterviewRequestSchema
+from schemas import AIQuestionRequestSchema, MockInterviewRequestSchema, MockInterviewReportRequestSchema
 from utils import csrf_protect, login_required
 from extensions import limiter
 from data.interview import FALLBACK_INTERVIEW_QUESTIONS, AI_INTERVIEW_CATEGORIES
@@ -20,6 +20,7 @@ from services.interview_ai import generate_questions
 interview_bp = Blueprint('interview', __name__)
 
 DAILY_INTERVIEW_LIMIT = 5
+MAX_MOCK_QUESTIONS = 10
 
 
 def _today_str():
@@ -37,6 +38,22 @@ def _validation_error_summary(error):
             'type': item.get('type', 'validation_error')
         })
     return summary
+
+
+def _estimate_mock_questions_asked(history):
+    """Best-effort progress estimate for older clients that omit question_count."""
+    question_count = -1
+    for item in history:
+        if not isinstance(item, dict):
+            continue
+        role = item.get('role')
+        content = str(item.get('content', ''))
+        if role not in {'ai', 'assistant', 'model'} or '?' not in content:
+            continue
+        if 'ready to begin' in content.lower():
+            continue
+        question_count += 1
+    return min(question_count, MAX_MOCK_QUESTIONS)
 
 
 def _increment_daily_counter(user_id, count_field, date_field, limit=DAILY_INTERVIEW_LIMIT):
@@ -291,8 +308,6 @@ def mock_interview_chat():
 
         message = schema.message
         history = schema.history
-        if schema.question_count is not None:
-            logging.info("Ignoring deprecated mock interview question_count field from client")
 
         # --- Check Daily Usage Limit ---
         if mongo_db is not None:
@@ -312,17 +327,55 @@ def mock_interview_chat():
             if count > DAILY_INTERVIEW_LIMIT:
                 return jsonify({'success': False, 'error': 'Daily limit reached.'}), 403
 
+        # --- Count user answers (include current message) ---
+        from services.interview_ai import (
+            conduct_mock_interview,
+            count_user_answers_with_message,
+            build_history_with_message,
+            generate_mock_interview_report,
+        )
 
-        from services.interview_ai import conduct_mock_interview
-        reply = conduct_mock_interview(category, level, message, history)
+        full_history = build_history_with_message(history, message)
+        user_answer_count = count_user_answers_with_message(history, message)
 
-        # Heuristic to check if the reply contains a new question
+        if user_answer_count >= MAX_MOCK_QUESTIONS:
+            report = generate_mock_interview_report(category, level, full_history)
+            if not report:
+                report = {
+                    "overall_score": 75,
+                    "detailed_evaluation": "Thank you for completing the mock interview.",
+                    "good_parts": ["Participated in the interview."],
+                    "bad_parts": [],
+                    "improvement_tips": ["Continue practicing interviews."]
+                }
+
+            return jsonify({
+                'success': True,
+                'reply': report,
+                'isComplete': True,
+                'answersCompleted': user_answer_count,
+                'maxAnswers': MAX_MOCK_QUESTIONS
+            }), 200
+
+        reply = conduct_mock_interview(
+            category,
+            level,
+            message,
+            history,
+            answers_completed=user_answer_count,
+            max_answers=MAX_MOCK_QUESTIONS
+        )
+
+        # Check if reply contains a question
         is_question = '?' in reply
 
         return jsonify({
             'success': True,
             'reply': reply,
-            'isQuestion': is_question
+            'isQuestion': is_question,
+            'isComplete': False,
+            'answersCompleted': user_answer_count,
+            'maxAnswers': MAX_MOCK_QUESTIONS
         }), 200
 
 
@@ -330,3 +383,52 @@ def mock_interview_chat():
         logging.exception("Mock interview chat error")
         return jsonify({'success': False, 'error': 'Could not process mock interview message'}), 500
 
+
+@interview_bp.route('/api/mock-interview/report', methods=['POST'])
+@login_required
+@csrf_protect
+def mock_interview_report():
+    """
+    Generate an AI performance feedback report for the completed mock interview session.
+    """
+    try:
+        data = request.get_json(silent=True)
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+
+        try:
+            schema = MockInterviewReportRequestSchema(**data)
+        except ValidationError as e:
+            errors = _validation_error_summary(e)
+            msg = errors[0]['message']
+            field = errors[0]['field']
+            return jsonify({'success': False, 'error': f'{field}: {msg}'}), 400
+
+        category = schema.category
+        level = schema.level
+        history = schema.history
+
+        # Validate/normalize category
+        category_lookup = {c.lower().strip(): c for c in AI_INTERVIEW_CATEGORIES}
+        normalized_cat = category.lower().strip() if category else ""
+        if normalized_cat not in category_lookup:
+            return jsonify({
+                'success': False,
+                'error': f'Invalid category. Choose from: {", ".join(AI_INTERVIEW_CATEGORIES)}'
+            }), 400
+        category = category_lookup[normalized_cat]
+
+        from services.interview_ai import generate_mock_interview_report
+        report = generate_mock_interview_report(category, level, history)
+
+        if not report:
+            return jsonify({'success': False, 'error': 'Could not generate report'}), 500
+
+        return jsonify({
+            'success': True,
+            'report': report
+        }), 200
+
+    except Exception as e:
+        logging.exception("Mock interview report generation error")
+        return jsonify({'success': False, 'error': 'Could not generate mock interview report'}), 500

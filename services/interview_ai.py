@@ -7,8 +7,82 @@ This module coordinates the two AI clients and the static fallback.
 
 import random
 import logging
+import re
 from data.interview import FALLBACK_AI_QUESTIONS
 from services import gemini_client, groq_client
+
+
+def count_user_answers(history):
+    """
+    Count the number of user answers in the interview history.
+    
+    Only counts items where:
+    - role == "user"
+    - content is non-empty after stripping whitespace
+    
+    Args:
+        history: List of message dicts with 'role' and 'content' keys
+        
+    Returns:
+        int: Count of user answers, capped at 10
+    """
+    count = 0
+    for item in history:
+        if not isinstance(item, dict):
+            continue
+        if item.get("role") == "user":
+            content = str(item.get("content", "")).strip()
+            if content:
+                count += 1
+    return min(count, 10)
+
+
+def build_history_with_message(history, message):
+    """Return history including the current user message (if not already present)."""
+    full_history = list(history or [])
+    msg = str(message or "").strip()
+    if not msg:
+        return full_history
+
+    if full_history:
+        last = full_history[-1]
+        if (
+            isinstance(last, dict)
+            and last.get("role") == "user"
+            and str(last.get("content", "")).strip() == msg
+        ):
+            return full_history
+
+    full_history.append({"role": "user", "content": msg})
+    return full_history
+
+
+def count_user_answers_with_message(history, message):
+    """Count user answers including the message submitted in the current turn."""
+    return count_user_answers(build_history_with_message(history, message))
+
+EARLY_WRAP_UP_MARKERS = (
+    "this is the final question",
+    "this is question 10",
+    "this is the 10th question",
+    "10th question",
+    "after this i will provide",
+    "after this, i will provide",
+    "interview is complete",
+    "end of our mock interview",
+    "end of the mock interview",
+    "brief summary",
+    "summary of your performance",
+    "your performance",
+    "overall performance",
+    "strengths",
+    "weaknesses",
+    "areas for improvement",
+    "overall rating",
+    "final rating",
+    "recommendations",
+    "well-prepared for a real",
+)
 
 
 def _get_fallback_questions(category, level, count):
@@ -56,6 +130,55 @@ def _get_fallback_questions(category, level, count):
                 result.append(q)
 
     return result
+
+
+def _fallback_mock_question(category, level, answers_completed):
+    """Return a deterministic clean question when AI chat tries to wrap up early."""
+    cat_questions = FALLBACK_AI_QUESTIONS.get(category, {})
+    pool = list(cat_questions.get(level, []))
+    if not pool:
+        for level_questions in cat_questions.values():
+            pool.extend(level_questions)
+    if not pool:
+        for category_questions in FALLBACK_AI_QUESTIONS.values():
+            for level_questions in category_questions.values():
+                pool.extend(level_questions)
+    if pool:
+        question = pool[answers_completed % len(pool)]['question'].strip()
+        return question if question.endswith('?') else f"{question.rstrip('.')}?"
+    return f"What is one important concept in {category} that you can explain with an example?"
+
+
+def _is_valid_in_progress_reply(reply):
+    if not reply or '?' not in reply:
+        return False
+
+    normalized = ' '.join(str(reply).lower().split())
+    return not any(marker in normalized for marker in EARLY_WRAP_UP_MARKERS)
+
+
+def _clean_in_progress_question(reply):
+    """Reduce any in-progress AI reply to one unnumbered question only."""
+    if not _is_valid_in_progress_reply(reply):
+        return None
+
+    text = ' '.join(str(reply).strip().split())
+    question_end = text.rfind('?')
+    if question_end < 0:
+        return None
+
+    starts = [
+        text.rfind('. ', 0, question_end),
+        text.rfind('! ', 0, question_end),
+        text.rfind('? ', 0, question_end),
+    ]
+    question_start = max(starts) + 1 if max(starts) >= 0 else 0
+    question = text[question_start:question_end + 1].strip()
+    question = re.sub(r'^(?:q(?:uestion)?\s*\d+\s*[:.)-]\s*)', '', question, flags=re.IGNORECASE).strip()
+
+    if not _is_valid_in_progress_reply(question):
+        return None
+    return question
 
 
 def generate_questions(category, level, count, role=None, topic=None):
@@ -127,10 +250,13 @@ def generate_questions(category, level, count, role=None, topic=None):
     return questions, 'bank'
 
 
-def conduct_mock_interview(category, level, message, history):
+def conduct_mock_interview(category, level, message, history, answers_completed=0, max_answers=10):
     """
-    Conduct a chat-based mock interview.
-    
+    Conduct a chat-based mock interview turn.
+
+    The application controls when the interview ends (after max_answers user answers).
+    AI providers must only ask the next question — never generate the final report.
+
     Fallback order:
       1. Gemini Chat
       2. Groq Chat
@@ -143,29 +269,103 @@ def conduct_mock_interview(category, level, message, history):
         'advanced': 'Senior (5+ years)'
     }
     ai_level = level_map.get(level, level.title())
+    answers_completed = min(max(int(answers_completed or 0), 0), max_answers)
 
     # ── Step 1: Try Gemini ──────────────────────────────
     try:
         logging.info(f"[Mock Interview] Attempting Gemini chat for {category}...")
-        reply = gemini_client.chat(category, ai_level, message, history)
+        reply = gemini_client.chat(
+            category,
+            ai_level,
+            message,
+            history,
+            answers_completed=answers_completed,
+            max_answers=max_answers
+        )
         logging.info(f"[Mock Interview] Gemini chat returned a reply for {category}")
         if reply:
-            return reply
+            question = _clean_in_progress_question(reply)
+            if question:
+                return question
+            logging.warning("[Mock Interview] Gemini attempted early wrap-up; using fallback question")
     except Exception as e:
         logging.warning(f"[Mock Interview] Gemini chat crashed: {type(e).__name__}: {e}")
 
     # ── Step 2: Try Groq ────────────────────────────────
     try:
         logging.info(f"[Mock Interview] Trying Groq chat fallback...")
-        reply = groq_client.chat(category, ai_level, message, history)
+        reply = groq_client.chat(
+            category,
+            ai_level,
+            message,
+            history,
+            answers_completed=answers_completed,
+            max_answers=max_answers
+        )
         logging.info(f"[Mock Interview] Groq chat returned a reply for {category}")
         if reply:
-            return reply
+            question = _clean_in_progress_question(reply)
+            if question:
+                return question
+            logging.warning("[Mock Interview] Groq attempted early wrap-up; using fallback question")
     except Exception as e:
         logging.warning(f"[Mock Interview] Groq chat crashed: {type(e).__name__}: {e}")
 
-    # ── Step 3: Basic Fallback ──────────────────────────
-    logging.warning("[Mock Interview] All AI providers failed, using static fallback")
-    return "I apologize, but I'm having trouble connecting right now. Please try again in a moment, or reset the interview to start fresh."
-    # ── Step 2: Try Groq ────────────────────────────────
-    # ── Step 3: Basic Fallback ──────────────────────────
+    return _fallback_mock_question(category, level, answers_completed)
+
+
+def generate_mock_interview_report(category, level, history):
+    """
+    Orchestrate generating the mock interview performance report.
+    Fallback order: Gemini -> Groq -> static fallback report.
+    """
+    # Map level names for AI prompts
+    level_map = {
+        'beginner': 'Fresher',
+        'intermediate': 'Mid-level (2-5 years)',
+        'advanced': 'Senior (5+ years)'
+    }
+    ai_level = level_map.get(level, level.title())
+
+    # 1. Try Gemini
+    try:
+        logging.info(f"[Interview Report] Attempting Gemini report for {category}...")
+        report = gemini_client.generate_report(category, ai_level, history)
+        if report:
+            return report
+    except Exception as e:
+        logging.warning(f"[Interview Report] Gemini report crashed: {e}")
+
+    # 2. Try Groq
+    try:
+        logging.info(f"[Interview Report] Trying Groq report fallback...")
+        report = groq_client.generate_report(category, ai_level, history)
+        if report:
+            return report
+    except Exception as e:
+        logging.warning(f"[Interview Report] Groq report crashed: {e}")
+
+    # 3. Offline static fallback report
+    logging.info("[Interview Report] Using curated offline fallback report")
+    # Quick heuristics to score
+    ans_count = len([h for h in history if h.get('role') == 'user'])
+    score = min(50 + ans_count * 4, 90)
+
+    return {
+        "overall_score": score,
+        "detailed_evaluation": f"Thank you for completing the {category} mock interview at the {level} level! You demonstrated active engagement and successfully completed {ans_count} response turns during this practice session. Practicing mock interviews regularly builds high-pressure communication skills, structural thinking, and interview confidence.",
+        "good_parts": [
+            "Consistent participation and dedication throughout the 10-question practice flow.",
+            "Structured responses showcasing practical familiarity with the career domain."
+        ],
+        "bad_parts": [
+            "Answers could benefit from more detailed professional frameworks like the STAR method (Situation, Task, Action, Result).",
+            "Theoretical concepts need stronger integration with hands-on project examples."
+        ],
+        "improvement_tips": [
+            "Use the STAR method: explicitly outline the Situation, Task, Action you took, and final Result.",
+            "Take 5-10 seconds to structure your thoughts before responding to technical questions.",
+            "Complete core project roadmaps on Future Map to build stronger portfolio examples.",
+            "Review static category questions in the prep panel to solidify core fundamentals."
+        ]
+    }

@@ -205,8 +205,8 @@ class MockInterviewRequestSchema(BaseModel):
     message: StrictStr = Field(..., min_length=1, max_length=1000)
     # Fixed: Pydantic v2 uses max_items for List, not max_length
     history: List[Dict[str, Any]] = Field(default_factory=list, max_items=30)
-    # Deprecated: kept only so cached frontend bundles that still send it do not
-    # break live interviews. The server computes progress from conversation state.
+    # Number of interviewer questions already shown before the latest answer.
+    # Older clients may omit it; the server will estimate progress from history.
     question_count: Optional[int] = Field(default=None, ge=0, le=30)
 
     @field_validator('category', 'level', 'message', mode='before')
@@ -225,6 +225,38 @@ class MockInterviewRequestSchema(BaseModel):
     def sanitize_history(cls, v):
         cleaned = []
         for item in v[:30]:
+            if not isinstance(item, dict):
+                continue
+            role = str(item.get('role', '')).strip()
+            content = sanitize_html(str(item.get('content', '')).strip()[:1000])
+            if role in {'user', 'ai', 'model', 'assistant'} and content:
+                cleaned.append({'role': role, 'content': content})
+        return cleaned
+
+
+class MockInterviewReportRequestSchema(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    category: StrictStr = Field(..., min_length=1, max_length=50)
+    level: StrictStr = Field(default='beginner', max_length=20)
+    history: List[Dict[str, Any]] = Field(..., min_items=1, max_items=50)
+
+    @field_validator('category', 'level', mode='before')
+    def sanitize_report_text(cls, v):
+        if v is None:
+            return ''
+        if not isinstance(v, str):
+            raise TypeError('must be a string')
+        return sanitize_html(v.strip())
+
+    @field_validator('level')
+    def normalize_report_level(cls, v):
+        return v.lower()
+
+    @field_validator('history')
+    def sanitize_report_history(cls, v):
+        cleaned = []
+        for item in v[:50]:
             if not isinstance(item, dict):
                 continue
             role = str(item.get('role', '')).strip()

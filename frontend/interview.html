@@ -247,7 +247,7 @@
                         <div class="chat-info">
                             <span class="chat-status-dot"></span>
                             <span id="chatTitle">Interview: Computer & IT</span>
-                            <span class="chat-q-count" id="chatQCount">Question 1/10</span>
+                            <span class="chat-q-count" id="chatQCount">Completed Answers: 0/10</span>
                         </div>
                         <button class="chat-reset-btn" id="resetMockBtn" title="Reset Interview">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -271,6 +271,18 @@
                         <button id="sendMessageBtn" class="chat-send-btn" disabled>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                         </button>
+                    </div>
+                </div>
+
+                <!-- Report Panel (Initially Hidden) -->
+                <div id="mockReport" class="mock-report hidden"></div>
+
+                <!-- Report Loading State (Initially Hidden) -->
+                <div id="mockReportLoading" class="mock-report-loading hidden">
+                    <div class="report-spinner-wrapper">
+                        <div class="report-spinner"></div>
+                        <h3>Analyzing Your Performance...</h3>
+                        <p>Our AI career coach is assessing your communication structure, core domain knowledge, and formulating customized feedback.</p>
                     </div>
                 </div>
             </div>

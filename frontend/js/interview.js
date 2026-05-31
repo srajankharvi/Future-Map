@@ -50,7 +50,7 @@ async function checkAndDisplayLimits() {
         const response = await apiFetch(`${API_BASE}/interview/limits`);
         if (response.success) {
             const { mock, gen } = response.limits;
-            
+
             // Update Mock Interview UI
             const mockLimitEl = document.getElementById('resetTimer');
             if (mockLimitEl) {
@@ -60,7 +60,7 @@ async function checkAndDisplayLimits() {
                     updateResetTimer(); // Refresh the timer span content
                 }
             }
-            
+
             const startBtn = document.getElementById('startMockBtn');
             if (startBtn && mock.count >= mock.limit) {
                 // If they have an active session in this tab, don't disable yet
@@ -95,7 +95,8 @@ async function checkAndDisplayLimits() {
 // ==================== MOCK INTERVIEW ====================
 
 let mockMessages = [];
-let mockQuestionCount = 0;
+let mockAnswerCount = 0;  // Track user answers, not AI questions
+let mockInterviewReport = null;  // Store report when received from backend
 const MAX_MOCK_QUESTIONS = 10;
 let isMockActive = false;
 let mockSelectedLevel = 'beginner';
@@ -316,11 +317,11 @@ async function startMockInterview() {
             startBtn.textContent = 'Preparing...';
         }
         startBtn.disabled = true;
-        
+
         try {
             // Only call start API if this is a fresh start (not a resume after refresh)
             const isResuming = sessionStorage.getItem('mockSessionActive') === 'true';
-            
+
             if (!isResuming) {
                 const response = await apiFetch(`${API_BASE}/mock-interview/start`, { method: 'POST' });
                 if (!response.success) {
@@ -335,7 +336,7 @@ async function startMockInterview() {
         } catch (e) {
             console.error('Start interview error:', e);
         }
-        
+
         if (textSpan) { textSpan.innerHTML = originalHTML; } else { startBtn.innerHTML = originalHTML; }
         startBtn.disabled = false;
     }
@@ -343,28 +344,33 @@ async function startMockInterview() {
     // UI transitions
     document.getElementById('mockSetup').classList.add('hidden');
     document.getElementById('mockChatbox').classList.remove('hidden');
+    hideElement(document.getElementById('mockReport'));
+    hideElement(document.getElementById('mockReportLoading'));
+    const oldRibbon = document.getElementById('chatReviewRibbon');
+    if (oldRibbon) oldRibbon.remove();
     document.querySelector('.mock-interview-container').classList.add('chat-active');
-    
+
     document.getElementById('chatTitle').textContent = `Interview: ${category}`;
-    document.getElementById('chatQCount').textContent = `Starting...`;
-    
+    document.getElementById('chatQCount').textContent = `Completed Answers: 0/${MAX_MOCK_QUESTIONS}`;
+
     isMockActive = true;
-    mockQuestionCount = 0;
+    mockAnswerCount = 0;  // Track user answers, not questions
+    mockInterviewReport = null;  // Reset report
     mockMessages = [];
     mockPendingIntegrityNotice = '';
     lastMockTabViolationAt = 0;
     removeMockIntegrityWarnings();
-    
+
     // Enable input area
     const chatInput = document.getElementById('chatInput');
     if (chatInput) {
         chatInput.disabled = false;
         chatInput.focus();
     }
-    
+
     // Initial AI greeting
     addChatMessage('ai', "Hi! I'm your AI interviewer today. We'll be conducting a mock interview for a " + category + " position at a " + level + " level. Are you ready to begin?");
-    updateChatQCount();
+    updateChatACount();
 }
 
 function resetMockInterview() {
@@ -384,6 +390,11 @@ function clearMockInterviewState(options = {}) {
     sessionStorage.removeItem('mockSessionActive');
 
     hideElement(document.getElementById('mockChatbox'));
+    hideElement(document.getElementById('mockReport'));
+    hideElement(document.getElementById('mockReportLoading'));
+    const ribbon = document.getElementById('chatReviewRibbon');
+    if (ribbon) ribbon.remove();
+
     showElement(document.getElementById('mockSetup'));
 
     const mockContainer = document.querySelector('.mock-interview-container');
@@ -415,7 +426,8 @@ function clearMockInterviewState(options = {}) {
 
     isMockActive = false;
     mockMessages = [];
-    mockQuestionCount = 0;
+    mockAnswerCount = 0;  // Track user answers, not questions
+    mockInterviewReport = null;  // Clear report
     mockPendingIntegrityNotice = '';
     lastMockTabViolationAt = 0;
 
@@ -435,11 +447,9 @@ async function sendMockMessage() {
 
     if (!text || !isMockActive) return;
 
-    // Capture current history BEFORE adding new message
-    const currentHistory = [...mockMessages];
-
-    // Add user message to UI and history
+    // Capture history including this user answer for backend counting
     addChatMessage('user', text);
+    const historyForApi = [...mockMessages];
 
     input.value = '';
     input.style.height = 'auto';
@@ -459,27 +469,33 @@ async function sendMockMessage() {
                 category,
                 level,
                 message: text,
-                history: currentHistory
+                history: historyForApi
             })
         });
 
         if (!isMockActive) return;
 
         if (response.success) {
-            addChatMessage('ai', response.reply);
-            if (response.isQuestion) {
-                mockQuestionCount++;
-                updateChatQCount();
+            // Update answer count from backend
+            if (response.answersCompleted !== undefined) {
+                mockAnswerCount = response.answersCompleted;
             }
 
-            if (mockQuestionCount >= MAX_MOCK_QUESTIONS) {
-                isMockActive = false;
-                addChatMessage('ai', "That concludes our mock interview session! You've successfully practiced " + MAX_MOCK_QUESTIONS + " questions. You can reset to try a different category.");
-                // Keep input disabled after interview ends
-                input.disabled = true;
-                sendBtn.disabled = true;
+            // Check if interview is complete (10 answers submitted)
+            if (response.isComplete) {
+                // Response contains the report object
+                displayMockInterviewReport(response.reply);
+                completeMockInterview(input, sendBtn);
                 return;
             }
+
+            // Interview in progress - add AI response (next question)
+            if (typeof response.reply === 'string') {
+                addChatMessage('ai', response.reply);
+            }
+
+            // Update progress display
+            updateChatACount();
         } else {
             console.warn('Mock interview request failed:', {
                 status: response.status,
@@ -504,6 +520,45 @@ async function sendMockMessage() {
     }
 }
 
+function completeMockInterview(input, sendBtn) {
+    isMockActive = false;
+
+    // Keep input disabled after interview ends
+    input.disabled = true;
+    sendBtn.disabled = true;
+
+    // Show report after a brief pause
+    setTimeout(() => {
+        const chatbox = document.getElementById('mockChatbox');
+        const loading = document.getElementById('mockReportLoading');
+        const reportPanel = document.getElementById('mockReport');
+
+        if (mockInterviewReport) {
+            // Report was received from backend, display it
+            renderPerformanceReport(mockInterviewReport, 
+                document.getElementById('mockCategory').value, 
+                mockSelectedLevel);
+            hideElement(chatbox);
+            hideElement(loading);
+            showElement(reportPanel);
+
+            // Scroll to report view
+            setTimeout(() => {
+                reportPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        } else {
+            // Fallback: try to fetch report (shouldn't happen with new flow)
+            generatePerformanceReport();
+        }
+    }, 1500);
+}
+
+function displayMockInterviewReport(report) {
+    // Report object is already received from backend
+    // Store it for display
+    mockInterviewReport = report;
+}
+
 function addChatMessage(role, text) {
     const container = document.getElementById('chatMessages');
     const msgDiv = document.createElement('div');
@@ -512,17 +567,19 @@ function addChatMessage(role, text) {
 
     container.appendChild(msgDiv);
 
-    // Add to history for API
-    mockMessages.push({ role, content: text });
+    // Add to history for API (only string messages)
+    if (typeof text === 'string') {
+        mockMessages.push({ role, content: text });
+    }
 
     // Scroll to bottom
     container.scrollTop = container.scrollHeight;
 }
 
-function updateChatQCount() {
+function updateChatACount() {
     const countEl = document.getElementById('chatQCount');
     if (countEl) {
-        countEl.textContent = `Question ${mockQuestionCount}/${MAX_MOCK_QUESTIONS}`;
+        countEl.textContent = `Completed Answers: ${mockAnswerCount}/${MAX_MOCK_QUESTIONS}`;
     }
 }
 
@@ -912,4 +969,201 @@ function toggleAnswer(element) {
         answerContent.classList.add('show');
         if (arrow) arrow.classList.add('open');
     }
+}
+
+// ==================== MOCK INTERVIEW PERFORMANCE REPORT HELPERS ====================
+
+async function generatePerformanceReport() {
+    const category = document.getElementById('mockCategory').value;
+    const level = mockSelectedLevel;
+
+    const chatbox = document.getElementById('mockChatbox');
+    const loading = document.getElementById('mockReportLoading');
+    const reportPanel = document.getElementById('mockReport');
+
+    // Hide chat, show loading spinner
+    hideElement(chatbox);
+    showElement(loading);
+
+    try {
+        const response = await apiFetch(`${API_BASE}/mock-interview/report`, {
+            method: 'POST',
+            body: JSON.stringify({
+                category,
+                level,
+                history: mockMessages
+            })
+        });
+
+        if (response.success && response.report) {
+            renderPerformanceReport(response.report, category, level);
+            hideElement(loading);
+            showElement(reportPanel);
+
+            // Scroll to report view
+            setTimeout(() => {
+                reportPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        } else {
+            alert(response.error || 'Failed to generate performance report. Returning to chat.');
+            hideElement(loading);
+            showElement(chatbox);
+        }
+    } catch (e) {
+        console.error('Report generation error:', e);
+        alert('Network error. Failed to generate performance report.');
+        hideElement(loading);
+        showElement(chatbox);
+    }
+}
+
+function getScoreRatingClass(score) {
+    if (score >= 85) return 'score-rating-excellent';
+    if (score >= 70) return 'score-rating-good';
+    if (score >= 50) return 'score-rating-average';
+    return 'score-rating-poor';
+}
+
+function getScoreRatingLabel(score) {
+    if (score >= 85) return 'Excellent';
+    if (score >= 70) return 'Good';
+    if (score >= 50) return 'Average';
+    return 'Needs Improvement';
+}
+
+function renderPerformanceReport(report, category, level) {
+    const reportPanel = document.getElementById('mockReport');
+    if (!reportPanel) return;
+
+    const ratingClass = getScoreRatingClass(report.overall_score);
+    const ratingLabel = getScoreRatingLabel(report.overall_score);
+
+    // Convert arrays to list items safely
+    const goodPartsHTML = (report.good_parts || []).map(p => `<li>${escapeHTML(p)}</li>`).join('');
+    const badPartsHTML = (report.bad_parts || []).map(p => `<li>${escapeHTML(p)}</li>`).join('');
+    const tipsHTML = (report.improvement_tips || []).map((t, idx) => `
+        <div class="tip-timeline-item">
+            <div class="tip-timeline-num">${idx + 1}</div>
+            <div class="tip-timeline-text">${escapeHTML(t)}</div>
+        </div>
+    `).join('');
+
+    reportPanel.innerHTML = `
+        <div class="report-header">
+            <div class="report-header-text">
+                <span class="report-badge">AI Career Coach Evaluation</span>
+                <h2>Interview Feedback Report</h2>
+                <p class="report-meta">Category: <span class="report-meta-val">${escapeHTML(category)}</span> &middot; Level: <span class="report-meta-val">${escapeHTML(level)}</span></p>
+            </div>
+            <div class="report-score-wrapper">
+                <div class="report-score-circle">
+                    <svg width="120" height="120" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="50" class="score-track" />
+                        <circle cx="60" cy="60" r="50" class="score-bar" style="stroke-dasharray: 314; stroke-dashoffset: ${314 - (314 * report.overall_score) / 100}" />
+                    </svg>
+                    <div class="score-value">
+                        <span class="score-number">${report.overall_score}</span>
+                        <span class="score-max">/100</span>
+                    </div>
+                </div>
+                <div class="score-rating-label ${ratingClass}">${ratingLabel}</div>
+            </div>
+        </div>
+
+        <div class="report-summary-card">
+            <h3>Detailed Evaluation</h3>
+            <p>${escapeHTML(report.detailed_evaluation)}</p>
+        </div>
+
+        <div class="report-details-grid">
+            <div class="report-grid-card card-good">
+                <div class="card-icon-title">
+                    <div class="icon-circle text-success">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <h4>Good Parts & Strengths</h4>
+                </div>
+                <ul>
+                    ${goodPartsHTML}
+                </ul>
+            </div>
+
+            <div class="report-grid-card card-bad">
+                <div class="card-icon-title">
+                    <div class="icon-circle text-danger">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </div>
+                    <h4>Areas for Improvement</h4>
+                </div>
+                <ul>
+                    ${badPartsHTML}
+                </ul>
+            </div>
+        </div>
+
+        <div class="report-tips-card">
+            <div class="card-icon-title">
+                <div class="icon-circle text-warning">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                </div>
+                <h3>Actionable Improvement Tips</h3>
+            </div>
+            <div class="tips-timeline">
+                ${tipsHTML}
+            </div>
+        </div>
+
+        <div class="report-actions">
+            <button class="press-button press-button-lg" id="reportRestartBtn">
+                <span class="text">Practice Another Category</span>
+            </button>
+            <button class="ai-action-btn" id="reportViewHistoryBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                View Interview History
+            </button>
+        </div>
+    `;
+
+    // Bind actions
+    document.getElementById('reportRestartBtn').addEventListener('click', () => {
+        hideElement(reportPanel);
+        clearMockInterviewState();
+    });
+
+    document.getElementById('reportViewHistoryBtn').addEventListener('click', () => {
+        // Show chat view in read-only state
+        hideElement(reportPanel);
+        showElement(document.getElementById('mockChatbox'));
+
+        // Add a back-to-report ribbon if not present
+        const chatbox = document.getElementById('mockChatbox');
+        let ribbon = document.getElementById('chatReviewRibbon');
+        if (!ribbon) {
+            ribbon = document.createElement('div');
+            ribbon.id = 'chatReviewRibbon';
+            ribbon.style.padding = '12px 24px';
+            ribbon.style.background = 'rgba(61, 107, 110, 0.1)';
+            ribbon.style.borderBottom = '1px solid var(--border)';
+            ribbon.style.display = 'flex';
+            ribbon.style.justifyContent = 'space-between';
+            ribbon.style.alignItems = 'center';
+            ribbon.style.fontSize = '14px';
+            ribbon.style.fontWeight = '500';
+            ribbon.style.color = 'var(--text-primary)';
+
+            ribbon.innerHTML = `
+                <span>Reviewing Completed Interview Session</span>
+                <button class="ai-action-btn" style="padding: 4px 12px; font-size:12px;">Back to Report</button>
+            `;
+
+            ribbon.querySelector('button').addEventListener('click', () => {
+                hideElement(chatbox);
+                showElement(reportPanel);
+            });
+
+            chatbox.insertBefore(ribbon, chatbox.firstChild);
+        } else {
+            showElement(ribbon);
+        }
+    });
 }

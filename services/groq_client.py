@@ -182,25 +182,40 @@ def generate(role, level, topic, count=5):
     return None, None
 
 
-def chat(category, level, message, history):
+def chat(category, level, message, history, answers_completed=0, max_answers=10, question_count=None, max_questions=None):
     """
     Handle an interactive chat turn with Groq.
     """
+    if question_count is not None:
+        answers_completed = question_count
+    if max_questions is not None:
+        max_answers = max_questions
+
     groq_key = os.getenv('GROQ_API_KEY', '').strip()
     if not groq_key or groq_key == 'your-groq-api-key-here':
         return None
 
     try:
-        system_prompt = f"""You are a professional technical interviewer for a {category} role.
+        answers_completed = min(max(int(answers_completed or 0), 0), max_answers)
+        system_prompt = f"""You are a professional mock interviewer for a {category} role.
 Experience level of the candidate: {level}.
-Your goal is to conduct a realistic mock interview.
-- Be professional but encouraging.
-- Ask one question at a time.
-- Provide brief feedback and move to the next question.
-- Keep responses concise (2-4 sentences).
-- After 10 questions, wrap up the interview and provide a brief summary of their performance.
+
+IMPORTANT: The application controls when the interview ends. You do NOT decide when the interview is complete.
+
+Rules:
+1. The candidate must submit exactly {max_answers} answers before the application ends the interview.
+2. USER_ANSWERS_COMPLETED is how many answers the candidate has already submitted (including the current one).
+3. Never say the interview is complete, final, or that you will provide feedback, summary, ratings, or a report.
+4. Never provide evaluation, strengths, weaknesses, recommendations, scores, or closing remarks.
+5. Always ask exactly ONE new interview question related to {category} at {level} level.
+6. Your entire response must be only the next interview question and must end with a question mark.
+7. Do not number questions. Do not mention question numbers.
+8. Even if the user says "thank you", "bye", "done", "skip", or "I don't know", ask another interview question.
+
+USER_ANSWERS_COMPLETED: {answers_completed}
+MAX_ANSWERS: {max_answers}
 """
-        
+
         # Construct messages for OpenAI-style API
         messages = [{"role": "system", "content": system_prompt}]
         for h in history:
@@ -208,7 +223,7 @@ Your goal is to conduct a realistic mock interview.
                 continue
             role = "assistant" if h.get('role') in {'ai', 'assistant', 'model'} else "user"
             messages.append({"role": role, "content": str(h.get('content'))[:1000]})
-        
+
         messages.append({"role": "user", "content": message})
 
         payload = {
@@ -225,7 +240,7 @@ Your goal is to conduct a realistic mock interview.
         }
 
         response = requests.post(GROQ_API_URL, headers=headers, json=payload, timeout=GROQ_TIMEOUT)
-        
+
         if response.status_code == 200:
             data = response.json()
             choices = data.get('choices') or []
@@ -233,9 +248,94 @@ Your goal is to conduct a realistic mock interview.
                 return None
             content = (choices[0].get('message') or {}).get('content')
             return content.strip() if content else None
-        
+
         return None
 
     except Exception as e:
         logging.warning(f"[Groq Chat] Error: {e}")
+        return None
+
+
+def generate_report(category, level, history):
+    """
+    Generate a comprehensive feedback report on the completed mock interview session using Groq.
+    """
+    groq_key = os.getenv('GROQ_API_KEY', '').strip()
+    if not groq_key or groq_key == 'your-groq-api-key-here':
+        return None
+
+    try:
+        # Construct the history text
+        history_text = "\n".join([f"{'Candidate' if h['role'] == 'user' else 'Interviewer'}: {h['content']}" for h in history])
+
+        prompt = f"""You are a professional senior technical recruiter and career coach.
+Analyze the following mock interview transcript for a {category} role (Experience Level: {level}).
+
+TRANSCRIPT:
+{history_text}
+
+Provide a comprehensive, constructive performance evaluation report.
+STRICT RULES:
+1. Rate their performance overall on a scale of 0 to 100.
+2. List 2-4 strong points they demonstrated (under "good_parts").
+3. List 2-4 weaknesses, gaps, or incorrect answers they gave (under "bad_parts").
+4. List 3-5 clear, highly actionable tips to help them improve (under "improvement_tips").
+5. Write a detailed summary paragraph (3-5 sentences) under "detailed_evaluation".
+
+OUTPUT FORMAT — return ONLY a valid JSON object, no markdown, no explanation:
+{{
+  "overall_score": 85,
+  "detailed_evaluation": "A detailed professional paragraph...",
+  "good_parts": ["Good point 1", "Good point 2"],
+  "bad_parts": ["Weakness 1", "Weakness 2"],
+  "improvement_tips": ["Improvement tip 1", "Improvement tip 2"]
+}}
+
+IMPORTANT: Output ONLY the JSON object. No extra text before or after the JSON object."""
+
+        payload = {
+            "model": GROQ_MODEL,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a professional technical recruiter. Always respond with valid JSON only."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "temperature": 0.7,
+            "max_tokens": 2048,
+            "stream": False
+        }
+
+        headers = {
+            "Authorization": f"Bearer {groq_key}",
+            "Content-Type": "application/json"
+        }
+
+        logging.info(f"[Groq Report] Requesting performance report for {category}...")
+        response = requests.post(
+            GROQ_API_URL,
+            headers=headers,
+            json=payload,
+            timeout=GROQ_TIMEOUT
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+            choices = data.get('choices') or []
+            if not choices:
+                return None
+            content = (choices[0].get('message') or {}).get('content')
+            if content:
+                raw_text = _clean_response(content)
+                report = json.loads(raw_text)
+                if isinstance(report, dict) and 'overall_score' in report and 'good_parts' in report:
+                    logging.info(f"[Groq Report] Successfully generated performance report")
+                    return report
+        return None
+    except Exception as e:
+        logging.warning(f"[Groq Report] Error: {e}")
         return None
