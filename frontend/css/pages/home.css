@@ -1,0 +1,334 @@
+/* ============================================================
+   FUTURE MAP — Home Page Styles (Hero + Features)
+   ============================================================ */
+
+/* ==================== HERO SECTION ==================== */
+.hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    overflow: hidden;
+    padding: 100px 0;
+    background: var(--gradient-hero);
+}
+
+.hero-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding-top: 40px;
+}
+
+.hero-content {
+    max-width: 800px;
+    color: var(--text-primary);
+}
+
+.hero-content h1 {
+    font-size: 64px;
+    font-weight: 800;
+    margin-bottom: 24px;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    color: var(--text-primary);
+}
+
+.hero-content h1 span {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-main-text {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+    line-height: 1.3;
+}
+
+.hero-supporting {
+    font-size: 18px;
+    margin-bottom: 40px;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.hero-visual-cards {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.hero-feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 32px 24px;
+    border-radius: var(--radius-lg);
+    width: 250px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    transition: transform 0.5s ease-out, box-shadow 0.5s ease-out, border-color 0.5s ease-out;
+    transform: translate(calc(var(--x, 0) * 1px), calc(var(--y, 0) * 1px));
+}
+
+.hero-feature-card:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(61, 107, 110, 0.1);
+    transform: translate(calc(var(--x, 0) * 1px), calc(var(--y, 0) * 1px)) scale(1.05);
+}
+
+.hero-feature-image {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin: 0 auto 20px auto;
+}
+
+.hero-feature-card h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.hero-feature-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.blue-grad { background: linear-gradient(135deg, #2b5b63, #1b434c); }
+.purple-grad { background: linear-gradient(135deg, #4a7d86, #2b5b63); }
+.pink-grad { background: var(--gradient-primary); }
+
+.hero-bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 70% 30%, rgba(43, 91, 99, 0.04), transparent 50%),
+                radial-gradient(circle at 20% 70%, rgba(74, 125, 134, 0.04), transparent 50%);
+    pointer-events: none;
+}
+
+/* ==================== FEATURES SECTION ==================== */
+.features {
+    padding: 100px 0;
+    background: var(--gradient-hero);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-header h2 {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+}
+
+.section-header p {
+    color: var(--text-secondary);
+    font-size: 18px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+}
+
+/* ==================== PAGE HEADER ==================== */
+.page-header {
+    background: var(--gradient-hero);
+    color: var(--text-primary);
+    padding: 80px 20px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(43, 91, 99, 0.05), transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(74, 125, 134, 0.05), transparent 50%);
+}
+
+.page-header h1 {
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    position: relative;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.page-header p {
+    font-size: 17px;
+    color: var(--text-secondary);
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ==================== SCROLLBAR ==================== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--text-muted);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* --- Ticker Marquee Styling --- */
+.ticker-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    height: 72px;
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+    margin: 32px auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.ticker-title {
+    background: var(--gradient-primary);
+    color: #ffffff;
+    padding: 0 28px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    position: relative;
+    z-index: 20;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    box-shadow: 8px 0 20px rgba(0, 0, 0, 0.12);
+}
+
+.ticker-container {
+    flex-grow: 1;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.ticker-track {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    padding-left: 24px;
+    width: max-content;
+    animation: ticker-scroll 75s linear infinite;
+}
+
+.ticker-track:hover {
+    animation-play-state: paused;
+}
+
+.ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14.5px;
+    color: var(--text-primary);
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 8px 18px;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+}
+
+.ticker-item:hover {
+    color: var(--accent);
+    background: rgba(61, 107, 110, 0.06);
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 6px 18px -8px rgba(61, 107, 110, 0.12);
+    border-color: rgba(61, 107, 110, 0.08);
+}
+
+.ticker-item .ticker-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.9;
+}
+
+.ticker-item .ticker-badge {
+    background: linear-gradient(135deg, rgba(61, 107, 110, 0.15), rgba(61, 107, 110, 0.05));
+    color: var(--accent-dark);
+    border: 1px solid rgba(61, 107, 110, 0.25);
+    border-radius: 8px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ticker-item .ticker-badge.course-badge {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+

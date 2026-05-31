@@ -1,0 +1,315 @@
+/* ============================================================
+   FUTURE MAP — Personalized Path Selector Styles
+   ============================================================ */
+
+/* Header Override */
+.yourpath-header {
+    position: relative;
+    overflow: hidden;
+    background: var(--gradient-hero);
+    padding: 80px 20px 60px;
+}
+
+.yourpath-header h1 {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    animation: fadeInUp 0.8s ease;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.yourpath-header p {
+    font-size: 18px;
+    opacity: 0.85;
+    max-width: 600px;
+    margin: 0 auto;
+    color: var(--text-secondary);
+    animation: fadeInUp 0.8s ease 0.15s both;
+}
+
+/* Floating particles in header background */
+.header-particles {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(43, 91, 99, 0.08);
+    animation: float 6s ease-in-out infinite;
+}
+
+.particle-1 { width: 80px; height: 80px; top: 15%; left: 8%; animation-delay: 0s; }
+.particle-2 { width: 50px; height: 50px; top: 60%; left: 75%; animation-delay: 1s; }
+.particle-3 { width: 35px; height: 35px; top: 30%; right: 12%; animation-delay: 2s; }
+.particle-4 { width: 60px; height: 60px; bottom: 20%; left: 20%; animation-delay: 1.5s; }
+.particle-5 { width: 25px; height: 25px; top: 50%; left: 50%; animation-delay: 0.5s; }
+
+/* Selection Section */
+.yourpath-selection {
+    background: var(--gradient-hero);
+    padding: 70px 20px 80px;
+}
+
+.selection-intro {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.intro-badge {
+    display: inline-block;
+    background: rgba(43, 91, 99, 0.08);
+    color: var(--accent);
+    padding: 8px 24px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(43, 91, 99, 0.25);
+}
+
+.selection-intro h2 {
+    font-size: 38px;
+    margin-bottom: 12px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Selection Dashboard Cards */
+.selection-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto 50px;
+}
+
+.selection-card {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    overflow: visible;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.selection-card:nth-child(1) { z-index: 10; }
+.selection-card:nth-child(2) { z-index: 5; }
+
+.selection-card:hover {
+    border-color: rgba(43, 91, 99, 0.25);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+}
+
+.selection-card-header {
+    background: rgba(43, 91, 99, 0.02);
+    padding: 26px 26px 20px;
+    text-align: center;
+    border-radius: 16px 16px 0 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.selection-icon {
+    width: 60px; height: 60px;
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+
+.career-icon-lg {
+    background: var(--gradient-primary);
+    box-shadow: 0 6px 20px rgba(43, 91, 99, 0.15);
+}
+
+.course-icon-lg {
+    background: var(--gradient-primary);
+    box-shadow: 0 6px 20px rgba(43, 91, 99, 0.15);
+}
+
+.selection-card-header h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.selection-card-header p {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.selection-card-body {
+    padding: 24px;
+}
+
+/* Selected Previews */
+.selected-preview {
+    background: rgba(61, 107, 110, 0.03);
+    border: 1px solid rgba(61, 107, 110, 0.15);
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 10px;
+    animation: fadeInUp 0.4s ease;
+}
+
+.preview-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.course-badge {
+    background: var(--gradient-primary);
+}
+
+.selected-preview h4 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.selected-preview p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.preview-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.meta-tag {
+    display: inline-block;
+    background: rgba(61, 107, 110, 0.1);
+    color: var(--accent-dark);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.salary-tag {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.type-tag {
+    background: rgba(61, 107, 110, 0.1);
+    color: var(--accent-dark);
+}
+
+/* Generate Button Wrapper */
+.generate-path-wrapper {
+    text-align: center;
+    animation: fadeInUp 0.5s ease;
+}
+
+/* Personalized Path Call-to-Action Section */
+.yourpath-cta {
+    background: var(--gradient-hero);
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.yourpath-cta h2 {
+    font-size: 32px;
+    margin-bottom: 14px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.yourpath-cta p {
+    color: var(--text-secondary);
+    font-size: 16px;
+    margin-bottom: 28px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+/* Dashboard Empty States */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-icon-lg { font-size: 60px; margin-bottom: 20px; opacity: 0.6; }
+
+.empty-state h3 {
+    font-size: 22px;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin-bottom: 24px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Page Specific Helper Utilities (Used in Yourpath dashboard logic) */
+.notif-icon-gap {
+    margin-left: 8px;
+}
+
+.save-notification {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(16, 185, 129, 0.95);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+}
+
+.save-notification.visible {
+    opacity: 1;
+}
+
+.text-muted-padded {
+    color: var(--text-muted);
+    padding: 12px;
+}

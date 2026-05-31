@@ -1,0 +1,445 @@
+/* ============================================================
+   FUTURE MAP — UI Forms Elements Components
+   ============================================================ */
+
+/* General Form Elements */
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label,
+.form-group-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.form-input, 
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group input[type="url"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 15px;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s;
+}
+
+.form-group textarea {
+    resize: vertical;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.form-input:focus, 
+.form-group input:focus,
+.form-group textarea:focus, 
+.form-group select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(61, 107, 110, 0.15);
+}
+
+.form-input::placeholder, 
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--text-muted);
+}
+
+/* Marks Input Slider Display wrapper */
+.marks-input-wrapper {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.marks-input-wrapper .form-input {
+    flex: 1;
+}
+
+.marks-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
+    height: 48px;
+    background: var(--gradient-primary);
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* Skills Checkboxes */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.skills-grid-large {
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+.skill-checkbox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.skill-checkbox:hover {
+    border-color: var(--accent);
+    background: rgba(61, 107, 110, 0.05);
+}
+
+.skill-checkbox input[type="checkbox"] {
+    margin-right: 6px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+}
+
+.skill-checkbox input[type="checkbox"]:checked + .skill-name {
+    color: var(--accent);
+}
+
+.skill-checkbox .skill-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.skill-checkbox small {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* General Action wrappers */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Form Required indicators */
+.required {
+    color: #ef4444;
+}
+
+/* Form File Upload Status Indicators */
+.upload-msg {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.upload-success {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--green);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.upload-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+
+/* ==================== LOGIN/AUTH FORM FIELDS ==================== */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.login-form .form-group {
+    margin-bottom: 20px;
+}
+
+.login-form .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+/* Premium Rounded Pill Fields for Login Box */
+.login-form .form-group input[type="text"],
+.login-form .form-group input[type="email"],
+.login-form .form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 20px;
+    background: linear-gradient(145deg, #e7f0ed, #f8fbf7);
+    border: none;
+    border-radius: 9999px;
+    font-size: 16px;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    box-shadow:
+        inset 3px 6px 12px rgba(42, 79, 84, 0.3),
+        inset -3px -4px 10px rgba(255, 255, 255, 0.95),
+        0 8px 18px rgba(61, 107, 110, 0.08);
+    transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    animation: authInputPulse 2.4s ease-in-out infinite;
+}
+
+.login-form .form-group input:hover {
+    background: linear-gradient(145deg, #dceae6, #ffffff);
+    box-shadow:
+        inset 3px 6px 12px rgba(42, 79, 84, 0.36),
+        inset -3px -4px 10px rgba(255, 255, 255, 1),
+        0 10px 22px rgba(61, 107, 110, 0.12);
+}
+
+.login-form .form-group input:focus {
+    outline: none;
+    background: linear-gradient(145deg, #f6fffb, #dceae6);
+    box-shadow:
+        inset 3px 6px 12px rgba(42, 79, 84, 0.38),
+        inset -3px -4px 10px rgba(255, 255, 255, 1),
+        0 0 0 3px rgba(61, 107, 110, 0.22),
+        0 12px 24px rgba(61, 107, 110, 0.18);
+    transform: translateY(-2px);
+    animation: authInputFocusPulse 1.3s ease-in-out infinite;
+}
+
+.login-form .form-group input::placeholder {
+    color: #66838a;
+}
+
+.form-help {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Checkbox Labels */
+.checkbox-label {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    font-weight: 400 !important;
+    font-size: 14px !important;
+    color: var(--text-secondary) !important;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+/* Password Toggle Wrapper */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-input-wrapper input {
+    flex: 1;
+    padding-right: 52px !important;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    border-radius: 6px;
+    z-index: 10;
+}
+
+.password-toggle:hover {
+    color: var(--accent);
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.password-toggle .eye-off-icon {
+    display: none;
+}
+
+.password-toggle .eye-icon.hidden {
+    display: none;
+}
+
+.password-toggle .eye-off-icon.hidden {
+    display: none;
+}
+
+.password-toggle .eye-off-icon:not(.hidden) {
+    display: block;
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    margin-top: 8px;
+}
+
+.password-strength-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.password-strength-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 4px;
+    transition: width 0.3s ease, background 0.3s ease;
+}
+
+.password-strength-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+/* Authentication feedback alerts */
+.auth-msg {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    line-height: 1.5;
+}
+
+.auth-msg-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.auth-msg-error {
+    background: rgba(239, 68, 68, 0.08);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.auth-msg-success {
+    background: rgba(16, 185, 129, 0.08);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+
+/* ==================== ROADMAP TEAL CHECKBOXES ==================== */
+.skill-roadmap-section .skill-check-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+    display: none;
+}
+
+.skill-roadmap-section .skill-check-container {
+    --size: 50px;
+    --check-bg: #dceae6;
+    --check-shadow-dark: rgba(42, 79, 84, 0.22);
+    --check-shadow-light: rgba(255, 255, 255, 0.95);
+    --check-inset-dark: rgba(42, 79, 84, 0.18);
+    --check-inset-light: rgba(255, 255, 255, 0.9);
+    width: var(--size);
+    display: block;
+    height: var(--size);
+    flex-shrink: 0;
+    background-color: var(--check-bg);
+    border-radius: 100%;
+    cursor: pointer;
+    padding: 5px;
+    box-shadow:
+        1.5px 1.5px 3px var(--check-shadow-dark),
+        -1.5px -1.5px 3px var(--check-shadow-light),
+        inset 0 0 0 var(--check-inset-dark),
+        inset 0 -0px 0 var(--check-inset-light);
+}
+
+.skill-roadmap-section .skill-check-container .checkmark {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow:
+        1.5px 1.5px 3px var(--check-shadow-dark),
+        -1.5px -1.5px 3px var(--check-shadow-light),
+        inset 0 0 0 var(--check-inset-dark),
+        inset 0 -0px 0 var(--check-inset-light);
+    transition: all ease 0.3s;
+    padding: 8px;
+}
+
+.skill-roadmap-section .skill-check-container .checkmark svg {
+    opacity: 0;
+    transition: all ease 0.3s;
+    color: var(--accent);
+    stroke: var(--accent);
+}
+
+.skill-roadmap-section .skill-check-container input:checked + .checkmark {
+    background: linear-gradient(145deg, rgba(61, 107, 110, 0.12), rgba(90, 143, 138, 0.08));
+    box-shadow:
+        0 0 0 transparent,
+        0 0 0 transparent,
+        inset 1.5px 1.5px 3px var(--check-inset-dark),
+        inset -1.5px -1.5px 3px var(--check-inset-light);
+}
+
+.skill-roadmap-section .skill-check-container input:checked + .checkmark svg {
+    opacity: 1;
+    color: var(--accent-dark);
+    stroke: var(--accent-dark);
+}
+
+.skill-roadmap-section .skill-check-container input:disabled + .checkmark {
+    opacity: 0.6;
+    cursor: wait;
+}

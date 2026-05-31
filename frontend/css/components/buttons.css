@@ -1,0 +1,457 @@
+/* ============================================================
+   FUTURE MAP — UI Buttons Components
+   ============================================================ */
+
+/* Standard Buttons */
+.btn {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(61, 107, 110, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(61, 107, 110, 0.4);
+}
+
+.btn-secondary-outline {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary-outline:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--text-muted);
+    transform: translateY(-2px);
+}
+
+.btn-large {
+    padding: 16px 40px;
+    font-size: 16px;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+.btn-block {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 4px 15px rgba(61, 107, 110, 0.3);
+}
+
+.btn-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(61, 107, 110, 0.4);
+}
+
+/* Logout Button */
+.logout-btn {
+    padding: 8px 16px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.3s;
+    font-family: 'Inter', sans-serif;
+}
+
+.logout-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+/* Generate Path Button */
+.btn-generate-path:not(.pearl-button) {
+    padding: 16px 44px;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 14px;
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 30px rgba(43, 91, 99, 0.15);
+    position: relative;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-generate-path:not(.pearl-button)::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,20,0.2), transparent);
+    transition: left 0.6s;
+}
+
+.btn-generate-path:not(.pearl-button):hover::before { left: 100%; }
+
+.btn-generate-path:not(.pearl-button):hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(43, 91, 99, 0.25);
+}
+
+.btn-icon { font-size: 20px; }
+
+
+/* ==================== PEARL BUTTONS ==================== */
+.pearl-button {
+    --pearl-bg: #2a4f54;
+    --pearl-bg-light: #5a8f8a;
+    --pearl-white: #f6fffb;
+    --pearl-radius: 100px;
+    --pearl-font: 15px;
+    --pearl-pad-y: 12px;
+    --pearl-pad-x: 28px;
+    outline: none;
+    cursor: pointer;
+    border: 0;
+    position: relative;
+    border-radius: var(--pearl-radius);
+    background: linear-gradient(135deg, var(--pearl-bg), var(--pearl-bg-light));
+    color: var(--pearl-white);
+    padding: 0;
+    overflow: visible;
+    box-shadow:
+        inset 0 0.28rem 0.8rem rgba(255, 255, 255, 0.26),
+        inset 0 -0.12rem 0.3rem rgba(8, 35, 38, 0.65),
+        inset 0 -0.42rem 0.9rem rgba(255, 255, 255, 0.18),
+        0 1.1rem 1.6rem rgba(42, 79, 84, 0.24),
+        0 0.7rem 0.9rem -0.5rem rgba(15, 42, 45, 0.7);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.btn-primary.pearl-button,
+.btn-secondary-outline.pearl-button {
+    border: 0;
+    background: linear-gradient(135deg, var(--pearl-bg), var(--pearl-bg-light));
+    color: var(--pearl-white);
+    box-shadow:
+        inset 0 0.28rem 0.8rem rgba(255, 255, 255, 0.26),
+        inset 0 -0.12rem 0.3rem rgba(8, 35, 38, 0.65),
+        inset 0 -0.42rem 0.9rem rgba(255, 255, 255, 0.18),
+        0 1.1rem 1.6rem rgba(42, 79, 84, 0.24),
+        0 0.7rem 0.9rem -0.5rem rgba(15, 42, 45, 0.7);
+}
+
+.pearl-button .wrap {
+    display: block;
+    font-size: var(--pearl-font);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.86);
+    padding: var(--pearl-pad-y) var(--pearl-pad-x);
+    border-radius: inherit;
+    position: relative;
+    overflow: hidden;
+}
+
+.pearl-button .pearl-star-alt {
+    display: none;
+}
+
+.pearl-star, .pearl-star-alt {
+    display: inline-flex;
+    align-items: center;
+}
+
+.pearl-button:hover .pearl-star {
+    display: none;
+}
+
+.pearl-button:hover .pearl-star-alt {
+    display: inline-block;
+}
+
+.pearl-button .pearl-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s ease;
+    transform: translateY(2%);
+    -webkit-mask-image: linear-gradient(to bottom, white 48%, rgba(255, 255, 255, 0.72));
+    mask-image: linear-gradient(to bottom, white 48%, rgba(255, 255, 255, 0.72));
+}
+
+.pearl-button .wrap::before,
+.pearl-button .wrap::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.pearl-button .wrap::before {
+    left: -15%;
+    right: -15%;
+    bottom: 22%;
+    top: -105%;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.16);
+}
+
+.pearl-button .wrap::after {
+    left: 7%;
+    right: 7%;
+    top: 12%;
+    bottom: 42%;
+    border-radius: 28px 28px 0 0;
+    box-shadow: inset 0 10px 8px -10px rgba(255, 255, 255, 0.85);
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.32) 0%,
+        rgba(255, 255, 255, 0.04) 52%,
+        rgba(255, 255, 255, 0) 100%
+    );
+}
+
+.pearl-button:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        inset 0 0.3rem 0.6rem rgba(255, 255, 255, 0.34),
+        inset 0 -0.12rem 0.3rem rgba(8, 35, 38, 0.72),
+        inset 0 -0.42rem 0.9rem rgba(255, 255, 255, 0.24),
+        0 1.4rem 1.9rem rgba(42, 79, 84, 0.28),
+        0 0.85rem 1rem -0.55rem rgba(15, 42, 45, 0.78);
+}
+
+.pearl-button:hover .wrap::before {
+    transform: translateY(-5%);
+}
+
+.pearl-button:hover .wrap::after {
+    opacity: 0.45;
+    transform: translateY(6%);
+}
+
+.pearl-button:hover .pearl-label {
+    transform: translateY(-4%);
+}
+
+.pearl-button:active {
+    transform: translateY(4px);
+    box-shadow:
+        inset 0 0.28rem 0.55rem rgba(255, 255, 255, 0.4),
+        inset 0 -0.12rem 0.3rem rgba(8, 35, 38, 0.8),
+        inset 0 -0.42rem 0.9rem rgba(255, 255, 255, 0.14),
+        0 1rem 1.5rem rgba(42, 79, 84, 0.22),
+        0 0.65rem 0.85rem -0.55rem rgba(15, 42, 45, 0.78);
+}
+
+.pearl-button-lg {
+    --pearl-font: 16px;
+    --pearl-pad-y: 16px;
+    --pearl-pad-x: 40px;
+}
+
+.pearl-button-light {
+    --pearl-bg: #3f7376;
+    --pearl-bg-light: #6fa09b;
+    --pearl-white: #ffffff;
+}
+
+.btn-secondary-outline.pearl-button-light {
+    box-shadow:
+        inset 0 0.28rem 0.8rem rgba(255, 255, 255, 0.3),
+        inset 0 -0.12rem 0.3rem rgba(42, 79, 84, 0.58),
+        inset 0 -0.42rem 0.9rem rgba(255, 255, 255, 0.22),
+        0 1.05rem 1.5rem rgba(61, 107, 110, 0.24),
+        0 0.7rem 0.9rem -0.5rem rgba(42, 79, 84, 0.62);
+}
+
+.btn-generate-path.pearl-button {
+    --pearl-font: 17px;
+    --pearl-pad-y: 16px;
+    --pearl-pad-x: 44px;
+}
+
+.project-display-link.pearl-button,
+.btn-sm.pearl-button {
+    --pearl-font: 13px;
+    --pearl-pad-y: 9px;
+    --pearl-pad-x: 16px;
+}
+
+.project-display-link.pearl-button .pearl-label {
+    gap: 8px;
+}
+
+.pearl-button svg {
+    flex-shrink: 0;
+}
+
+
+/* ==================== PRESS BUTTONS ==================== */
+.press-button {
+    --press-back: linear-gradient(135deg, #2a4f54 0%, #4f807c 100%);
+    --press-border: #173f44;
+    --press-edge: rgba(42, 79, 84, 0.95);
+    --press-shadow: rgba(3, 15, 20, 0.78);
+    --press-text: #edf8f5;
+    --press-font: 16px;
+    --press-pad-y: 0.7em;
+    --press-pad-x: 1.7em;
+    background: var(--press-back);
+    border-radius: 0.5em;
+    box-shadow:
+        inset 0 -6px 18px -6px rgba(3, 15, 20, 0),
+        inset var(--press-edge) -1px -1px 6px 0,
+        inset 12px 0 12px -6px rgba(3, 15, 20, 0),
+        inset -12px 0 12px -6px rgba(3, 15, 20, 0),
+        var(--press-edge) -1px -1px 6px 0,
+        0 10px 20px rgba(42, 79, 84, 0.18);
+    border: solid 2px var(--press-border);
+    color: var(--press-text);
+    cursor: pointer;
+    font-size: var(--press-font);
+    padding: 0;
+    outline: none;
+    transition: box-shadow 0.3s ease, transform 0.3s ease, background 0.3s ease;
+    user-select: none;
+    overflow: visible;
+}
+
+.press-button .text {
+    color: var(--press-text);
+    font-weight: 700;
+    margin: auto;
+    transition: transform 0.3s ease;
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: var(--press-pad-y) var(--press-pad-x);
+}
+
+.press-button:hover {
+    transform: translateY(0);
+    box-shadow:
+        inset 0 -6px 18px -6px var(--press-shadow),
+        inset 0 6px 18px -6px var(--press-shadow),
+        inset 12px 0 12px -6px rgba(3, 15, 20, 0),
+        inset -12px 0 12px -6px rgba(3, 15, 20, 0),
+        -1px -1px 6px 0 var(--press-edge),
+        0 8px 16px rgba(42, 79, 84, 0.16);
+}
+
+.press-button:hover .text {
+    transform: none;
+}
+
+.press-button:active {
+    transform: translateY(2px);
+    box-shadow:
+        inset 0 -12px 12px -6px var(--press-shadow),
+        inset 0 12px 12px -6px var(--press-shadow),
+        inset 12px 0 12px -6px var(--press-shadow),
+        inset -12px 0 12px -6px var(--press-shadow),
+        -1px -1px 6px 0 var(--press-edge);
+}
+
+.press-button:active .text {
+    transform: none;
+}
+
+.press-button-lg,
+.ai-generate-btn.press-button {
+    --press-font: 16px;
+    --press-pad-y: 0.78em;
+    --press-pad-x: 1.9em;
+}
+
+.press-button-secondary {
+    --press-back: linear-gradient(135deg, #dceae6 0%, #f6fbf8 100%);
+    --press-border: #5a8f8a;
+    --press-edge: rgba(90, 143, 138, 0.85);
+    --press-shadow: rgba(42, 79, 84, 0.42);
+    --press-text: #2a4f54;
+    --press-font: 15px;
+    --press-pad-y: 0.68em;
+    --press-pad-x: 1.45em;
+}
+
+.press-button-block {
+    --press-font: 16px;
+    --press-pad-y: 0.7em;
+    --press-pad-x: 1.7em;
+    width: 100%;
+}
+
+.press-button-block .text {
+    width: fit-content;
+}
+
+.press-button:disabled,
+.ai-generate-btn.press-button:disabled {
+    opacity: 0.72;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* ==================== ROADMAP SAVE BUTTON ==================== */
+.skill-roadmap-save-btn {
+    --pearl-font: 14px;
+    --pearl-pad-y: 10px;
+    --pearl-pad-x: 24px;
+    padding: 0;
+    width: auto;
+    max-width: 100%;
+    min-height: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        inset 0 0.2rem 0.45rem rgba(255, 255, 255, 0.22),
+        inset 0 -0.08rem 0.2rem rgba(8, 35, 38, 0.4),
+        0 2px 8px rgba(42, 79, 84, 0.14);
+}
+
+.skill-roadmap-save-btn .wrap::before {
+    top: -95%;
+    left: -8%;
+    right: -8%;
+}
+
+.skill-roadmap-save-btn .pearl-label {
+    gap: 6px;
+}
