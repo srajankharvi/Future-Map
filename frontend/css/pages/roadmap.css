@@ -134,12 +134,12 @@
 }
 
 .timeline-dot.step-1 { background: var(--gradient-primary); }
-.timeline-dot.step-2 { background: linear-gradient(135deg, #5a8f8a, #3d6b6e); }
-.timeline-dot.step-3 { background: linear-gradient(135deg, #4a7d86, #2b5b63); }
-.timeline-dot.step-4 { background: linear-gradient(135deg, #22c55e, #16a34a); }
-.timeline-dot.step-5 { background: linear-gradient(135deg, #5a8f8a, #3d6b6e); }
-.timeline-dot.step-6 { background: linear-gradient(135deg, #ef4444, #dc2626); }
-.timeline-dot.step-7 { background: linear-gradient(135deg, #4a7d86, #2b5b63); }
+.timeline-dot.step-2 { background: var(--gradient-primary); }
+.timeline-dot.step-3 { background: var(--gradient-primary); }
+.timeline-dot.step-4 { background: var(--gradient-primary); }
+.timeline-dot.step-5 { background: var(--gradient-primary); }
+.timeline-dot.step-6 { background: var(--gradient-primary); }
+.timeline-dot.step-7 { background: var(--gradient-primary); }
 
 .timeline-card {
     background: var(--glass);

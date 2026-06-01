@@ -125,6 +125,7 @@ STRICT RULES — VIOLATING ANY OF THESE IS FORBIDDEN:
 - Keep total reply under {MOCK_REPLY_MAX_WORDS} words.
 - Do NOT say the interview is ending, wrapping up, concluding, or finishing.
 - Do NOT say "final question", "last question", "one more question", or "concluding question".
+- Do NOT say "last check", "check once", "let me check", "let me verify", or any phrase implying a final review before asking the next question.
 - Do NOT mention question numbers, progress, or how many questions remain.
 - Do NOT generate summaries, scores, ratings, strengths, weaknesses, or performance reviews.
 - Do NOT say "good luck", "best of luck", "all the best", or any farewell.
@@ -204,6 +205,15 @@ EARLY_WRAP_UP_MARKERS = (
     "closing remarks",
     "wrap up",
     "wrapping up",
+    "last check",
+    "check once",
+    "let me check",
+    "let me verify",
+    "one last check",
+    "one more check",
+    "before i continue",
+    "before moving on",
+    "before i ask",
     # Summaries and ratings
     "brief summary",
     "summary of your performance",
