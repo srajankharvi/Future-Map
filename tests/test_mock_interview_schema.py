@@ -230,13 +230,15 @@ def test_mock_interview_replaces_early_ai_summary(monkeypatch):
     assert "mock interview" not in reply.lower()
 
 
-def test_mock_interview_strips_acknowledgement_and_numbering(monkeypatch):
+def test_mock_interview_keeps_acknowledgement_and_strips_numbering(monkeypatch):
     import services.interview_ai as interview_ai
 
     monkeypatch.setattr(
         interview_ai.gemini_client,
         "chat",
-        lambda *args, **kwargs: "Good answer. Question 8: What is an API and why is it useful?",
+        lambda *args, **kwargs: (
+            "Good answer — you explained that clearly. What is an API and why is it useful?"
+        ),
     )
     monkeypatch.setattr(interview_ai.groq_client, "chat", lambda *args, **kwargs: None)
 
@@ -249,10 +251,63 @@ def test_mock_interview_strips_acknowledgement_and_numbering(monkeypatch):
         max_answers=10,
     )
 
-    assert reply == "What is an API and why is it useful?"
+    assert reply.startswith("Good answer")
+    assert reply.endswith("?")
+    assert "What is an API and why is it useful?" in reply
 
 
-def test_mock_interview_report_schema():
+def test_mock_interview_keeps_brief_feedback_before_question(monkeypatch):
+    import services.interview_ai as interview_ai
+
+    monkeypatch.setattr(
+        interview_ai.gemini_client,
+        "chat",
+        lambda *args, **kwargs: (
+            "That's correct, you've listed some of the basic data types. "
+            "What is the purpose of functions in programming?"
+        ),
+    )
+    monkeypatch.setattr(interview_ai.groq_client, "chat", lambda *args, **kwargs: None)
+
+    reply = interview_ai.conduct_mock_interview(
+        "Computer",
+        "beginner",
+        "int, float, string",
+        [],
+        answers_completed=3,
+        max_answers=10,
+    )
+
+    assert "That's correct" in reply
+    assert reply.endswith("What is the purpose of functions in programming?")
+
+
+def test_mock_interview_strips_parenthetical_meta_and_blocks_summary(monkeypatch):
+    import services.interview_ai as interview_ai
+
+    monkeypatch.setattr(
+        interview_ai.gemini_client,
+        "chat",
+        lambda *args, **kwargs: (
+            "That's correct. What is a variable? "
+            "(This is the 10th question, after this I will provide a summary of your performance)"
+        ),
+    )
+    monkeypatch.setattr(interview_ai.groq_client, "chat", lambda *args, **kwargs: None)
+
+    reply = interview_ai.conduct_mock_interview(
+        "Computer",
+        "beginner",
+        "a named storage location",
+        [],
+        answers_completed=4,
+        max_answers=10,
+    )
+
+    assert "That's correct." in reply
+    assert reply.endswith("What is a variable?")
+    assert "10th question" not in reply.lower()
+    assert "summary" not in reply.lower()
     from schemas import MockInterviewReportRequestSchema
     payload = {
         "category": "Computer",
@@ -266,6 +321,63 @@ def test_mock_interview_report_schema():
     assert schema.category == "Computer"
     assert schema.level == "beginner"
     assert len(schema.history) == 2
+
+
+def test_mock_interview_keeps_two_sentence_feedback(monkeypatch):
+    import services.interview_ai as interview_ai
+
+    monkeypatch.setattr(
+        interview_ai.gemini_client,
+        "chat",
+        lambda *args, **kwargs: (
+            "That's a solid start. You identified the main idea correctly. "
+            "What is the purpose of functions in programming?"
+        ),
+    )
+    monkeypatch.setattr(interview_ai.groq_client, "chat", lambda *args, **kwargs: None)
+
+    reply = interview_ai.conduct_mock_interview(
+        "Computer",
+        "beginner",
+        "int, float, string",
+        [],
+        answers_completed=3,
+        max_answers=10,
+    )
+
+    feedback, question = reply.split("\n\n", 1)
+    assert "That's a solid start." in feedback
+    assert "You identified the main idea correctly." in feedback
+    assert question.endswith("?")
+
+
+def test_mock_interview_enforces_feedback_and_reply_word_limits(monkeypatch):
+    import services.interview_ai as interview_ai
+
+    monkeypatch.setattr(
+        interview_ai.gemini_client,
+        "chat",
+        lambda *args, **kwargs: (
+            "That's correct, you've listed some of the basic data types and explained them "
+            "in great detail with multiple examples from your personal experience. "
+            "What is the purpose of functions in programming?"
+        ),
+    )
+    monkeypatch.setattr(interview_ai.groq_client, "chat", lambda *args, **kwargs: None)
+
+    reply = interview_ai.conduct_mock_interview(
+        "Computer",
+        "beginner",
+        "int, float, string",
+        [],
+        answers_completed=3,
+        max_answers=10,
+    )
+
+    feedback, question = reply.split("\n\n", 1)
+    assert len(feedback.split()) <= interview_ai.MOCK_FEEDBACK_MAX_WORDS
+    assert len(reply.split()) <= interview_ai.MOCK_REPLY_MAX_WORDS
+    assert question.endswith("?")
 
 
 def test_mock_interview_report_endpoint(mock_interview_client, monkeypatch):

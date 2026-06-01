@@ -42,7 +42,7 @@ def _validation_error_summary(error):
 
 def _estimate_mock_questions_asked(history):
     """Best-effort progress estimate for older clients that omit question_count."""
-    question_count = -1
+    question_count = 0
     for item in history:
         if not isinstance(item, dict):
             continue

@@ -168,15 +168,13 @@ def generate(role, level, topic, count=5):
         return None, None
 
 
-def chat(category, level, message, history, answers_completed=0, max_answers=10, question_count=None, max_questions=None):
+def chat(category, level, message, history, answers_completed=0, max_answers=10):
     """
     Handle an interactive chat turn with Gemini.
-    """
-    if question_count is not None:
-        answers_completed = question_count
-    if max_questions is not None:
-        max_answers = max_questions
 
+    Note: question_count / max_questions params were removed to ensure
+    a single source of truth for progress tracking (the backend route).
+    """
     gemini_key = os.getenv('GEMINI_API_KEY', '').strip()
     if not GEMINI_AVAILABLE or not gemini_key or gemini_key == 'your-gemini-api-key-here':
         return None
@@ -184,31 +182,22 @@ def chat(category, level, message, history, answers_completed=0, max_answers=10,
     try:
         answers_completed = min(max(int(answers_completed or 0), 0), max_answers)
 
-        system_prompt = f"""You are a professional mock interviewer for a {category} role.
-Experience level of the candidate: {level}.
+        from services.interview_ai import build_mock_interviewer_system_prompt, MAX_HISTORY_MESSAGES
 
-IMPORTANT: The application controls when the interview ends. You do NOT decide when the interview is complete.
-
-Rules:
-1. The candidate must submit exactly {max_answers} answers before the application ends the interview.
-2. USER_ANSWERS_COMPLETED is how many answers the candidate has already submitted (including the current one).
-3. Never say the interview is complete, final, or that you will provide feedback, summary, ratings, or a report.
-4. Never provide evaluation, strengths, weaknesses, recommendations, scores, or closing remarks.
-5. Always ask exactly ONE new interview question related to {category} at {level} level.
-6. Your entire response must be only the next interview question and must end with a question mark.
-7. Do not number questions. Do not mention question numbers.
-8. Even if the user says "thank you", "bye", "done", "skip", or "I don't know", ask another interview question.
-
-USER_ANSWERS_COMPLETED: {answers_completed}
-MAX_ANSWERS: {max_answers}
-"""
+        system_prompt = build_mock_interviewer_system_prompt(
+            category, level, answers_completed, max_answers
+        )
 
         # List of models to try in order of preference
         models_to_try = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash']
 
+        # Truncate history to keep the AI focused and prevent it from
+        # counting questions and deciding to end the interview.
+        truncated = list(history or [])[-MAX_HISTORY_MESSAGES:]
+
         # Convert history format for the new SDK
         contents = []
-        for h in history:
+        for h in truncated:
             if not isinstance(h, dict) or not h.get('content'):
                 continue
             role = 'user' if h.get('role') == 'user' else 'model'
@@ -230,7 +219,8 @@ MAX_ANSWERS: {max_answers}
                 chat_session = client.chats.create(
                     model=model_name,
                     config=types.GenerateContentConfig(
-                        system_instruction=system_prompt
+                        system_instruction=system_prompt,
+                        temperature=0.5
                     ),
                     history=contents
                 )

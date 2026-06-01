@@ -61,16 +61,150 @@ def count_user_answers_with_message(history, message):
     """Count user answers including the message submitted in the current turn."""
     return count_user_answers(build_history_with_message(history, message))
 
+MOCK_FEEDBACK_MAX_WORDS = 35
+MOCK_REPLY_MAX_WORDS = 90
+
+# Maximum number of recent history messages to send to the AI.
+# Keeping this small prevents the model from "counting" past questions
+# and deciding on its own that the interview should end.
+MAX_HISTORY_MESSAGES = 6
+
+
+def _format_mock_position_label(category, level):
+    level_map = {
+        'beginner': 'Beginner',
+        'intermediate': 'Intermediate',
+        'advanced': 'Advanced',
+    }
+    normalized = str(level or '').lower().strip()
+    level_label = level_map.get(normalized, str(level).title() if level else 'Beginner')
+    return f"{category} Position ({level_label} Level)"
+
+
+def build_mock_interviewer_system_prompt(category, level, answers_completed, max_answers):
+    """Shared system prompt for Gemini and Groq mock interview chat.
+
+    IMPORTANT: The prompt deliberately omits exact progress numbers.
+    Telling the model "you are on question 8 of 10" causes it to
+    generate wrap-up language, summaries, and farewell messages.
+    The backend — not the AI — decides when the interview ends.
+    """
+    position = _format_mock_position_label(category, level)
+
+    return f"""You are a senior technical interviewer conducting a live mock interview for a "{position}" role.
+
+You sound like a real human interviewer — calm, encouraging, and conversational. You are NOT a quiz app, chatbot, or textbook.
+
+Your ONLY job on every turn is exactly two things:
+1. Brief feedback (1-2 short sentences) on what the candidate just said.
+2. One follow-up interview question.
+
+That is ALL you do. Nothing else. Ever.
+
+FEEDBACK GUIDELINES:
+- Correct answer → affirm briefly ("Right — that's exactly how X works.")
+- Partially correct → gently add one missing piece ("Close — you'd also want to mention Y.")
+- Incorrect → correct kindly without lecturing ("Not quite — RAM is volatile, not static.")
+- Vague → acknowledge and move on ("That's a start — let's keep going.")
+- "I don't know" → be supportive ("No worries — that's a common gap.")
+
+QUESTION GUIDELINES:
+- Ask exactly ONE question per turn at {level} depth in {category}.
+- Prefer follow-ups when their answer invites it; otherwise introduce a related new topic.
+- Use natural interview phrasing: "Can you walk me through...", "How would you...", "What happens when..."
+- Never number your questions (no "Question 3:", no "Q5.").
+- Never answer your own question or give long explanations.
+
+FORMAT (blank line between feedback and question):
+
+[Brief feedback]
+
+[One interview question ending with ?]
+
+STRICT RULES — VIOLATING ANY OF THESE IS FORBIDDEN:
+- Keep total reply under {MOCK_REPLY_MAX_WORDS} words.
+- Do NOT say the interview is ending, wrapping up, concluding, or finishing.
+- Do NOT say "final question", "last question", "one more question", or "concluding question".
+- Do NOT mention question numbers, progress, or how many questions remain.
+- Do NOT generate summaries, scores, ratings, strengths, weaknesses, or performance reviews.
+- Do NOT say "good luck", "best of luck", "all the best", or any farewell.
+- Do NOT say "interview complete", "that concludes", "we've covered", or "that wraps up".
+- Do NOT generate any text that sounds like an interview is ending.
+- The application controls when the interview ends. You NEVER decide this.
+- Just give feedback and ask the next question. Always. On every single turn.
+"""
+
+
+def _truncate_words(text, max_words):
+    words = str(text or "").split()
+    if len(words) <= max_words:
+        return " ".join(words)
+    return " ".join(words[:max_words]).rstrip(".,;:!?")
+
+
+def _truncate_question_words(question, max_words):
+    words = str(question or "").split()
+    if len(words) <= max_words:
+        return " ".join(words)
+    truncated = " ".join(words[:max_words]).rstrip(".,;:!")
+    return truncated if truncated.endswith('?') else f"{truncated}?"
+
+
+def _format_in_progress_reply(brief_ack, question):
+    brief_ack = _truncate_words(brief_ack, MOCK_FEEDBACK_MAX_WORDS).strip()
+    question = ' '.join(str(question or "").split()).strip()
+    if not question:
+        return None
+    if not brief_ack:
+        return _truncate_question_words(question, MOCK_REPLY_MAX_WORDS)
+
+    ack_words = len(brief_ack.split())
+    question_words = len(question.split())
+    if ack_words + question_words <= MOCK_REPLY_MAX_WORDS:
+        return f"{brief_ack}\n\n{question}"
+
+    max_ack = min(MOCK_FEEDBACK_MAX_WORDS, MOCK_REPLY_MAX_WORDS - question_words)
+    if max_ack >= 3:
+        brief_ack = _truncate_words(brief_ack, max_ack)
+        return f"{brief_ack}\n\n{question}"
+
+    max_question_words = max(5, MOCK_REPLY_MAX_WORDS - len(brief_ack.split()))
+    question = _truncate_question_words(question, max_question_words)
+    return f"{brief_ack}\n\n{question}"
+
+
 EARLY_WRAP_UP_MARKERS = (
+    # Explicit question numbering / finality
     "this is the final question",
+    "this is the last question",
     "this is question 10",
     "this is the 10th question",
     "10th question",
+    "last question",
+    "final question",
+    "concluding question",
+    "one more question",
+    "one last question",
+    # Post-interview language
     "after this i will provide",
     "after this, i will provide",
     "interview is complete",
+    "interview is over",
+    "interview has concluded",
     "end of our mock interview",
     "end of the mock interview",
+    "end of interview",
+    "that wraps up",
+    "that concludes",
+    "we've covered",
+    "let me summarize",
+    "to sum up",
+    "to summarize",
+    "in summary",
+    "closing remarks",
+    "wrap up",
+    "wrapping up",
+    # Summaries and ratings
     "brief summary",
     "summary of your performance",
     "your performance",
@@ -82,6 +216,15 @@ EARLY_WRAP_UP_MARKERS = (
     "final rating",
     "recommendations",
     "well-prepared for a real",
+    # Farewells
+    "good luck",
+    "best of luck",
+    "all the best",
+    "wish you",
+    "thank you for your time",
+    "enjoyed interviewing",
+    "it was great interviewing",
+    "pleasure interviewing",
 )
 
 
@@ -145,24 +288,31 @@ def _fallback_mock_question(category, level, answers_completed):
                 pool.extend(level_questions)
     if pool:
         question = pool[answers_completed % len(pool)]['question'].strip()
-        return question if question.endswith('?') else f"{question.rstrip('.')}?"
+        question = question if question.endswith('?') else f"{question.rstrip('.')}?"
+        brief_acks = (
+            "Thanks — that's a fair answer, and you touched on the main idea.",
+            "Good, I follow your reasoning there. That makes sense.",
+            "Okay — you mentioned something useful. Let's build on that.",
+            "Right, I see where you're going with that. Nice effort.",
+        )
+        ack = brief_acks[answers_completed % len(brief_acks)]
+        return f"{ack}\n\n{question}"
     return f"What is one important concept in {category} that you can explain with an example?"
 
 
-def _is_valid_in_progress_reply(reply):
-    if not reply or '?' not in reply:
-        return False
+def _strip_meta_parentheticals(text):
+    """Remove parenthetical meta about question count or upcoming feedback."""
+    return re.sub(
+        r'\([^)]*(?:question|final|summary|feedback|performance|10th|after this)[^)]*\)',
+        '',
+        text,
+        flags=re.IGNORECASE,
+    )
 
-    normalized = ' '.join(str(reply).lower().split())
-    return not any(marker in normalized for marker in EARLY_WRAP_UP_MARKERS)
 
-
-def _clean_in_progress_question(reply):
-    """Reduce any in-progress AI reply to one unnumbered question only."""
-    if not _is_valid_in_progress_reply(reply):
-        return None
-
-    text = ' '.join(str(reply).strip().split())
+def _extract_question_sentence(text):
+    """Return the final interview question sentence from a reply."""
+    text = ' '.join(str(text).strip().split())
     question_end = text.rfind('?')
     if question_end < 0:
         return None
@@ -174,11 +324,59 @@ def _clean_in_progress_question(reply):
     ]
     question_start = max(starts) + 1 if max(starts) >= 0 else 0
     question = text[question_start:question_end + 1].strip()
-    question = re.sub(r'^(?:q(?:uestion)?\s*\d+\s*[:.)-]\s*)', '', question, flags=re.IGNORECASE).strip()
+    question = re.sub(
+        r'^(?:q(?:uestion)?\s*\d+\s*[:.)-]\s*)',
+        '',
+        question,
+        flags=re.IGNORECASE,
+    ).strip()
+    return question if question.endswith('?') else None
 
-    if not _is_valid_in_progress_reply(question):
+
+def _is_valid_in_progress_reply(reply):
+    if not reply or '?' not in reply:
+        return False
+
+    normalized = ' '.join(str(reply).lower().split())
+    return not any(marker in normalized for marker in EARLY_WRAP_UP_MARKERS)
+
+
+def _clean_in_progress_reply(reply):
+    """Keep 1-2 feedback sentences plus the next question; block early wrap-up."""
+    if not reply:
         return None
-    return question
+
+    text = _strip_meta_parentheticals(str(reply).strip())
+    normalized = ' '.join(text.split())
+
+    if not _is_valid_in_progress_reply(normalized):
+        return None
+
+    question_end = normalized.rfind('?')
+    question = _extract_question_sentence(normalized)
+    if not question:
+        return None
+
+    starts = [
+        normalized.rfind('. ', 0, question_end),
+        normalized.rfind('! ', 0, question_end),
+        normalized.rfind('? ', 0, question_end),
+    ]
+    question_start = max(starts) + 1 if max(starts) >= 0 else 0
+    acknowledgment = normalized[:question_start].strip()
+
+    if acknowledgment:
+        ack_sentences = re.split(r'(?<=[.!])\s+', acknowledgment)
+        brief_ack = ' '.join(s.strip() for s in ack_sentences[:2] if s).strip()
+        if brief_ack:
+            return _format_in_progress_reply(brief_ack, question)
+
+    return _truncate_question_words(question, MOCK_REPLY_MAX_WORDS)
+
+
+def _clean_in_progress_question(reply):
+    """Backward-compatible alias."""
+    return _clean_in_progress_reply(reply)
 
 
 def generate_questions(category, level, count, role=None, topic=None):
@@ -271,6 +469,17 @@ def conduct_mock_interview(category, level, message, history, answers_completed=
     ai_level = level_map.get(level, level.title())
     answers_completed = min(max(int(answers_completed or 0), 0), max_answers)
 
+    # Truncate history to prevent the AI from counting past questions
+    # and deciding to end the interview on its own.
+    truncated_history = list(history or [])[-MAX_HISTORY_MESSAGES:]
+
+    logging.info(
+        "[Mock Interview] turn | category=%s level=%s user_answer_count=%d "
+        "backend_progress=%d/%d history_len=%d truncated_to=%d",
+        category, level, answers_completed, answers_completed, max_answers,
+        len(history or []), len(truncated_history)
+    )
+
     # ── Step 1: Try Gemini ──────────────────────────────
     try:
         logging.info(f"[Mock Interview] Attempting Gemini chat for {category}...")
@@ -278,16 +487,20 @@ def conduct_mock_interview(category, level, message, history, answers_completed=
             category,
             ai_level,
             message,
-            history,
+            truncated_history,
             answers_completed=answers_completed,
             max_answers=max_answers
         )
-        logging.info(f"[Mock Interview] Gemini chat returned a reply for {category}")
         if reply:
-            question = _clean_in_progress_question(reply)
-            if question:
-                return question
-            logging.warning("[Mock Interview] Gemini attempted early wrap-up; using fallback question")
+            cleaned = _clean_in_progress_reply(reply)
+            if cleaned:
+                logging.info("[Mock Interview] Gemini reply accepted (answer %d/%d)", answers_completed, max_answers)
+                return cleaned
+            logging.warning(
+                "[Mock Interview] Gemini attempted early wrap-up (answer %d/%d); "
+                "blocked reply: %.200s",
+                answers_completed, max_answers, reply
+            )
     except Exception as e:
         logging.warning(f"[Mock Interview] Gemini chat crashed: {type(e).__name__}: {e}")
 
@@ -298,19 +511,27 @@ def conduct_mock_interview(category, level, message, history, answers_completed=
             category,
             ai_level,
             message,
-            history,
+            truncated_history,
             answers_completed=answers_completed,
             max_answers=max_answers
         )
-        logging.info(f"[Mock Interview] Groq chat returned a reply for {category}")
         if reply:
-            question = _clean_in_progress_question(reply)
-            if question:
-                return question
-            logging.warning("[Mock Interview] Groq attempted early wrap-up; using fallback question")
+            cleaned = _clean_in_progress_reply(reply)
+            if cleaned:
+                logging.info("[Mock Interview] Groq reply accepted (answer %d/%d)", answers_completed, max_answers)
+                return cleaned
+            logging.warning(
+                "[Mock Interview] Groq attempted early wrap-up (answer %d/%d); "
+                "blocked reply: %.200s",
+                answers_completed, max_answers, reply
+            )
     except Exception as e:
         logging.warning(f"[Mock Interview] Groq chat crashed: {type(e).__name__}: {e}")
 
+    logging.info(
+        "[Mock Interview] Both AI providers failed/blocked; using fallback question "
+        "(answer %d/%d)", answers_completed, max_answers
+    )
     return _fallback_mock_question(category, level, answers_completed)
 
 

@@ -368,8 +368,12 @@ async function startMockInterview() {
         chatInput.focus();
     }
 
-    // Initial AI greeting
-    addChatMessage('ai', "Hi! I'm your AI interviewer today. We'll be conducting a mock interview for a " + category + " position at a " + level + " level. Are you ready to begin?");
+    const levelLabel = level.charAt(0).toUpperCase() + level.slice(1);
+    addChatMessage(
+        'ai',
+        `Hi — thanks for joining today. I'll be interviewing you for the ${category} role at the ${levelLabel} level. `
+        + `This will be a short conversation: I'll ask questions and give brief feedback on your answers. Ready to begin?`
+    );
     updateChatACount();
 }
 
@@ -559,11 +563,56 @@ function displayMockInterviewReport(report) {
     mockInterviewReport = report;
 }
 
+function parseMockInterviewerReply(text) {
+    if (!text || typeof text !== 'string') return null;
+
+    const parts = text.split(/\n\n+/).map(part => part.trim()).filter(Boolean);
+    if (parts.length < 2) return null;
+
+    const question = parts[parts.length - 1];
+    if (!question.endsWith('?')) return null;
+
+    return {
+        feedback: parts.slice(0, -1).join(' '),
+        question,
+    };
+}
+
 function addChatMessage(role, text) {
     const container = document.getElementById('chatMessages');
     const msgDiv = document.createElement('div');
     msgDiv.className = `message message-${role}`;
-    msgDiv.textContent = text;
+
+    const label = document.createElement('div');
+    label.className = 'message-label';
+    label.textContent = role === 'ai' ? 'Interviewer' : 'You';
+    msgDiv.appendChild(label);
+
+    if (role === 'ai') {
+        const parsed = parseMockInterviewerReply(text);
+        if (parsed) {
+            const feedbackEl = document.createElement('div');
+            feedbackEl.className = 'message-feedback';
+            feedbackEl.textContent = parsed.feedback;
+
+            const questionEl = document.createElement('div');
+            questionEl.className = 'message-question';
+            questionEl.textContent = parsed.question;
+
+            msgDiv.appendChild(feedbackEl);
+            msgDiv.appendChild(questionEl);
+        } else {
+            const body = document.createElement('div');
+            body.className = 'message-body';
+            body.textContent = text;
+            msgDiv.appendChild(body);
+        }
+    } else {
+        const body = document.createElement('div');
+        body.className = 'message-body';
+        body.textContent = text;
+        msgDiv.appendChild(body);
+    }
 
     container.appendChild(msgDiv);
 
